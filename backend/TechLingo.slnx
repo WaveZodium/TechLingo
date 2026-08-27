@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TechLingo.Api/TechLingo.Api.csproj" />
+  <Project Path="TechLingo.Core/TechLingo.Core.csproj" />
+  <Project Path="TechLingo.Tests/TechLingo.Tests.csproj" />
+</Solution>

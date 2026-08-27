@@ -1,0 +1,13 @@
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\bin\Debug\net10.0\TechLingo.Core.deps.json
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\bin\Debug\net10.0\TechLingo.Core.dll
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\bin\Debug\net10.0\TechLingo.Core.pdb
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.csproj.AssemblyReference.cache
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.AssemblyInfoInputs.cache
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.AssemblyInfo.cs
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.csproj.CoreCompileInputs.cache
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.sourcelink.json
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.dll
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\refint\TechLingo.Core.dll
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\TechLingo.Core.pdb
+D:\Development\SYSM9\TechLingo\backend\TechLingo.Core\obj\Debug\net10.0\ref\TechLingo.Core.dll
