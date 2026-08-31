@@ -1,0 +1,41 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+
+# Node.js and Vite build output
+node_modules/
+dist/
+dist-ssr/
+coverage/
+
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE and editor settings
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.sw?
+
+# Operating-system files
+.DS_Store
+Thumbs.db
