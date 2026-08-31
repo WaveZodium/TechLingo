@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import heroImg from "./assets/hero.png";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import "./App.css";
 
 type WeatherForecast = {
-  date: string
-  temperatureC: number
-  temperatureF: number
-  summary: string
-}
+  date: string;
+  temperatureC: number;
+  temperatureF: number;
+  summary: string;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [forecasts, setForecasts] = useState<WeatherForecast[]>([])
+  const [count, setCount] = useState(0);
+  const [forecasts, setForecasts] = useState<WeatherForecast[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:5121/WeatherForecast')
+    fetch("http://localhost:5121/WeatherForecast")
       .then((res) => res.json())
       .then(setForecasts)
-      .catch((err) => console.error(err))
-  }, [])
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <>
@@ -145,7 +145,7 @@ function App() {
         )}
       </section>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
