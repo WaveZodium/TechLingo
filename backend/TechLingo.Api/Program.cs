@@ -51,7 +51,8 @@ app.MapGet("/health/mongodb", async (IConfiguration configuration) => {
             database = databaseName
         });
     }
-    catch {
+    catch (Exception ex){
+        Console.WriteLine(ex.Message);
         return Results.Problem(
             title: "MongoDB connection failed",
             statusCode: StatusCodes.Status503ServiceUnavailable);
