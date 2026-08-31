@@ -1,11 +1,26 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import './App.css'
 
+type WeatherForecast = {
+  date: string
+  temperatureC: number
+  temperatureF: number
+  summary: string
+}
+
 function App() {
   const [count, setCount] = useState(0)
+  const [forecasts, setForecasts] = useState<WeatherForecast[]>([])
+
+  useEffect(() => {
+    fetch('http://localhost:5121/WeatherForecast')
+      .then((res) => res.json())
+      .then(setForecasts)
+      .catch((err) => console.error(err))
+  }, [])
 
   return (
     <>
@@ -115,6 +130,20 @@ function App() {
 
       <div className="ticks"></div>
       <section id="spacer"></section>
+      <section id="forecast">
+        <h2>Weather forecast</h2>
+        {forecasts.length === 0 ? (
+          <p>Laddar...</p>
+        ) : (
+          <ul>
+            {forecasts.map((f) => (
+              <li key={f.date}>
+                {f.date}: {f.temperatureC}°C / {f.temperatureF}°F – {f.summary}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </>
   )
 }
