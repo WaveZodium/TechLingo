@@ -1,3 +1,6 @@
+using MongoDB.Bson;
+using MongoDB.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,6 +26,42 @@ builder.Services.AddCors(options =>
 
 // Build the application instance
 var app = builder.Build();
+
+
+
+
+
+// Health check endpoint for MongoDB
+app.MapGet("/health/mongodb", async (IConfiguration configuration) => {
+    try {
+        var connectionString =
+            configuration["MongoDb:ConnectionString"];
+
+        var databaseName =
+            configuration["MongoDb:DatabaseName"];
+
+        var client = new MongoClient(connectionString);
+        var database = client.GetDatabase(databaseName);
+
+        await database.RunCommandAsync<BsonDocument>(
+            new BsonDocument("ping", 1));
+
+        return Results.Ok(new {
+            status = "ok",
+            database = databaseName
+        });
+    }
+    catch {
+        return Results.Problem(
+            title: "MongoDB connection failed",
+            statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
