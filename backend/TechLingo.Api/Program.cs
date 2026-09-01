@@ -1,10 +1,45 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
+using TechLingo.Core.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// MongoDB settings
+var mongoSettings = builder.Configuration
+    .GetSection(MongoDbSettings.SectionName)
+    .Get<MongoDbSettings>()
+    ?? throw new InvalidOperationException(
+        "MongoDb configuration is missing.");
+
+if (string.IsNullOrWhiteSpace(mongoSettings.ConnectionString))
+{
+    throw new InvalidOperationException(
+        "MongoDb:ConnectionString is missing.");
+}
+
+if (string.IsNullOrWhiteSpace(mongoSettings.DatabaseName))
+{
+    throw new InvalidOperationException(
+        "MongoDb:DatabaseName is missing.");
+}
+
+// Register settings
+builder.Services.AddSingleton(mongoSettings);
+
+// One MongoClient for the lifetime of the application
+builder.Services.AddSingleton<IMongoClient>(
+    _ => new MongoClient(mongoSettings.ConnectionString));
+
+// Register the TechLingo database
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+{
+    var client = sp.GetRequiredService<IMongoClient>();
+
+    return client.GetDatabase(mongoSettings.DatabaseName);
+});
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
