@@ -47,6 +47,7 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 builder.Services.AddScoped<MongoDbSeeder>();
 
 builder.Services.AddScoped<QuestionRepository>();
+builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddScoped<QuestionService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
