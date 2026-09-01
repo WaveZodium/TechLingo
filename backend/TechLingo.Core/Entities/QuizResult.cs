@@ -12,6 +12,7 @@ namespace TechLingo.Core.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; } = null!;
 
+        [BsonRepresentation(BsonType.ObjectId)]
         public string UserId { get; set; } = string.Empty;
 
         [BsonRepresentation(BsonType.ObjectId)]
