@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using TechLingo.Core.Configuration;
+using TechLingo.Core.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,8 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
     return client.GetDatabase(mongoSettings.DatabaseName);
 });
 
+builder.Services.AddScoped<MongoDbSeeder>();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -63,6 +66,14 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 
+// Seed the database with initial data
+using (var scope = app.Services.CreateScope())
+{
+    var seeder =
+        scope.ServiceProvider.GetRequiredService<MongoDbSeeder>();
+
+    await seeder.SeedAsync();
+}
 
 
 
