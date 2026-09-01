@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TechLingo.Core.DTOs;
-using TechLingo.Core.Repositories;
+using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
 
@@ -8,58 +8,30 @@ namespace TechLingo.Api.Controllers;
 [Route("api/[controller]")]
 public class QuestionsController : ControllerBase
 {
-    private readonly QuestionRepository _repository;
+    private readonly QuestionService _questionService;
 
-    public QuestionsController(QuestionRepository repository)
+    public QuestionsController(QuestionService questionService)
     {
-        _repository = repository;
+        _questionService = questionService;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<QuestionDto>>> GetAll()
     {
-        var questions = await _repository.GetAllAsync();
+        var questions = await _questionService.GetAllAsync();
 
-        var result = questions.Select(q => new QuestionDto
-        {
-            Id = q.Id,
-            CategoryId = q.CategoryId,
-            Message = q.Message,
-            Prompt = q.Prompt,
-
-            Options = q.Options.Select(o => new AnswerOptionDto
-            {
-                Id = o.Id,
-                Text = o.Text
-            }).ToList()
-        }).ToList();
-
-        return Ok(result);
+        return Ok(questions);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<QuestionDto>> GetById(string id)
     {
-        var question = await _repository.GetByIdAsync(id);
+        var question = await _questionService.GetByIdAsync(id);
 
         if (question is null)
             return NotFound();
 
-        var result = new QuestionDto
-        {
-            Id = question.Id,
-            CategoryId = question.CategoryId,
-            Message = question.Message,
-            Prompt = question.Prompt,
-
-            Options = question.Options.Select(o => new AnswerOptionDto
-            {
-                Id = o.Id,
-                Text = o.Text
-            }).ToList()
-        };
-
-        return Ok(result);
+        return Ok(question);
     }
 
     [HttpGet("category/{categoryId}")]
@@ -67,22 +39,8 @@ public class QuestionsController : ControllerBase
         string categoryId)
     {
         var questions =
-            await _repository.GetByCategoryAsync(categoryId);
+            await _questionService.GetByCategoryAsync(categoryId);
 
-        var result = questions.Select(q => new QuestionDto
-        {
-            Id = q.Id,
-            CategoryId = q.CategoryId,
-            Message = q.Message,
-            Prompt = q.Prompt,
-
-            Options = q.Options.Select(o => new AnswerOptionDto
-            {
-                Id = o.Id,
-                Text = o.Text
-            }).ToList()
-        }).ToList();
-
-        return Ok(result);
+        return Ok(questions);
     }
 }

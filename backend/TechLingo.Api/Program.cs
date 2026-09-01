@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using TechLingo.Core.Configuration;
 using TechLingo.Core.Data;
 using TechLingo.Core.Repositories;
+using TechLingo.Core.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,8 +45,9 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 });
 
 builder.Services.AddScoped<MongoDbSeeder>();
+
 builder.Services.AddScoped<QuestionRepository>();
-builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<QuestionService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -64,6 +66,7 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
+
 
 // Build the application instance
 var app = builder.Build();
