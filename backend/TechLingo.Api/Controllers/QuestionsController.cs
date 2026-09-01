@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechLingo.Core.DTOs;
 using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class QuestionsController : ControllerBase
