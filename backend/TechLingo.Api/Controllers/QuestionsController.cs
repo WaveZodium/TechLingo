@@ -36,13 +36,17 @@ public class QuestionsController : ControllerBase
         return Ok(question);
     }
 
-    [HttpGet("category/{categoryId}")]
-    public async Task<ActionResult<List<QuestionDto>>> GetByCategory(
-        string categoryId)
+    [HttpPost("{id}/answer")]
+    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string id, [FromBody] string answer)
     {
-        var questions =
-            await _questionService.GetByCategoryAsync(categoryId);
+        // TODO: Implementera ValidateAnswerAsync i service.
+        var result = await _questionService.ValidateAnswerAsync(id, answer);
 
-        return Ok(questions);
+        if (!result.IsSuccess)
+            return BadRequest(result.ErrorMessage);
+
+        // TODO: Lägg till mer felhantering här.
+
+        return Ok(result);
     }
 }

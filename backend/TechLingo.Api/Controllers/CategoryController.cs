@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using TechLingo.Core.Entities;
 using TechLingo.Core.Repositories;
+using TechLingo.Core.DTOs;
+using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
 
@@ -9,10 +11,12 @@ namespace TechLingo.Api.Controllers;
 public class CategoriesController : ControllerBase
 {
     private readonly CategoryRepository _repository;
+    private readonly QuestionService _questionService;
 
-    public CategoriesController(CategoryRepository repository)
+    public CategoriesController(CategoryRepository repository, QuestionService questionService)
     {
         _repository = repository;
+        _questionService = questionService;
     }
 
     [HttpGet]
@@ -32,5 +36,15 @@ public class CategoriesController : ControllerBase
             return NotFound();
 
         return Ok(category);
+    }
+
+    [HttpGet("{categoryId}/questions")]
+    public async Task<ActionResult<List<QuestionDto>>> GetByCategory(
+        string categoryId)
+    {
+        var questions =
+            await _questionService.GetByCategoryAsync(categoryId);
+
+        return Ok(questions);
     }
 }
