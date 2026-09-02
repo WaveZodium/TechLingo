@@ -1,0 +1,155 @@
+.home {
+  min-height: calc(100vh - 72px);
+
+  display: flex;
+  align-items: flex-start;
+}
+
+.home__content {
+  width: min(100% - 64px, 1100px);
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 80px;
+
+  padding-top: 50px;
+  padding-bottom: 80px;
+}
+
+.home__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  transform: translateY(-50px);
+}
+
+.home__title {
+  max-width: 650px;
+
+  color: var(--color-white);
+  font-family: var(--font-inter);
+  font-size: clamp(2.5rem, 4vw, 3.6rem);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.home__description {
+  max-width: 390px;
+  margin-top: 58px;
+
+  color: var(--color-warm-ivory);
+  font-family: var(--font-roboto-mono);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.home__cta {
+  margin-top: 86px;
+
+  min-width: 205px;
+  min-height: 58px;
+
+  padding: 0 30px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  background-color: var(--color-lightblue);
+  color: var(--color-white);
+
+  border: 1px solid var(--color-white);
+  border-radius: 10px;
+
+  font-family: var(--font-roboto);
+  font-size: 1.25rem;
+  font-weight: 400;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.home__cta:hover {
+  background-color: #1768ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgb(0 86 251 / 25%);
+}
+
+.home__cta:focus-visible {
+  outline: 3px solid var(--color-white);
+  outline-offset: 4px;
+}
+
+.home__image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home__image {
+  width: 100%;
+  max-width: 430px;
+  height: auto;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .home__content {
+    grid-template-columns: 1fr;
+    gap: 60px;
+
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+
+  .home__text {
+    align-items: center;
+    text-align: center;
+  }
+
+  .home__description {
+    margin-top: 35px;
+  }
+
+  .home__cta {
+    margin-top: 50px;
+  }
+
+  .home__image {
+    max-width: 400px;
+  }
+}
+
+/* Mobil */
+@media (max-width: 600px) {
+  .home__content {
+    width: min(100% - 32px, 1100px);
+    padding-top: 50px;
+  }
+
+  .home__title {
+    font-size: clamp(2.1rem, 10vw, 3rem);
+    line-height: 1.05;
+  }
+
+  .home__description {
+    font-size: 0.85rem;
+  }
+
+  .home__cta {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .home__image {
+    max-width: 340px;
+  }
+}
