@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TechLingo.Core.DTOs
+{
+    public class AnswerResultDto
+    {
+        public bool IsCorrect { get; set; }
+        public int Points { get; set; }
+        public string? CorrectAnswer { get; set; }
+    }
+}
