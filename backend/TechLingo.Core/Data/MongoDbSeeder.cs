@@ -1,5 +1,6 @@
-﻿using MongoDB.Driver;
+using MongoDB.Driver;
 using TechLingo.Core.Entities;
+using TechLingo.Core.Enums;
 
 namespace TechLingo.Core.Data
 {
@@ -19,6 +20,9 @@ namespace TechLingo.Core.Data
 
             var questions =
                 _database.GetCollection<Question>("questions");
+
+            var users =
+                _database.GetCollection<User>("users");
 
 
             //Kategorier
@@ -55,6 +59,26 @@ namespace TechLingo.Core.Data
 
                 await categories.InsertOneAsync(itAbbreviations);
             }
+
+            // Seeda Admin-användare
+            var adminUser = await users
+                .Find(u => u.Username == "admin")
+                .FirstOrDefaultAsync();
+
+            if (adminUser is null)
+            {
+                adminUser = new User
+                {
+                    Username = "admin",
+
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
+
+                    Role = UserRole.Admin
+                };
+
+                await users.InsertOneAsync(adminUser);
+            }
+
             //Frågor
             var questionsToSeed = new List<Question>
             {
@@ -64,13 +88,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "BRB, need coffee.",
                     "What does BRB mean?",
-                    [
-                        "Be right back",
-                        "Bring right back",
-                        "Be really busy",
-                        "Back right before"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Be right back", IsCorrect = true },
+                        new AnswerOption { Text = "Bring right back", IsCorrect = false },
+                        new AnswerOption { Text = "Be really busy", IsCorrect = false },
+                        new AnswerOption { Text = "Back right before", IsCorrect = false }
+                    },
                     "BRB means 'Be right back'."
                 ),
 
@@ -78,13 +102,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "I'm AFK for a few minutes.",
                     "What does AFK mean?",
-                    [
-                        "Away from keyboard",
-                        "Available for knowledge",
-                        "Always feeling kind",
-                        "Away for keeps"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Away from keyboard", IsCorrect = true },
+                        new AnswerOption { Text = "Available for knowledge", IsCorrect = false },
+                        new AnswerOption { Text = "Always feeling kind", IsCorrect = false },
+                        new AnswerOption { Text = "Away for keeps", IsCorrect = false }
+                    },
                     "AFK means 'Away from keyboard'."
                 ),
 
@@ -92,13 +116,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "IDK what movie we should watch.",
                     "What does IDK mean?",
-                    [
-                        "I don't know",
-                        "I do know",
-                        "Internet data key",
-                        "I didn't know"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "I don't know", IsCorrect = true },
+                        new AnswerOption { Text = "I do know", IsCorrect = false },
+                        new AnswerOption { Text = "Internet data key", IsCorrect = false },
+                        new AnswerOption { Text = "I didn't know", IsCorrect = false }
+                    },
                     "IDK means 'I don't know'."
                 ),
 
@@ -106,13 +130,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "IMO, that game is really good.",
                     "What does IMO mean?",
-                    [
-                        "In my opinion",
-                        "Internet message online",
-                        "I might order",
-                        "In most occasions"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "In my opinion", IsCorrect = true },
+                        new AnswerOption { Text = "Internet message online", IsCorrect = false },
+                        new AnswerOption { Text = "I might order", IsCorrect = false },
+                        new AnswerOption { Text = "In most occasions", IsCorrect = false }
+                    },
                     "IMO means 'In my opinion'."
                 ),
 
@@ -120,13 +144,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "LOL, that was hilarious!",
                     "What does LOL mean?",
-                    [
-                        "Laughing out loud",
-                        "Lots of luck",
-                        "Leave online later",
-                        "Look over there"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Laughing out loud", IsCorrect = true },
+                        new AnswerOption { Text = "Lots of luck", IsCorrect = false },
+                        new AnswerOption { Text = "Leave online later", IsCorrect = false },
+                        new AnswerOption { Text = "Look over there", IsCorrect = false }
+                    },
                     "LOL means 'Laughing out loud'."
                 ),
 
@@ -134,13 +158,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "TBH, I didn't really like it.",
                     "What does TBH mean?",
-                    [
-                        "To be honest",
-                        "To be helpful",
-                        "Text back here",
-                        "Try being happy"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "To be honest", IsCorrect = true },
+                        new AnswerOption { Text = "To be helpful", IsCorrect = false },
+                        new AnswerOption { Text = "Text back here", IsCorrect = false },
+                        new AnswerOption { Text = "Try being happy", IsCorrect = false }
+                    },
                     "TBH means 'To be honest'."
                 ),
 
@@ -148,13 +172,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "GG everyone, that was close!",
                     "What does GG usually mean in gaming?",
-                    [
-                        "Good game",
-                        "Great group",
-                        "Go again",
-                        "Game glitch"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Good game", IsCorrect = true },
+                        new AnswerOption { Text = "Great group", IsCorrect = false },
+                        new AnswerOption { Text = "Go again", IsCorrect = false },
+                        new AnswerOption { Text = "Game glitch", IsCorrect = false }
+                    },
                     "GG means 'Good game' and is commonly used after an online match."
                 ),
 
@@ -162,13 +186,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "I'll send you the details in a DM.",
                     "What does DM mean?",
-                    [
-                        "Direct message",
-                        "Data message",
-                        "Desktop mode",
-                        "Digital mail"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Direct message", IsCorrect = true },
+                        new AnswerOption { Text = "Data message", IsCorrect = false },
+                        new AnswerOption { Text = "Desktop mode", IsCorrect = false },
+                        new AnswerOption { Text = "Digital mail", IsCorrect = false }
+                    },
                     "DM means 'Direct message', a private message sent to another user."
                 ),
 
@@ -176,13 +200,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "BTW, are you coming tonight?",
                     "What does BTW mean?",
-                    [
-                        "By the way",
-                        "Back to work",
-                        "Before the weekend",
-                        "Bring the water"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "By the way", IsCorrect = true },
+                        new AnswerOption { Text = "Back to work", IsCorrect = false },
+                        new AnswerOption { Text = "Before the weekend", IsCorrect = false },
+                        new AnswerOption { Text = "Bring the water", IsCorrect = false }
+                    },
                     "BTW means 'By the way'."
                 ),
 
@@ -190,13 +214,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "FYI, the meeting starts at 10.",
                     "What does FYI mean?",
-                    [
-                        "For your information",
-                        "Find your inbox",
-                        "For your internet",
-                        "Follow your instructions"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "For your information", IsCorrect = true },
+                        new AnswerOption { Text = "Find your inbox", IsCorrect = false },
+                        new AnswerOption { Text = "For your internet", IsCorrect = false },
+                        new AnswerOption { Text = "Follow your instructions", IsCorrect = false }
+                    },
                     "FYI means 'For your information'."
                 ),
 
@@ -204,13 +228,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "OMG, I can't believe that happened!",
                     "What does OMG mean?",
-                    [
-                        "Oh my God",
-                        "Online message group",
-                        "Open my game",
-                        "Only my guess"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Oh my God", IsCorrect = true },
+                        new AnswerOption { Text = "Online message group", IsCorrect = false },
+                        new AnswerOption { Text = "Open my game", IsCorrect = false },
+                        new AnswerOption { Text = "Only my guess", IsCorrect = false }
+                    },
                     "OMG means 'Oh my God' and is commonly used to express surprise."
                 ),
 
@@ -218,13 +242,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "We've talked online for years but never met IRL.",
                     "What does IRL mean?",
-                    [
-                        "In real life",
-                        "Internet response link",
-                        "Instant reply list",
-                        "In recent login"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "In real life", IsCorrect = true },
+                        new AnswerOption { Text = "Internet response link", IsCorrect = false },
+                        new AnswerOption { Text = "Instant reply list", IsCorrect = false },
+                        new AnswerOption { Text = "In recent login", IsCorrect = false }
+                    },
                     "IRL means 'In real life'."
                 ),
 
@@ -232,13 +256,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "NVM, I figured it out.",
                     "What does NVM mean?",
-                    [
-                        "Never mind",
-                        "New voice message",
-                        "Not very much",
-                        "Next video mode"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Never mind", IsCorrect = true },
+                        new AnswerOption { Text = "New voice message", IsCorrect = false },
+                        new AnswerOption { Text = "Not very much", IsCorrect = false },
+                        new AnswerOption { Text = "Next video mode", IsCorrect = false }
+                    },
                     "NVM means 'Never mind'."
                 ),
 
@@ -246,13 +270,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "I have to go now. TTYL!",
                     "What does TTYL mean?",
-                    [
-                        "Talk to you later",
-                        "Text to your location",
-                        "Try to yell louder",
-                        "Time to you later"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Talk to you later", IsCorrect = true },
+                        new AnswerOption { Text = "Text to your location", IsCorrect = false },
+                        new AnswerOption { Text = "Try to yell louder", IsCorrect = false },
+                        new AnswerOption { Text = "Time to you later", IsCorrect = false }
+                    },
                     "TTYL means 'Talk to you later'."
                 ),
 
@@ -260,13 +284,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "LMK if you want to join us.",
                     "What does LMK mean?",
-                    [
-                        "Let me know",
-                        "Leave my keyboard",
-                        "Look more kindly",
-                        "Last message known"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Let me know", IsCorrect = true },
+                        new AnswerOption { Text = "Leave my keyboard", IsCorrect = false },
+                        new AnswerOption { Text = "Look more kindly", IsCorrect = false },
+                        new AnswerOption { Text = "Last message known", IsCorrect = false }
+                    },
                     "LMK means 'Let me know'."
                 ),
 
@@ -274,13 +298,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "ROFL, that video was so funny!",
                     "What does ROFL mean?",
-                    [
-                        "Rolling on the floor laughing",
-                        "Running online for lunch",
-                        "Reply only for laughs",
-                        "Read our funny link"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Rolling on the floor laughing", IsCorrect = true },
+                        new AnswerOption { Text = "Running online for lunch", IsCorrect = false },
+                        new AnswerOption { Text = "Reply only for laughs", IsCorrect = false },
+                        new AnswerOption { Text = "Read our funny link", IsCorrect = false }
+                    },
                     "ROFL means 'Rolling on the floor laughing'."
                 ),
 
@@ -288,13 +312,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "The article is really long. Here's the TL;DR.",
                     "What does TL;DR mean?",
-                    [
-                        "Too long; didn't read",
-                        "Text link; direct reply",
-                        "Too late; don't respond",
-                        "Try later; download required"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Too long; didn't read", IsCorrect = true },
+                        new AnswerOption { Text = "Text link; direct reply", IsCorrect = false },
+                        new AnswerOption { Text = "Too late; don't respond", IsCorrect = false },
+                        new AnswerOption { Text = "Try later; download required", IsCorrect = false }
+                    },
                     "TL;DR means 'Too long; didn't read' and is often used before a short summary."
                 ),
 
@@ -302,13 +326,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "POV: You forgot your password again.",
                     "What does POV mean?",
-                    [
-                        "Point of view",
-                        "Part of video",
-                        "Post on view",
-                        "Page of visitors"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Point of view", IsCorrect = true },
+                        new AnswerOption { Text = "Part of video", IsCorrect = false },
+                        new AnswerOption { Text = "Post on view", IsCorrect = false },
+                        new AnswerOption { Text = "Page of visitors", IsCorrect = false }
+                    },
                     "POV means 'Point of view'."
                 ),
 
@@ -316,13 +340,13 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "That post is NSFW, so don't open it at work.",
                     "What does NSFW mean?",
-                    [
-                        "Not safe for work",
-                        "No signal from website",
-                        "New software for Windows",
-                        "Network security firewall warning"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Not safe for work", IsCorrect = true },
+                        new AnswerOption { Text = "No signal from website", IsCorrect = false },
+                        new AnswerOption { Text = "New software for Windows", IsCorrect = false },
+                        new AnswerOption { Text = "Network security firewall warning", IsCorrect = false }
+                    },
                     "NSFW means 'Not safe for work' and warns that content may be inappropriate to view in a workplace."
                 ),
 
@@ -330,28 +354,29 @@ namespace TechLingo.Core.Data
                     internetSlang.Id,
                     "IIRC, we already talked about this yesterday.",
                     "What does IIRC mean?",
-                    [
-                        "If I remember correctly",
-                        "If internet responds correctly",
-                        "I instantly replied correctly",
-                        "Internet information request code"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "If I remember correctly", IsCorrect = true },
+                        new AnswerOption { Text = "If internet responds correctly", IsCorrect = false },
+                        new AnswerOption { Text = "I instantly replied correctly", IsCorrect = false },
+                        new AnswerOption { Text = "Internet information request code", IsCorrect = false }
+                    },
                     "IIRC means 'If I remember correctly'."
                 ),
+
                 //IT-slang
 
                 CreateQuestion(
                     itAbbreviations.Id,
                     "The frontend gets data from our API.",
                     "What does API stand for?",
-                    [
-                        "Application Programming Interface",
-                        "Application Program Internet",
-                        "Advanced Programming Integration",
-                        "Automated Program Interface"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Application Programming Interface", IsCorrect = true },
+                        new AnswerOption { Text = "Application Program Internet", IsCorrect = false },
+                        new AnswerOption { Text = "Advanced Programming Integration", IsCorrect = false },
+                        new AnswerOption { Text = "Automated Program Interface", IsCorrect = false }
+                    },
                     "API stands for 'Application Programming Interface'."
                 ),
 
@@ -359,13 +384,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "The computer's CPU is under heavy load.",
                     "What does CPU stand for?",
-                    [
-                        "Central Processing Unit",
-                        "Computer Processing Utility",
-                        "Central Program User",
-                        "Core Processing Utility"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Central Processing Unit", IsCorrect = true },
+                        new AnswerOption { Text = "Computer Processing Utility", IsCorrect = false },
+                        new AnswerOption { Text = "Central Program User", IsCorrect = false },
+                        new AnswerOption { Text = "Core Processing Utility", IsCorrect = false }
+                    },
                     "CPU stands for 'Central Processing Unit'."
                 ),
 
@@ -373,13 +398,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "This computer has 16 GB of RAM.",
                     "What does RAM stand for?",
-                    [
-                        "Random Access Memory",
-                        "Rapid Application Memory",
-                        "Read Access Module",
-                        "Remote Active Memory"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Random Access Memory", IsCorrect = true },
+                        new AnswerOption { Text = "Rapid Application Memory", IsCorrect = false },
+                        new AnswerOption { Text = "Read Access Module", IsCorrect = false },
+                        new AnswerOption { Text = "Remote Active Memory", IsCorrect = false }
+                    },
                     "RAM stands for 'Random Access Memory'."
                 ),
 
@@ -387,13 +412,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "Open the website using HTTPS.",
                     "What does HTTP stand for?",
-                    [
-                        "Hypertext Transfer Protocol",
-                        "High Transfer Text Process",
-                        "Hyperlink Text Transfer Program",
-                        "Host Transfer Technology Protocol"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Hypertext Transfer Protocol", IsCorrect = true },
+                        new AnswerOption { Text = "High Transfer Text Process", IsCorrect = false },
+                        new AnswerOption { Text = "Hyperlink Text Transfer Program", IsCorrect = false },
+                        new AnswerOption { Text = "Host Transfer Technology Protocol", IsCorrect = false }
+                    },
                     "HTTP stands for 'Hypertext Transfer Protocol'."
                 ),
 
@@ -401,13 +426,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "Copy the URL and send it to me.",
                     "What does URL stand for?",
-                    [
-                        "Uniform Resource Locator",
-                        "Universal Routing Link",
-                        "User Resource Location",
-                        "Uniform Reference Link"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Uniform Resource Locator", IsCorrect = true },
+                        new AnswerOption { Text = "Universal Routing Link", IsCorrect = false },
+                        new AnswerOption { Text = "User Resource Location", IsCorrect = false },
+                        new AnswerOption { Text = "Uniform Reference Link", IsCorrect = false }
+                    },
                     "URL stands for 'Uniform Resource Locator'."
                 ),
 
@@ -415,13 +440,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "The DNS server translates the domain name.",
                     "What does DNS stand for?",
-                    [
-                        "Domain Name System",
-                        "Data Network Service",
-                        "Domain Network Storage",
-                        "Digital Naming Service"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Domain Name System", IsCorrect = true },
+                        new AnswerOption { Text = "Data Network Service", IsCorrect = false },
+                        new AnswerOption { Text = "Domain Network Storage", IsCorrect = false },
+                        new AnswerOption { Text = "Digital Naming Service", IsCorrect = false }
+                    },
                     "DNS stands for 'Domain Name System'."
                 ),
 
@@ -429,13 +454,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "We use SQL to query the database.",
                     "What does SQL stand for?",
-                    [
-                        "Structured Query Language",
-                        "System Query Logic",
-                        "Standard Question Language",
-                        "Structured Queue Logic"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Structured Query Language", IsCorrect = true },
+                        new AnswerOption { Text = "System Query Logic", IsCorrect = false },
+                        new AnswerOption { Text = "Standard Question Language", IsCorrect = false },
+                        new AnswerOption { Text = "Structured Queue Logic", IsCorrect = false }
+                    },
                     "SQL stands for 'Structured Query Language'."
                 ),
 
@@ -443,13 +468,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "Visual Studio is the IDE we use for the backend.",
                     "What does IDE stand for?",
-                    [
-                        "Integrated Development Environment",
-                        "Internet Development Engine",
-                        "Integrated Data Editor",
-                        "Internal Development Environment"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Integrated Development Environment", IsCorrect = true },
+                        new AnswerOption { Text = "Internet Development Engine", IsCorrect = false },
+                        new AnswerOption { Text = "Integrated Data Editor", IsCorrect = false },
+                        new AnswerOption { Text = "Internal Development Environment", IsCorrect = false }
+                    },
                     "IDE stands for 'Integrated Development Environment'."
                 ),
 
@@ -457,13 +482,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "HTML is used to structure content on a web page.",
                     "What does HTML stand for?",
-                    [
-                        "HyperText Markup Language",
-                        "High Transfer Machine Language",
-                        "Hyperlink Text Management Logic",
-                        "Home Tool Markup Language"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "HyperText Markup Language", IsCorrect = true },
+                        new AnswerOption { Text = "High Transfer Machine Language", IsCorrect = false },
+                        new AnswerOption { Text = "Hyperlink Text Management Logic", IsCorrect = false },
+                        new AnswerOption { Text = "Home Tool Markup Language", IsCorrect = false }
+                    },
                     "HTML stands for 'HyperText Markup Language'."
                 ),
 
@@ -471,13 +496,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "CSS controls how the website looks.",
                     "What does CSS stand for?",
-                    [
-                        "Cascading Style Sheets",
-                        "Computer Style System",
-                        "Creative Software Syntax",
-                        "Central Styling Service"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Cascading Style Sheets", IsCorrect = true },
+                        new AnswerOption { Text = "Computer Style System", IsCorrect = false },
+                        new AnswerOption { Text = "Creative Software Syntax", IsCorrect = false },
+                        new AnswerOption { Text = "Central Styling Service", IsCorrect = false }
+                    },
                     "CSS stands for 'Cascading Style Sheets'."
                 ),
 
@@ -485,13 +510,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "The API returned the data as JSON.",
                     "What does JSON stand for?",
-                    [
-                        "JavaScript Object Notation",
-                        "Java Source Object Network",
-                        "Joined System Object Name",
-                        "JavaScript Online Network"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "JavaScript Object Notation", IsCorrect = true },
+                        new AnswerOption { Text = "Java Source Object Network", IsCorrect = false },
+                        new AnswerOption { Text = "Joined System Object Name", IsCorrect = false },
+                        new AnswerOption { Text = "JavaScript Online Network", IsCorrect = false }
+                    },
                     "JSON stands for 'JavaScript Object Notation'."
                 ),
 
@@ -499,13 +524,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "Every device on the network has an IP address.",
                     "What does IP stand for?",
-                    [
-                        "Internet Protocol",
-                        "Internal Program",
-                        "Internet Process",
-                        "Integrated Protocol"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Internet Protocol", IsCorrect = true },
+                        new AnswerOption { Text = "Internal Program", IsCorrect = false },
+                        new AnswerOption { Text = "Internet Process", IsCorrect = false },
+                        new AnswerOption { Text = "Integrated Protocol", IsCorrect = false }
+                    },
                     "IP stands for 'Internet Protocol'."
                 ),
 
@@ -513,13 +538,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "TCP helps devices reliably send data across networks.",
                     "What does TCP stand for?",
-                    [
-                        "Transmission Control Protocol",
-                        "Transfer Communication Process",
-                        "Technical Connection Protocol",
-                        "Transmission Computer Program"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Transmission Control Protocol", IsCorrect = true },
+                        new AnswerOption { Text = "Transfer Communication Process", IsCorrect = false },
+                        new AnswerOption { Text = "Technical Connection Protocol", IsCorrect = false },
+                        new AnswerOption { Text = "Transmission Computer Program", IsCorrect = false }
+                    },
                     "TCP stands for 'Transmission Control Protocol'."
                 ),
 
@@ -527,13 +552,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "Plug the keyboard into a USB port.",
                     "What does USB stand for?",
-                    [
-                        "Universal Serial Bus",
-                        "Unified System Base",
-                        "Universal Storage Block",
-                        "User System Bus"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Universal Serial Bus", IsCorrect = true },
+                        new AnswerOption { Text = "Unified System Base", IsCorrect = false },
+                        new AnswerOption { Text = "Universal Storage Block", IsCorrect = false },
+                        new AnswerOption { Text = "User System Bus", IsCorrect = false }
+                    },
                     "USB stands for 'Universal Serial Bus'."
                 ),
 
@@ -541,13 +566,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "This laptop uses an SSD instead of a traditional hard drive.",
                     "What does SSD stand for?",
-                    [
-                        "Solid State Drive",
-                        "System Storage Device",
-                        "Secure System Disk",
-                        "Serial Storage Drive"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Solid State Drive", IsCorrect = true },
+                        new AnswerOption { Text = "System Storage Device", IsCorrect = false },
+                        new AnswerOption { Text = "Secure System Disk", IsCorrect = false },
+                        new AnswerOption { Text = "Serial Storage Drive", IsCorrect = false }
+                    },
                     "SSD stands for 'Solid State Drive'."
                 ),
 
@@ -555,13 +580,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "The application has a simple GUI with buttons and menus.",
                     "What does GUI stand for?",
-                    [
-                        "Graphical User Interface",
-                        "General User Internet",
-                        "Graphic Utility Integration",
-                        "Global User Interface"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Graphical User Interface", IsCorrect = true },
+                        new AnswerOption { Text = "General User Internet", IsCorrect = false },
+                        new AnswerOption { Text = "Graphic Utility Integration", IsCorrect = false },
+                        new AnswerOption { Text = "Global User Interface", IsCorrect = false }
+                    },
                     "GUI stands for 'Graphical User Interface'."
                 ),
 
@@ -569,13 +594,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "Windows, macOS and Linux are examples of an OS.",
                     "What does OS stand for?",
-                    [
-                        "Operating System",
-                        "Online Software",
-                        "Open Service",
-                        "Operating Server"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Operating System", IsCorrect = true },
+                        new AnswerOption { Text = "Online Software", IsCorrect = false },
+                        new AnswerOption { Text = "Open Service", IsCorrect = false },
+                        new AnswerOption { Text = "Operating Server", IsCorrect = false }
+                    },
                     "OS stands for 'Operating System'."
                 ),
 
@@ -583,13 +608,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "I use a VPN when connecting to the company network remotely.",
                     "What does VPN stand for?",
-                    [
-                        "Virtual Private Network",
-                        "Verified Public Network",
-                        "Virtual Program Node",
-                        "Visual Private Node"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Virtual Private Network", IsCorrect = true },
+                        new AnswerOption { Text = "Verified Public Network", IsCorrect = false },
+                        new AnswerOption { Text = "Virtual Program Node", IsCorrect = false },
+                        new AnswerOption { Text = "Visual Private Node", IsCorrect = false }
+                    },
                     "VPN stands for 'Virtual Private Network'."
                 ),
 
@@ -597,13 +622,13 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "All computers in the office are connected to the same LAN.",
                     "What does LAN stand for?",
-                    [
-                        "Local Area Network",
-                        "Large Access Network",
-                        "Linked Application Node",
-                        "Local Access Number"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Local Area Network", IsCorrect = true },
+                        new AnswerOption { Text = "Large Access Network", IsCorrect = false },
+                        new AnswerOption { Text = "Linked Application Node", IsCorrect = false },
+                        new AnswerOption { Text = "Local Access Number", IsCorrect = false }
+                    },
                     "LAN stands for 'Local Area Network'."
                 ),
 
@@ -611,17 +636,16 @@ namespace TechLingo.Core.Data
                     itAbbreviations.Id,
                     "A WAN can connect networks across cities or countries.",
                     "What does WAN stand for?",
-                    [
-                        "Wide Area Network",
-                        "Wireless Access Node",
-                        "Web Area Network",
-                        "Wide Application Network"
-                    ],
-                    0,
+                    new List<AnswerOption>
+                    {
+                        new AnswerOption { Text = "Wide Area Network", IsCorrect = true },
+                        new AnswerOption { Text = "Wireless Access Node", IsCorrect = false },
+                        new AnswerOption { Text = "Web Area Network", IsCorrect = false },
+                        new AnswerOption { Text = "Wide Application Network", IsCorrect = false }
+                    },
                     "WAN stands for 'Wide Area Network'."
                 )
             };
-
 
 
             var existingQuestions = await questions
@@ -643,29 +667,19 @@ namespace TechLingo.Core.Data
         }
 
 
-
         private static Question CreateQuestion(
             string categoryId,
             string message,
             string prompt,
-            string[] optionTexts,
-            int correctAnswerIndex,
+            List<AnswerOption> options,
             string explanation)
         {
-            var options = optionTexts
-                .Select(text => new AnswerOption
-                {
-                    Text = text
-                })
-                .ToList();
-
             return new Question
             {
                 CategoryId = categoryId,
                 Message = message,
                 Prompt = prompt,
                 Options = options,
-                CorrectAnswerId = options[correctAnswerIndex].Id,
                 Explanation = explanation
             };
         }

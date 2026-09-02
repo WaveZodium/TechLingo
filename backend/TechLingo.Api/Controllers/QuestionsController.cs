@@ -40,13 +40,14 @@ public class QuestionsController : ControllerBase
     public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string id, [FromBody] string answer)
     {
         // TODO: Implementera ValidateAnswerAsync i service.
-        var result = await _questionService.ValidateAnswerAsync(id, answer);
+        //var result = await _questionService.ValidateAnswerAsync(id, answer);
 
-        if (!result.IsSuccess)
-            return BadRequest(result.ErrorMessage);
+        //if (!result.IsSuccess)
+        //    return BadRequest(result.ErrorMessage);
 
         // TODO: Lägg till mer felhantering här.
 
-        return Ok(result);
+        //return Ok(result);
+        return Ok();
     }
 }
