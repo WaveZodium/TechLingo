@@ -13,7 +13,7 @@ namespace TechLingo.Core.Repositories
 
         public UserRepository(IMongoDatabase database)
         {
-            _users = database.GetCollection<User>("Users");
+            _users = database.GetCollection<User>("users");
         }
 
         public async Task<User?> GetByUsernameAsync(string username)

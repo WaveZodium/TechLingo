@@ -1,5 +1,6 @@
 ﻿using TechLingo.Core.DTOs;
 using TechLingo.Core.Entities;
+using TechLingo.Core.Enums;
 using TechLingo.Core.Interfaces;
 
 namespace TechLingo.Core.Services
@@ -25,7 +26,7 @@ namespace TechLingo.Core.Services
             {
                 Username = request.Username,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Role = "User"
+                Role = UserRole.User
             };
 
             await _userRepository.CreateAsync(newUser);

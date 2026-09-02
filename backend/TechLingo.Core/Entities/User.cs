@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TechLingo.Core.Enums;
 
 namespace TechLingo.Core.Entities
 {
@@ -13,6 +14,7 @@ namespace TechLingo.Core.Entities
         public string Id { get; set; } = null!;
         public string Username { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
-        public string Role { get; set; } = "User"; // "Admin" sätts manuellt för administratörer
+        [BsonRepresentation(BsonType.String)]
+        public UserRole Role { get; set; } = UserRole.User; // "Admin" sätts manuellt för administratörer
     }
 }

@@ -1,5 +1,6 @@
 using MongoDB.Driver;
 using TechLingo.Core.Entities;
+using TechLingo.Core.Enums;
 
 namespace TechLingo.Core.Data
 {
@@ -19,6 +20,9 @@ namespace TechLingo.Core.Data
 
             var questions =
                 _database.GetCollection<Question>("questions");
+
+            var users =
+                _database.GetCollection<User>("users");
 
 
             //Kategorier
@@ -54,6 +58,25 @@ namespace TechLingo.Core.Data
                 };
 
                 await categories.InsertOneAsync(itAbbreviations);
+            }
+
+            // Seeda Admin-användare
+            var adminUser = await users
+                .Find(u => u.Username == "admin")
+                .FirstOrDefaultAsync();
+
+            if (adminUser is null)
+            {
+                adminUser = new User
+                {
+                    Username = "admin",
+
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
+
+                    Role = UserRole.Admin
+                };
+
+                await users.InsertOneAsync(adminUser);
             }
 
             //Frågor
