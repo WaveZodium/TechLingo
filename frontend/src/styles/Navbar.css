@@ -1,11 +1,12 @@
 .navbar {
-  height: 88px;
+  height: 72px;
+
   background-color: var(--color-navbar);
   border-bottom: 1px solid var(--color-secondary-lightblue);
 }
 
 .navbar__content {
-  width: min(100% - 64px, 1200px);
+  width: min(100% - 64px, 1100px);
   height: 100%;
   margin: 0 auto;
 
@@ -20,18 +21,18 @@
 }
 
 .navbar__logo {
-  width: 135px;
+  width: 120px;
   height: auto;
 }
 
 .navbar__login {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 
   color: var(--color-warm-ivory);
   font-family: var(--font-roboto-mono);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 500;
 
   transition:
@@ -45,8 +46,8 @@
 }
 
 .navbar__login-icon {
-  width: 23px;
-  height: 23px;
+  width: 21px;
+  height: 21px;
 
   fill: none;
   stroke: currentColor;
@@ -57,11 +58,11 @@
 
 @media (max-width: 700px) {
   .navbar__content {
-    width: min(100% - 32px, 1200px);
+    width: min(100% - 32px, 1100px);
   }
 
   .navbar__logo {
-    width: 115px;
+    width: 105px;
   }
 
   .navbar__login {
