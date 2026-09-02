@@ -26,7 +26,7 @@ namespace TechLingo.Core.Services
         {
             new(JwtRegisteredClaimNames.Sub, user.Id),
             new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.Role, user.Role)
+            new(ClaimTypes.Role, user.Role.ToString())
         };
 
             var key = new SymmetricSecurityKey(
