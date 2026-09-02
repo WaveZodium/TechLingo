@@ -36,7 +36,7 @@ public class QuestionsController : ControllerBase
         return Ok(question);
     }
 
-    [HttpGet("category/{categoryId}")]
+    [HttpGet("{categoryId}")]
     public async Task<ActionResult<List<QuestionDto>>> GetByCategory(
         string categoryId)
     {
