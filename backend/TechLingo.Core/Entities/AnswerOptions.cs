@@ -10,5 +10,6 @@ namespace TechLingo.Core.Entities
         public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
         public string Text { get; set; } = string.Empty;
+        public bool IsCorrect { get; set; } = false;
     }
 }

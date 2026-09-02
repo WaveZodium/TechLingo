@@ -19,9 +19,7 @@ namespace TechLingo.Core.Entities
 
         public string Prompt { get; set; } = string.Empty;
 
-        public List<AnswerOption> Options { get; set; } = [];
-
-        public string CorrectAnswerId { get; set; } = string.Empty;
+        public List<AnswerOption> Options { get; set; } = new List<AnswerOption>();
 
         public string? Explanation { get; set; }
 
