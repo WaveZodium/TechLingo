@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/TechlingoALTlogo.png";
 import "../../styles/Navbar.css";
 
@@ -9,6 +9,27 @@ function Navbar() {
         <Link to="/" className="navbar__logo-link" aria-label="TechLingo home">
           <img src={logo} alt="TechLingo" className="navbar__logo" />
         </Link>
+
+        <nav className="navbar__links">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `navbar__link ${isActive ? "navbar__link--active" : ""}`
+            }
+          >
+            Home
+          </NavLink>
+
+          <NavLink
+            to="/overview"
+            className={({ isActive }) =>
+              `navbar__link ${isActive ? "navbar__link--active" : ""}`
+            }
+          >
+            Overview
+          </NavLink>
+        </nav>
 
         <Link to="/loginregister" className="navbar__login">
           <svg
