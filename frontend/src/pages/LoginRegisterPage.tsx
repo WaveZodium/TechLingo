@@ -1,6 +1,8 @@
+import Login from "../components/auth/Login";
+
 function LoginRegisterPage() {
   return (
-    <div>
+    <div className="login-register-page">
       <h1>Login/Register</h1>
     </div>
   );

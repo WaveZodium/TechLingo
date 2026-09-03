@@ -3,8 +3,12 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import "../../styles/Layout.css";
 import Iridescence from "../iridescence/Iridescence";
+import { useState } from "react";
+import AuthPanel from "../auth/AuthPanel";
 
 function Layout() {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+
   return (
     <div className="layout">
       <div className="layout-background">
@@ -17,13 +21,14 @@ function Layout() {
       </div>
 
       <div className="layout-content">
-        <Navbar />
+        <Navbar onLoginClick={() => setIsAuthOpen(true)} />
 
         <main>
           <Outlet />
         </main>
 
         <Footer />
+        <AuthPanel isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       </div>
     </div>
   );
