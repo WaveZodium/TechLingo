@@ -2,7 +2,11 @@ import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/TechlingoALTlogo.png";
 import "../../styles/Navbar.css";
 
-function Navbar() {
+interface NavbarProps {
+  onLoginClick: () => void;
+}
+
+function Navbar({ onLoginClick }: NavbarProps) {
   return (
     <header className="navbar">
       <div className="navbar__content">
@@ -40,7 +44,7 @@ function Navbar() {
           </NavLink>
         </nav>
 
-        <Link to="/loginregister" className="navbar__login">
+        <button onClick={onLoginClick} className="navbar__login" type="button">
           <svg
             className="navbar__login-icon"
             viewBox="0 0 24 24"
@@ -51,7 +55,7 @@ function Navbar() {
           </svg>
 
           <span>Login</span>
-        </Link>
+        </button>
       </div>
     </header>
   );

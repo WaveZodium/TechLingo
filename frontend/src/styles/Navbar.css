@@ -226,6 +226,12 @@
     background 0.2s ease;
 }
 
+.navbar__login {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
 .navbar__login:hover {
   transform: translateY(-2px);
 
