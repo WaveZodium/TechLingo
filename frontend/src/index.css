@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap");
 
 :root {
+  --content-max-width: 1440px;
+  --page-gutter: 32px;
   --color-background: #011637;
   --color-navbar: #0a2252;
   /* Navbar färg med opacity 0.5 */

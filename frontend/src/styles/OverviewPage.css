@@ -15,7 +15,7 @@
   width: min(100% - 64px, 1100px);
   margin: 0 auto;
 
-  padding-top: 55px;
+  padding-top: 75px;
   padding-bottom: 80px;
 }
 
@@ -64,7 +64,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 
-  gap: 52px;
+  gap: 64px;
 }
 
 /* Category card */
@@ -72,7 +72,7 @@
 .overview__card {
   position: relative;
 
-  min-height: 270px;
+  min-height: 310px;
 
   padding: 1px;
 
@@ -172,9 +172,9 @@
   position: relative;
   z-index: 1;
 
-  min-height: 268px;
+  min-height: 310px;
 
-  padding: 34px 36px;
+  padding: 42px 48px;
 
   display: flex;
   flex-direction: column;
@@ -221,7 +221,7 @@
   min-width: 170px;
   height: 48px;
 
-  margin-top: auto;
+  margin-top: 32px;
 
   padding: 0 22px;
 
