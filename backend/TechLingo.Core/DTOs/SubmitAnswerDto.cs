@@ -6,6 +6,7 @@ namespace TechLingo.Core.DTOs
 {
     public class SubmitAnswerDto
     {
-        public string SelectedAnswerId { get; set; } = string.Empty;
+        public string questionId { get; set; } = string.Empty;
+        public string answerId { get; set; } = string.Empty;
     }
 }
