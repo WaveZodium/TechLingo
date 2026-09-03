@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SubmitEvent } from "react";
 import axios from "axios";
-import { login } from "../../api/authApi";
+import { login as loginApi } from "../../api/authApi";
+import { useAuth } from "../../context/AuthContext";
 
 interface LoginProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ export default function Login({ isOpen, onLoginSuccess }: LoginProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,11 +34,12 @@ export default function Login({ isOpen, onLoginSuccess }: LoginProps) {
     setIsLoading(true);
 
     try {
-      await login({
+      await loginApi({
         username,
         password,
       });
 
+      login(); // Update the authentication state in the context
       onLoginSuccess();
 
       navigate("/overview");
