@@ -12,7 +12,7 @@
 }
 
 .home__content {
-  width: min(100% - 64px, 1100px);
+  width: min(calc(100% - 64px), var(--content-max-width));
   margin: 0 auto;
 
   display: grid;
@@ -198,7 +198,7 @@
   z-index: 1;
 
   width: 100%;
-  max-width: 400px;
+  max-width: 560px;
   height: auto;
 
   display: block;
@@ -249,12 +249,13 @@
   }
 
   .home__title {
-    font-size: clamp(2.1rem, 10vw, 3rem);
-    line-height: 1.05;
+    max-width: 760px;
+    font-size: 3.6rem;
   }
 
   .home__description {
-    font-size: 0.85rem;
+    max-width: 500px;
+    font-size: 1rem;
   }
 
   .home__cta {
