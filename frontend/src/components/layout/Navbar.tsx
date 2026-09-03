@@ -29,6 +29,15 @@ function Navbar() {
           >
             Overview
           </NavLink>
+
+          <NavLink
+            to="/quiz"
+            className={({ isActive }) =>
+              `navbar__link ${isActive ? "navbar__link--active" : ""}`
+            }
+          >
+            Quiz
+          </NavLink>
         </nav>
 
         <Link to="/loginregister" className="navbar__login">
