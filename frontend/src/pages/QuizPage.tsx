@@ -4,8 +4,8 @@ import "../styles/QuizPage.css";
 const answers = [
   { letter: "A", text: "Be right back" },
   { letter: "B", text: "Be right back" },
-  { letter: "C", text: "Be right back" },
-  { letter: "D", text: "Be right back" },
+  { letter: "C", text: "Be back right" },
+  { letter: "D", text: "Right be back" },
 ];
 
 function RobotAvatar() {
@@ -49,10 +49,12 @@ function QuizPage() {
             <RobotAvatar />
             <div className="bubble robot">Vad betyder BRB?</div>
           </div>
-          <div className="message-row user">
-            <div className="bubble user">{selectedAnswer ? selectedAnswer : "Be right back"}</div>
-            <UserAvatar />
-          </div>
+          {selectedAnswer && (
+            <div className="message-row user">
+              <div className="bubble user">{selectedAnswer}</div>
+              <UserAvatar />
+            </div>
+          )}
         </div>
 
         <div className="divider" />
