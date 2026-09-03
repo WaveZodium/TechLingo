@@ -1,8 +1,8 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 import "../../styles/Layout.css";
 import Iridescence from "../iridescence/Iridescence";
-
 
 function Layout() {
   return (
@@ -22,6 +22,8 @@ function Layout() {
         <main>
           <Outlet />
         </main>
+
+        <Footer />
       </div>
     </div>
   );
