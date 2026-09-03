@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import heroImage from "../assets/techLingoTransparentBox.png";
+import heroImage from "../assets/productutanBox.png";
 import "../styles/HomePage.css";
 
 function HomePage() {
