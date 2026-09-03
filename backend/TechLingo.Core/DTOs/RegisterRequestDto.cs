@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TechLingo.Core.DTOs
 {
-    public class RegisterDto
+    public class RegisterRequestDto
     {
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
