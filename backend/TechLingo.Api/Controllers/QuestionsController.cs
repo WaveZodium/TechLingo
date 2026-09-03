@@ -37,7 +37,7 @@ public class QuestionsController : ControllerBase
         return Ok(question);
     }
 
-    [HttpPost("{id}/answer")]
+    [HttpPost("{questionId}/answer")]
     public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string questionId, [FromBody] string answerId)
     {
         var result = await _questionService.ValidateAnswerAsync(questionId, answerId);
