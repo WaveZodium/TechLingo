@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechLingo.Core.DTOs;
+using TechLingo.Core.Enums;
 using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
 
-[Authorize]
+[Authorize(Roles = nameof(UserRole.Admin))]
 [ApiController]
 [Route("api/[controller]")]
 public class QuestionsController : ControllerBase
@@ -37,9 +38,9 @@ public class QuestionsController : ControllerBase
     }
 
     [HttpPost("{id}/answer")]
-    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string id, [FromBody] string answer)
+    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string questionId, [FromBody] string answerId)
     {
-        var result = await _questionService.ValidateAnswerAsync(id, answer);
+        var result = await _questionService.ValidateAnswerAsync(questionId, answerId);
 
         if (result is null)
             return NotFound(new AnswerResultDto
