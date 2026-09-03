@@ -2,7 +2,9 @@
 
 :root {
   --color-background: #011637;
-  --color-navbar: #061f50;
+  --color-navbar: #0a2252;
+  /* Navbar färg med opacity 0.5 */
+  --color-navbar-rgba: 10, 34, 82, 0.5;
   --color-lightblue: #0056fb;
   --color-warm-ivory: #f5f1e8;
   --color-secondary-lightblue: #023e7d;
