@@ -16,7 +16,7 @@ namespace TechLingo.Core.Services
             _tokenService = tokenService;
         }
 
-        public async Task<string> RegisterAsync(RegisterDto request)
+        public async Task<string> RegisterAsync(RegisterRequestDto request)
         {
             var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
             if (existingUser != null)
@@ -33,7 +33,7 @@ namespace TechLingo.Core.Services
             return "Användarkonto skapat!";
         }
 
-        public async Task<string> LoginAsync(LoginDto request)
+        public async Task<string> LoginAsync(LoginRequestDto request)
         {
             var user =
                 await _userRepository.GetByUsernameAsync(request.Username);

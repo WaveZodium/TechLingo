@@ -16,30 +16,30 @@ namespace TechLingo.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
         {
             try
             {
                 var result = await _authService.RegisterAsync(request);
-                return Ok(new { message = result });
+                return Ok(new RegisterResponseDto { Message = result });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return BadRequest(new ErrorResponseDto { ErrorMessage = ex.Message });
             }
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto request)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
             try
             {
                 var token = await _authService.LoginAsync(request);
-                return Ok(new { token });
+                return Ok(new LoginResponseDto { Token = token });
             }
             catch (Exception ex)
             {
-                return Unauthorized(new { error = ex.Message });
+                return Unauthorized(new ErrorResponseDto { ErrorMessage = ex.Message });
             }
         }
     }
