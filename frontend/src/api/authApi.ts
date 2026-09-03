@@ -1,14 +1,28 @@
 import api from "./api";
-import type { LoginRequest, RegisterRequest } from "../types/auth";
+import type {
+  LoginRequest,
+  RegisterRequest,
+  LoginResponse,
+  RegisterResponse,
+} from "../types/auth";
 
 export async function login(loginData: LoginRequest) {
-  const response = await api.post("/auth/login", loginData);
+  const response = await api.post<LoginResponse>("/auth/login", loginData);
+
+  localStorage.setItem("token", response.data.token);
 
   return response.data;
 }
 
 export async function register(registerData: RegisterRequest) {
-  const response = await api.post("/auth/register", registerData);
+  const response = await api.post<RegisterResponse>(
+    "/auth/register",
+    registerData,
+  );
 
   return response.data;
+}
+
+export function logout() {
+  localStorage.removeItem("token");
 }

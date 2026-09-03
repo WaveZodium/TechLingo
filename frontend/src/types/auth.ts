@@ -1,9 +1,21 @@
 export interface LoginRequest {
-  Username: string;
-  Password: string;
+  username: string;
+  password: string;
 }
 
 export interface RegisterRequest {
-  Username: string;
-  Password: string;
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+}
+
+export interface RegisterResponse {
+  message: string;
+}
+
+export interface ErrorResponse {
+  errorMessage: string;
 }
