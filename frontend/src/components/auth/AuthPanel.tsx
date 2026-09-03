@@ -32,7 +32,7 @@ export default function AuthPanel({ isOpen, onClose }: AuthPanelProps) {
 
         {showRegister ? (
           <>
-            <Register />
+            <Register onRegisterSuccess={() => setShowRegister(false)} />
 
             <button type="button" onClick={() => setShowRegister(false)}>
               Already have an account? Login
