@@ -39,15 +39,18 @@ public class QuestionsController : ControllerBase
     [HttpPost("{id}/answer")]
     public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string id, [FromBody] string answer)
     {
-        // TODO: Implementera ValidateAnswerAsync i service.
-        //var result = await _questionService.ValidateAnswerAsync(id, answer);
+        var result = await _questionService.ValidateAnswerAsync(id, answer);
 
-        //if (!result.IsSuccess)
-        //    return BadRequest(result.ErrorMessage);
+        if (result is null)
+            return NotFound(new AnswerResultDto
+            {
+                IsCorrect = false,
+                Points = 0,
+                CorrectAnswer = String.Empty,
+                CorrectAnswerId = String.Empty,
+                ErrorMessage = "Question not found."
+            });
 
-        // TODO: Lägg till mer felhantering här.
-
-        //return Ok(result);
-        return Ok();
+        return Ok(result);
     }
 }

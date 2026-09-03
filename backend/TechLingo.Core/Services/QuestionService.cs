@@ -42,6 +42,29 @@ public class QuestionService
             .ToList();
     }
 
+    public async Task<AnswerResultDto?> ValidateAnswerAsync(string questionId, string answerId)
+    {
+        var question = await _questionRepository.GetByIdAsync(questionId);
+
+        if (question is null) return null;
+
+        // Find the selected answer option.
+        var selectedOption = question.Options.FirstOrDefault(option => option.Id == answerId);
+
+        var isCorrect = selectedOption?.IsCorrect ?? false;
+
+        var correctOption = question.Options.FirstOrDefault(option => option.IsCorrect);
+
+        return new AnswerResultDto
+        {
+            IsCorrect = isCorrect,
+            Points = isCorrect ? 100 : -200,
+            CorrectAnswer = isCorrect ? selectedOption!.Text : correctOption?.Text,
+            CorrectAnswerId = isCorrect ? selectedOption!.Id : correctOption?.Id,
+            ErrorMessage = isCorrect ? null : $"'{selectedOption!.Text}' is wrong! The correct answer is '{correctOption?.Text}'."
+        };
+    }
+
     private static QuestionDto MapToDto(Question question)
     {
         return new QuestionDto
