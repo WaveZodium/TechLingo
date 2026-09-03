@@ -37,10 +37,10 @@ public class QuestionsController : ControllerBase
         return Ok(question);
     }
 
-    [HttpPost("{questionId}/answer")]
-    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(string questionId, [FromBody] string answerId)
+    [HttpPost("question/answer")]
+    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(SubmitAnswerDto submitAnswerDto)
     {
-        var result = await _questionService.ValidateAnswerAsync(questionId, answerId);
+        var result = await _questionService.ValidateAnswerAsync(submitAnswerDto);
 
         if (result is null)
             return NotFound(new AnswerResultDto

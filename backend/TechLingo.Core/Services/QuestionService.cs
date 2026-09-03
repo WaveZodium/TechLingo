@@ -42,14 +42,14 @@ public class QuestionService
             .ToList();
     }
 
-    public async Task<AnswerResultDto?> ValidateAnswerAsync(string questionId, string answerId)
+    public async Task<AnswerResultDto?> ValidateAnswerAsync(SubmitAnswerDto submitAnswerDto)
     {
-        var question = await _questionRepository.GetByIdAsync(questionId);
+        var question = await _questionRepository.GetByIdAsync(submitAnswerDto.questionId);
 
         if (question is null) return null;
 
         // Find the selected answer option.
-        var selectedOption = question.Options.FirstOrDefault(option => option.Id == answerId);
+        var selectedOption = question.Options.FirstOrDefault(option => option.Id == submitAnswerDto.answerId);
 
         var isCorrect = selectedOption?.IsCorrect ?? false;
 
