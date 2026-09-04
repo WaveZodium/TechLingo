@@ -27,20 +27,20 @@ namespace TechLingo.Core.Data
 
             //Kategorier
 
-            var internetSlang = await categories
-                .Find(c => c.Slug == "internet-slang")
+            var internetCulture = await categories
+                .Find(c => c.Slug == "internet-culture")
                 .FirstOrDefaultAsync();
 
-            if (internetSlang is null)
+            if (internetCulture is null)
             {
-                internetSlang = new Category
+                internetCulture = new Category
                 {
-                    Name = "Internet Slang",
-                    Slug = "internet-slang",
-                    Description = "Common internet slang and chat abbreviations."
+                    Name = "Internet Culture",
+                    Slug = "internet-culture",
+                    Description = "Learn popular internet abbreviations used across social media, chats and memes."
                 };
 
-                await categories.InsertOneAsync(internetSlang);
+                await categories.InsertOneAsync(internetCulture);
             }
 
 
@@ -85,7 +85,7 @@ namespace TechLingo.Core.Data
                 //Internetkultur
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "BRB, need coffee.",
                     "What does BRB mean?",
                     new List<AnswerOption>
@@ -99,7 +99,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "I'm AFK for a few minutes.",
                     "What does AFK mean?",
                     new List<AnswerOption>
@@ -113,7 +113,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "IDK what movie we should watch.",
                     "What does IDK mean?",
                     new List<AnswerOption>
@@ -127,7 +127,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "IMO, that game is really good.",
                     "What does IMO mean?",
                     new List<AnswerOption>
@@ -141,7 +141,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "LOL, that was hilarious!",
                     "What does LOL mean?",
                     new List<AnswerOption>
@@ -155,7 +155,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "TBH, I didn't really like it.",
                     "What does TBH mean?",
                     new List<AnswerOption>
@@ -169,7 +169,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "GG everyone, that was close!",
                     "What does GG usually mean in gaming?",
                     new List<AnswerOption>
@@ -183,7 +183,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "I'll send you the details in a DM.",
                     "What does DM mean?",
                     new List<AnswerOption>
@@ -197,7 +197,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "BTW, are you coming tonight?",
                     "What does BTW mean?",
                     new List<AnswerOption>
@@ -211,7 +211,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "FYI, the meeting starts at 10.",
                     "What does FYI mean?",
                     new List<AnswerOption>
@@ -225,7 +225,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "OMG, I can't believe that happened!",
                     "What does OMG mean?",
                     new List<AnswerOption>
@@ -239,7 +239,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "We've talked online for years but never met IRL.",
                     "What does IRL mean?",
                     new List<AnswerOption>
@@ -253,7 +253,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "NVM, I figured it out.",
                     "What does NVM mean?",
                     new List<AnswerOption>
@@ -267,7 +267,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "I have to go now. TTYL!",
                     "What does TTYL mean?",
                     new List<AnswerOption>
@@ -281,7 +281,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "LMK if you want to join us.",
                     "What does LMK mean?",
                     new List<AnswerOption>
@@ -295,7 +295,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "ROFL, that video was so funny!",
                     "What does ROFL mean?",
                     new List<AnswerOption>
@@ -309,7 +309,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "The article is really long. Here's the TL;DR.",
                     "What does TL;DR mean?",
                     new List<AnswerOption>
@@ -323,7 +323,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "POV: You forgot your password again.",
                     "What does POV mean?",
                     new List<AnswerOption>
@@ -337,7 +337,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "That post is NSFW, so don't open it at work.",
                     "What does NSFW mean?",
                     new List<AnswerOption>
@@ -351,7 +351,7 @@ namespace TechLingo.Core.Data
                 ),
 
                 CreateQuestion(
-                    internetSlang.Id,
+                    internetCulture.Id,
                     "IIRC, we already talked about this yesterday.",
                     "What does IIRC mean?",
                     new List<AnswerOption>

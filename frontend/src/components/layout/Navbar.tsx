@@ -37,15 +37,6 @@ function Navbar({ onLoginClick }: NavbarProps) {
               >
                 Overview
               </NavLink>
-
-              <NavLink
-                to="/quiz"
-                className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
-                }
-              >
-                Quiz
-              </NavLink>
             </>
           )}
         </nav>
