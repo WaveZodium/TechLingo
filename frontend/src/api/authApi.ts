@@ -27,7 +27,7 @@ export function setToken(token: string) {
   localStorage.setItem("token", token);
 }
 
-export function getToken(){
+export function getToken() {
   return localStorage.getItem("token");
 }
 
@@ -39,3 +39,25 @@ export function isAuthenticated() {
   return !!getToken();
 }
 
+//Returnera utgångstiden för en JWT-token i millisekunder, eller null om den inte kan bestämmas.
+export function getTokenExpiration(token: string) {
+  try {
+    const payload = token.split(".")[1];
+
+    if (!payload) {
+      return null;
+    }
+
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+
+    const decodedPayload = JSON.parse(atob(base64));
+
+    if (!decodedPayload.exp) {
+      return null;
+    }
+
+    return decodedPayload.exp * 1000;
+  } catch {
+    return null;
+  }
+}

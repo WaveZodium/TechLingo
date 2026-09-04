@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import heroImage from "../assets/productutanBox.png";
 import "../styles/HomePage.css";
 
+type OutletContextType = {
+  openAuthPanel: () => void;
+};
+
 function HomePage() {
+  const { openAuthPanel } = useOutletContext<OutletContextType>();
+
   return (
     <section className="home">
       <div className="home__content">
@@ -18,10 +25,10 @@ function HomePage() {
             abbreviations in a simple and fun way.
           </p>
 
-          <Link to="/loginregister" className="home__cta">
+          <button type="button" className="home__cta" onClick={openAuthPanel}>
             <span>Get started</span>
             <span aria-hidden="true">→</span>
-          </Link>
+          </button>
         </div>
 
         <div className="home__image-wrapper">

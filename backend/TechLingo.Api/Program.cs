@@ -85,7 +85,9 @@ builder.Services
             ValidateAudience = true,
             ValidAudience = jwtSettings.Audience,
 
-            ValidateLifetime = true
+            ValidateLifetime = true,
+
+            ClockSkew = TimeSpan.Zero
         };
     });
 
