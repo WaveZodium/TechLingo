@@ -15,6 +15,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
 
+          {/* endast för användare */}
           <Route element={<ProtectedRoute />}>
             <Route path="/overview" element={<OverviewPage />} />
             <Route path="/quiz" element={<QuizPage />} />
