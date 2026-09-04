@@ -2,8 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SubmitEvent } from "react";
 import axios from "axios";
+
 import { login as loginApi } from "../../api/authApi";
 import { useAuth } from "../../context/AuthContext";
+
+import AuthHeader from "./AuthHeader";
+import FormField from "./FormField";
+import PasswordField from "./PasswordField";
 
 interface LoginProps {
   isOpen: boolean;
@@ -39,7 +44,7 @@ export default function Login({ isOpen, onLoginSuccess }: LoginProps) {
         password,
       });
 
-      login(); // Update the authentication state in the context
+      login();
       onLoginSuccess();
 
       navigate("/overview");
@@ -55,28 +60,40 @@ export default function Login({ isOpen, onLoginSuccess }: LoginProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-        placeholder="Username"
-        required
+    <div className="auth-form">
+      <AuthHeader
+        title="Login"
+        subtitle="Welcome back! Please login to your account."
       />
 
-      <input
-        type="password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        placeholder="Password"
-        required
-      />
+      <form onSubmit={handleSubmit}>
+        <FormField
+          id="username"
+          label="Username"
+          value={username}
+          onChange={setUsername}
+        />
 
-      {errorMessage && <p>{errorMessage}</p>}
+        <PasswordField
+          id="password"
+          label="Password"
+          value={password}
+          onChange={setPassword}
+        />
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? "Logging in..." : "Login"}
-      </button>
-    </form>
+        <p
+          className={`auth-form__error ${
+            errorMessage ? "auth-form__error--visible" : ""
+          }`}
+          aria-live="polite"
+        >
+          {errorMessage}
+        </p>
+
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+    </div>
   );
 }
