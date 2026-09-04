@@ -5,6 +5,10 @@ import axios from "axios";
 import { register } from "../../api/authApi";
 import type { ErrorResponse } from "../../types/auth";
 
+import AuthHeader from "./AuthHeader";
+import FormField from "./FormField";
+import PasswordField from "./PasswordField";
+
 interface RegisterProps {
   onRegisterSuccess: () => void;
 }
@@ -49,38 +53,47 @@ export default function Register({ onRegisterSuccess }: RegisterProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Create account</h2>
-
-      <input
-        type="text"
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-        placeholder="Username"
-        required
+    <div className="auth-form">
+      <AuthHeader
+        title="Create account"
+        subtitle="Create your account and start learning."
       />
 
-      <input
-        type="password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        placeholder="Password"
-        required
-      />
+      <form onSubmit={handleSubmit}>
+        <FormField
+          id="register-username"
+          label="Username"
+          value={username}
+          onChange={setUsername}
+        />
 
-      <input
-        type="password"
-        value={confirmPassword}
-        onChange={(event) => setConfirmPassword(event.target.value)}
-        placeholder="Confirm password"
-        required
-      />
+        <PasswordField
+          id="register-password"
+          label="Password"
+          value={password}
+          onChange={setPassword}
+        />
 
-      {errorMessage && <p>{errorMessage}</p>}
+        <PasswordField
+          id="register-confirm-password"
+          label="Confirm password"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+        />
 
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? "Creating account..." : "Create account"}
-      </button>
-    </form>
+        <p
+          className={`auth-form__error ${
+            errorMessage ? "auth-form__error--visible" : ""
+          }`}
+          aria-live="polite"
+        >
+          {errorMessage}
+        </p>
+
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Creating account..." : "Create account"}
+        </button>
+      </form>
+    </div>
   );
 }
