@@ -9,6 +9,10 @@ import AuthPanel from "../auth/AuthPanel";
 function Layout() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
+  function openAuthPanel() {
+    setIsAuthOpen(true);
+  }
+
   return (
     <div className="layout">
       <div className="layout-background">
@@ -21,10 +25,10 @@ function Layout() {
       </div>
 
       <div className="layout-content">
-        <Navbar onLoginClick={() => setIsAuthOpen(true)} />
+        <Navbar onLoginClick={openAuthPanel} />
 
         <main>
-          <Outlet />
+          <Outlet context={{ openAuthPanel }} />
         </main>
 
         <Footer />

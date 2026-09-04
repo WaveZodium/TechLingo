@@ -7,7 +7,12 @@ import {
   type ReactNode,
 } from "react";
 
-import { isAuthenticated, logout } from "../api/authApi";
+import {
+  isAuthenticated,
+  logout,
+  getTokenExpiration,
+  getToken,
+} from "../api/authApi";
 
 type AuthContextType = {
   isAuth: boolean;
@@ -48,10 +53,47 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     window.addEventListener("auth-expired", handleTokenExpired);
 
+    if (!isAuth) {
+      return () => {
+        window.removeEventListener("auth-expired", handleTokenExpired);
+      };
+    }
+
+    const token = getToken();
+
+    if (!token) {
+      setIsAuth(false);
+
+      return () => {
+        window.removeEventListener("auth-expired", handleTokenExpired);
+      };
+    }
+
+    const expirationTime = getTokenExpiration(token);
+
+    if (!expirationTime) {
+      return () => {
+        window.removeEventListener("auth-expired", handleTokenExpired);
+      };
+    }
+
+    const timeUntilExpiration = expirationTime - Date.now();
+
+    if (timeUntilExpiration <= 0) {
+      handleTokenExpired();
+
+      return () => {
+        window.removeEventListener("auth-expired", handleTokenExpired);
+      };
+    }
+
+    const timeout = window.setTimeout(handleTokenExpired, timeUntilExpiration);
+
     return () => {
+      window.clearTimeout(timeout);
       window.removeEventListener("auth-expired", handleTokenExpired);
     };
-  }, []);
+  }, [isAuth]);
 
   return (
     <AuthContext.Provider value={{ isAuth, login, logoutUser }}>
