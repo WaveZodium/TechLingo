@@ -27,23 +27,27 @@ function Navbar({ onLoginClick }: NavbarProps) {
             Home
           </NavLink>
 
-          <NavLink
-            to="/overview"
-            className={({ isActive }) =>
-              `navbar__link ${isActive ? "navbar__link--active" : ""}`
-            }
-          >
-            Overview
-          </NavLink>
+          {isAuth && (
+            <>
+              <NavLink
+                to="/overview"
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Overview
+              </NavLink>
 
-          <NavLink
-            to="/quiz"
-            className={({ isActive }) =>
-              `navbar__link ${isActive ? "navbar__link--active" : ""}`
-            }
-          >
-            Quiz
-          </NavLink>
+              <NavLink
+                to="/quiz"
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Quiz
+              </NavLink>
+            </>
+          )}
         </nav>
 
         {isAuth ? (
