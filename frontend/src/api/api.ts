@@ -1,10 +1,6 @@
 import axios from "axios";
 
-const useHttps = false; // Set to true if you want to use HTTPS, false for HTTP
-
-const API_URL = useHttps
-  ? import.meta.env.VITE_API_URL_HTTPS
-  : import.meta.env.VITE_API_URL_HTTP;
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
