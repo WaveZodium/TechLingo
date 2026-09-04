@@ -1,24 +1,57 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 import "../styles/OverviewPage.css";
 
-const categories = [
-  {
-    id: 1,
-    title: "Internet culture",
-    description:
-      "Learn popular internet abbreviations used across social media, chats and memes.",
-    path: "/quiz",
-  },
-  {
-    id: 2,
-    title: "IT abbreviations",
-    description:
-      "Explore common IT abbreviations used in tech, networking and programming.",
-    path: "/quiz",
-  },
-];
+import { getCategories } from "../api/categoryApi";
+import type { Category } from "../types/category";
 
 function OverviewPage() {
+  // Sparar kategorierna som hämtas från backend.
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Hämtar kategorier när sidan laddas första gången.
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const data = await getCategories();
+
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to load categories:", error);
+        setError("Could not load categories.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadCategories();
+  }, []);
+
+  // Visas medan kategorierna hämtas från backend.
+  if (isLoading) {
+    return (
+      <section className="overview">
+        <div className="overview__content">
+          <p>Loading categories...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // Visas om hämtningen av kategorier misslyckas.
+  if (error) {
+    return (
+      <section className="overview">
+        <div className="overview__content">
+          <p>{error}</p>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="overview">
       <div className="overview__content">
@@ -32,6 +65,7 @@ function OverviewPage() {
         </div>
 
         <div className="overview__categories">
+          {/* Skapar ett kort för varje kategori som hämtats från backend. */}
           {categories.map((category, index) => (
             <article
               className="overview__card"
@@ -41,13 +75,14 @@ function OverviewPage() {
               }}
             >
               <div className="overview__card-content">
-                <h2 className="overview__card-title">{category.title}</h2>
+                <h2 className="overview__card-title">{category.name}</h2>
 
                 <p className="overview__card-description">
                   {category.description}
                 </p>
 
-                <Link to={category.path} className="overview__button">
+                {/* Skickar kategori-id i URL:en så att QuizPage kan hämta rätt frågor. */}
+                <Link to={`/quiz/${category.id}`} className="overview__button">
                   <span>Start quiz</span>
                   <span aria-hidden="true">→</span>
                 </Link>
