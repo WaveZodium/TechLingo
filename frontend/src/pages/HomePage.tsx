@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import heroImage from "../assets/productutanBox.png";
 import "../styles/HomePage.css";
+import { useAuth } from "../context/AuthContext";
 
 type OutletContextType = {
   openAuthPanel: () => void;
@@ -9,6 +10,16 @@ type OutletContextType = {
 
 function HomePage() {
   const { openAuthPanel } = useOutletContext<OutletContextType>();
+  const { isAuth } = useAuth();
+  const navigate = useNavigate();
+
+  function handleGetStarted() {
+    if (isAuth) {
+      navigate("/overview");
+    } else {
+      openAuthPanel();
+    }
+  }
 
   return (
     <section className="home">
@@ -25,7 +36,11 @@ function HomePage() {
             abbreviations in a simple and fun way.
           </p>
 
-          <button type="button" className="home__cta" onClick={openAuthPanel}>
+          <button
+            type="button"
+            className="home__cta"
+            onClick={handleGetStarted}
+          >
             <span>Get started</span>
             <span aria-hidden="true">→</span>
           </button>
