@@ -1,65 +1,23 @@
-/* .auth-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 1001;
-
-  width: min(420px, 100%);
-  height: 100vh;
-
-  padding: 2rem;
-
-  background-color: #061f50;
-
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-}
-
-.auth-panel--open {
-  transform: translateX(0);
-}
-
-.auth-panel__overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-
-  background: rgba(0, 0, 0, 0.45);
-}
-
-.auth-panel__close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-
-  border: none;
-  background: transparent;
-  color: white;
-
-  font-size: 2rem;
-  cursor: pointer;
-} */
-
-/* AuthPanel.css */
+/* ========================================================
+   AUTH PANEL
+   ======================================================== */
 
 .auth-panel {
   position: fixed;
-  top: 0;
+  top: 1.5rem;
   right: 0;
+  bottom: 1.5rem;
   z-index: 1001;
 
   width: min(420px, 100%);
-  height: 100vh;
-
   padding: 4rem 2.5rem;
 
-  /* Glasmorfism inspirerad av navbar */
   background: rgba(6, 31, 80, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 
-  /* Vänsterkant med samma blå glow som navbar */
   border-left: 1px solid rgba(70, 130, 255, 0.38);
+
   box-shadow:
     -5px 0 18px rgba(0, 90, 255, 0.1),
     inset 5px 0 18px rgba(55, 120, 255, 0.08);
@@ -71,19 +29,25 @@
 
   display: flex;
   flex-direction: column;
+
+  overflow-y: auto;
 }
 
 .auth-panel--open {
   transform: translateX(0);
 }
 
-/* Eftersom din overlay renderas villkorligt {isOpen && ...} behöver vi bara en enkel fade-in animation här */
+/* ========================================================
+   OVERLAY
+   ======================================================== */
+
 .auth-panel__overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
 
   background: rgba(0, 0, 0, 0.45);
+
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 
@@ -94,10 +58,15 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
+
+/* ========================================================
+   CLOSE BUTTON
+   ======================================================== */
 
 .auth-panel__close {
   position: absolute;
@@ -106,10 +75,12 @@
 
   border: none;
   background: transparent;
+
   color: var(--color-warm-ivory, #e0e6ed);
 
   font-size: 2rem;
   line-height: 1;
+
   cursor: pointer;
 
   transition:
@@ -120,32 +91,127 @@
 
 .auth-panel__close:hover {
   color: var(--color-white, #fff);
+
   transform: scale(1.1);
+
   text-shadow:
     0 0 6px rgba(22, 117, 255, 1),
     0 0 12px rgba(22, 117, 255, 0.85);
 }
 
-/* 
-  ========================================================
-  KASKAD-STYLING
-  Går automatiskt ner i dina <Login /> och <Register /> 
-  ========================================================
-*/
+/* ========================================================
+   SWITCH MELLAN LOGIN OCH REGISTER
+   ======================================================== */
+
+.auth-panel__form-fade {
+  width: 100%;
+  animation: authFormFade 1s ease;
+}
+
+@keyframes authFormFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================================
+   GEMENSAM FORM-STYLING
+   ======================================================== */
+
+.auth-form {
+  width: 100%;
+}
 
 .auth-panel form {
   display: flex;
   flex-direction: column;
+
   gap: 1rem;
   margin-top: 2rem;
 }
 
+/* ========================================================
+   AUTH HEADER
+   ======================================================== */
+
+.auth-form__heading {
+  display: flex;
+  align-items: center;
+
+  gap: 0.75rem;
+}
+
+.auth-form__heading h2 {
+  margin: 0;
+
+  color: var(--color-white, #fff);
+
+  font-family: var(--font-roboto, "Roboto", sans-serif);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.auth-form__heading-icon {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  fill: none;
+  stroke: #167cff;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.auth-form__subtitle {
+  margin-top: 0.75rem;
+  margin-bottom: 0;
+
+  color: rgba(255, 255, 255, 0.65);
+
+  font-family: var(--font-roboto-mono, monospace);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ========================================================
+   FORM FIELD
+   ======================================================== */
+
+.auth-form__field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+}
+
+.auth-form__field label {
+  color: var(--color-white, #fff);
+
+  font-family: var(--font-roboto, "Roboto", sans-serif);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* ========================================================
+   INPUTS
+   ======================================================== */
+
 .auth-panel input {
   width: 100%;
   height: 48px;
+
   padding: 0 16px;
 
   background: rgba(255, 255, 255, 0.05);
+
   color: var(--color-white, #fff);
 
   border: 1px solid rgba(70, 130, 255, 0.38);
@@ -166,15 +232,109 @@
 
 .auth-panel input:focus {
   outline: none;
+
   background: rgba(255, 255, 255, 0.08);
+
   border-color: rgba(110, 180, 255, 0.85);
+
   box-shadow: 0 0 12px rgba(22, 117, 255, 0.4);
 }
 
-/* Fångar den primära knappen i formulären (Login / Skapa konto) */
+/* ========================================================
+   PASSWORD FIELD
+   ======================================================== */
+
+.auth-form__password {
+  position: relative;
+}
+
+.auth-form__password input {
+  padding-right: 3rem;
+}
+
+.auth-form__password-toggle {
+  position: absolute;
+
+  top: 50%;
+  right: 1rem;
+
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.auth-form__password-toggle svg {
+  width: 22px;
+  height: 22px;
+
+  fill: none;
+
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  transition:
+    stroke 0.2s ease,
+    filter 0.2s ease;
+}
+
+.auth-form__password-toggle:hover svg {
+  stroke: #ffffff;
+
+  filter: drop-shadow(0 0 5px rgba(22, 117, 255, 0.8));
+}
+
+/* Dölj Edges inbyggda password-öga */
+
+.auth-form__password input::-ms-reveal,
+.auth-form__password input::-ms-clear {
+  display: none;
+}
+
+/* ========================================================
+   ERROR MESSAGE
+   ======================================================== */
+
+.auth-form__message {
+  height: 1.25rem;
+  margin: 0;
+
+  font-family: var(--font-roboto, "Roboto", sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.25rem;
+
+  text-align: center;
+  visibility: hidden;
+}
+
+.auth-form__message--error {
+  color: #ff8c8c;
+  visibility: visible;
+}
+
+.auth-form__message--success {
+  color: #7ee2a8;
+  visibility: visible;
+}
+
+/* ========================================================
+   SUBMIT BUTTON
+   ======================================================== */
+
 .auth-panel button[type="submit"] {
   width: 100%;
   height: 48px;
+
   margin-top: 0;
 
   display: inline-flex;
@@ -182,6 +342,7 @@
   justify-content: center;
 
   background: linear-gradient(135deg, #0759ea, #167cff);
+
   color: var(--color-white, #fff);
 
   border: 1px solid rgba(110, 180, 255, 0.85);
@@ -190,6 +351,7 @@
   font-family: var(--font-roboto, "Roboto", sans-serif);
   font-size: 1rem;
   font-weight: 500;
+
   cursor: pointer;
 
   box-shadow:
@@ -204,23 +366,37 @@
 
 .auth-panel button[type="submit"]:hover {
   transform: translateY(-2px);
+
   background: linear-gradient(135deg, #1268f5, #288cff);
+
   box-shadow:
     0 0 16px rgba(0, 115, 255, 0.35),
     inset 0 0 7px rgba(255, 255, 255, 0.08);
 }
 
-/* Fångar dina text-knappar i botten som byter mellan inloggning och registrering */
-.auth-panel > button:not(.auth-panel__close) {
-  margin-top: 1.5rem;
+/* ========================================================
+   LOGIN / REGISTER SWITCH
+   Ligger längst ner i panelen
+   ======================================================== */
+
+.auth-panel__switch {
+  margin-top: auto;
+  padding-top: 1.5rem;
+
   text-align: center;
+}
+
+.auth-panel__switch button {
+  padding: 0;
 
   background: none;
   border: none;
+
   color: var(--color-warm-ivory, #e0e6ed);
 
   font-family: var(--font-roboto, "Roboto", sans-serif);
   font-size: 0.9rem;
+
   cursor: pointer;
 
   transition:
@@ -228,144 +404,91 @@
     text-shadow 0.2s ease;
 }
 
-.auth-panel > button:not(.auth-panel__close):hover {
+.auth-panel__switch button:hover {
   color: var(--color-white, #fff);
+
   text-shadow:
     0 0 6px rgba(22, 117, 255, 1),
     0 0 12px rgba(22, 117, 255, 0.85),
     0 0 22px rgba(22, 117, 255, 0.6);
 }
 
-/* 
-  ========================================================
-  AUTH FORM
-  Gemensam styling för Login och Register
-  ========================================================
-*/
+/* ========================================================
+   CONFIRM PASSWORD ANIMATION
+   ======================================================== */
 
-.auth-form {
-  width: 100%;
-}
+.auth-form__confirm {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
 
-.auth-form__heading {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.auth-form__heading h2 {
-  margin: 0;
-  color: var(--color-white, #fff);
-  font-family: var(--font-roboto, "Roboto", sans-serif);
-  font-size: 2rem;
-  font-weight: 600;
-}
-
-.auth-form__heading-icon {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-
-  fill: none;
-  stroke: #167cff;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.auth-form__subtitle {
-  margin-top: 0.75rem;
-  margin-bottom: 0;
-
-  color: rgba(255, 255, 255, 0.65);
-  font-family: var(--font-roboto-mono, monospace);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-/* Input + label */
-
-.auth-form__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.auth-form__field label {
-  color: var(--color-white, #fff);
-  font-family: var(--font-roboto, "Roboto", sans-serif);
-  font-size: 0.95rem;
-  font-weight: 500;
-}
-
-/* Password */
-
-.auth-form__password {
-  position: relative;
-}
-
-.auth-form__password input {
-  padding-right: 3rem;
-}
-
-.auth-form__password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 1rem;
-  transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-  border: none;
-  background: transparent;
-
-  cursor: pointer;
-}
-
-.auth-form__password-toggle svg {
-  width: 22px;
-  height: 22px;
-
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.85);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  transform: translateY(-8px);
 
   transition:
-    stroke 0.2s ease,
-    filter 0.2s ease;
+    max-height 0.3s ease,
+    opacity 0.25s ease,
+    transform 0.3s ease;
 }
 
-.auth-form__password-toggle:hover svg {
-  stroke: #ffffff;
-  filter: drop-shadow(0 0 5px rgba(22, 117, 255, 0.8));
+.auth-form__confirm--visible {
+  max-height: 90px;
+  opacity: 1;
+
+  transform: translateY(0);
 }
 
-/* Error */
-
-.auth-form__error {
-  height: 1.25rem;
-  margin: 0;
-
-  color: #ff8c8c;
-  font-family: var(--font-roboto, "Roboto", sans-serif);
-  font-size: 0.9rem;
-  line-height: 1.25rem;
-  text-align: center;
-
-  visibility: hidden;
+.auth-form__header-fade {
+  animation: authHeaderFade 1s ease;
 }
 
-.auth-form__error--visible {
-  visibility: visible;
+@keyframes authHeaderFade {
+  from {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Hide the reveal and clear buttons in Edge for password inputs */
-.auth-form__password input::-ms-reveal,
-.auth-form__password input::-ms-clear {
-  display: none;
+.auth-form__button-text {
+  animation: authButtonTextFade 0.8s ease;
+}
+
+@keyframes authButtonTextFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.auth-panel__switch-text {
+  display: inline-block;
+  animation: authSwitchTextFade 0.8s ease;
+}
+
+@keyframes authSwitchTextFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+/* ========================================================
+   REDUCED MOTION
+   ======================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-panel
+
+  .auth-panel__overlay {
+    animation: none;
+  }
 }

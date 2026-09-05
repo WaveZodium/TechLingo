@@ -5,6 +5,7 @@ interface PasswordFieldProps {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean;
 }
 
 export default function PasswordField({
@@ -12,6 +13,7 @@ export default function PasswordField({
   label,
   value,
   onChange,
+  disabled,
 }: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -26,6 +28,7 @@ export default function PasswordField({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           required
+          disabled={disabled}
         />
 
         <button
