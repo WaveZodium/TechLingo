@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Login from "./Login";
-import Register from "./Register";
+import AuthForm from "./AuthForm";
 import "../../styles/AuthPanel.css";
 
 interface AuthPanelProps {
@@ -30,23 +29,28 @@ export default function AuthPanel({ isOpen, onClose }: AuthPanelProps) {
           ×
         </button>
 
-        {showRegister ? (
-          <>
-            <Register onRegisterSuccess={() => setShowRegister(false)} />
+        <AuthForm
+          isOpen={isOpen}
+          isRegisterMode={showRegister}
+          onLoginSuccess={handleClose}
+          onRegisterSuccess={() => setShowRegister(false)}
+        />
 
-            <button type="button" onClick={() => setShowRegister(false)}>
-              Already have an account? Login
-            </button>
-          </>
-        ) : (
-          <>
-            <Login isOpen={isOpen} onLoginSuccess={handleClose} />
-
-            <button type="button" onClick={() => setShowRegister(true)}>
-              Don't have an account? Create account
-            </button>
-          </>
-        )}
+        <div className="auth-panel__switch">
+          <button
+            type="button"
+            onClick={() => setShowRegister((prev) => !prev)}
+          >
+            <span
+              key={showRegister ? "login-switch" : "register-switch"}
+              className="auth-panel__switch-text"
+            >
+              {showRegister
+                ? "Already have an account? Login"
+                : "Don't have an account? Create account"}
+            </span>
+          </button>
+        </div>
       </aside>
     </>
   );
