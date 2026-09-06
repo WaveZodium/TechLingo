@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TechLingo.Core.Entities;
 
 namespace TechLingo.Core.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserService
     {
-        Task<User?> GetByUsernameAsync(string username);
-        Task CreateAsync(User user);
         Task<bool> DeleteUserAsync(string userId);
     }
 }
