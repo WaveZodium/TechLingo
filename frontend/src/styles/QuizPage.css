@@ -681,3 +681,12 @@
     transition: none;
   }
 }
+
+
+.points {
+  font-weight: 700;
+  color: #0f0;
+}
+.points.wrong {
+  color: #ff9a76;
+}

@@ -216,9 +216,17 @@ function QuizPage() {
                 <span className="message-sender">TechLingo</span>
 
                 <div className="bubble bubble--robot">
-                  {answerResult.isCorrect
-                    ? `Correct! You got ${answerResult.points} points.`
-                    : `Not quite. The correct answer is "${answerResult.correctAnswer}".`}
+                    {answerResult.isCorrect ? (
+                      <>
+                      Correct! You got <span className="points">{answerResult.points}</span> points.
+                      </>
+                    ) : (
+                    <>
+                      Not quite. The correct answer is "{answerResult.correctAnswer}".
+                      <br />
+                      You got <span className="points wrong">{answerResult.points}</span> points.
+                    </>
+                  )}
                 </div>
               </div>
             </div>
