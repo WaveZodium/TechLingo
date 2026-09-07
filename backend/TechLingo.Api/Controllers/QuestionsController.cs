@@ -6,7 +6,7 @@ using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
 
-[Authorize(Roles = nameof(UserRole.Admin))]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class QuestionsController : ControllerBase
