@@ -1,6 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
+
 import { useAuth } from "../../context/AuthContext";
+
 import logo from "../../assets/TechlingoALTlogo.png";
+
 import "../../styles/Navbar.css";
 
 interface NavbarProps {
@@ -8,7 +11,8 @@ interface NavbarProps {
 }
 
 function Navbar({ onLoginClick }: NavbarProps) {
-  const { isAuth, logoutUser } = useAuth();
+  const { isAuth, role, logoutUser } = useAuth();
+
   return (
     <header className="navbar">
       <div className="navbar__content">
@@ -28,16 +32,25 @@ function Navbar({ onLoginClick }: NavbarProps) {
           </NavLink>
 
           {isAuth && (
-            <>
-              <NavLink
-                to="/categories"
-                className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
-                }
-              >
-                Categories
-              </NavLink>
-            </>
+            <NavLink
+              to="/categories"
+              className={({ isActive }) =>
+                `navbar__link ${isActive ? "navbar__link--active" : ""}`
+              }
+            >
+              Categories
+            </NavLink>
+          )}
+
+          {role === "Admin" && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `navbar__link ${isActive ? "navbar__link--active" : ""}`
+              }
+            >
+              Admin panel
+            </NavLink>
           )}
         </nav>
 
