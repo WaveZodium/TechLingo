@@ -16,5 +16,7 @@ namespace TechLingo.Core.Entities
         public string PasswordHash { get; set; } = string.Empty;
         [BsonRepresentation(BsonType.String)]
         public UserRole Role { get; set; } = UserRole.User; // "Admin" sätts manuellt för administratörer
+
+        public int TotalScore { get; set; } = 0;
     }
 }

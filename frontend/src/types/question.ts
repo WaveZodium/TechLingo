@@ -23,3 +23,12 @@ export interface SubmitAnswerRequest {
   questionId: string;
   answerId: string;
 }
+export interface CompleteQuizRequest {
+  categoryId: string;
+  answers: SubmitAnswerRequest[];
+}
+
+export interface QuizResult {
+  quizScore: number;
+  totalScore: number;
+}
