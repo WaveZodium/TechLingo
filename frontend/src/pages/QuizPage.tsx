@@ -3,6 +3,7 @@ import "../styles/QuizPage.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { getCategories } from "../api/categoryApi";
 import { getQuestionsByCategory, submitAnswer } from "../api/questionApi";
 import type { AnswerResult, Question } from "../types/question";
 
@@ -35,6 +36,7 @@ function QuizPage() {
 
   // Sparar frågorna som hämtas från backend.
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [quizName, setQuizName] = useState("Quiz");
 
   const [currentQuestionIndex /* setCurrentQuestionIndex */] = useState(0);
 
@@ -54,6 +56,9 @@ function QuizPage() {
   // Hanterar eventuella fel vid inlämning av svar.
   const [answerError, setAnswerError] = useState<string | null>(null);
 
+  // Hanterar spelarens totala poäng.
+  const [score, setScore] = useState(0);
+
   // Hämtar frågor när categoryId ändras.
   useEffect(() => {
     let ignore = false;
@@ -69,15 +74,28 @@ function QuizPage() {
         setIsLoading(true);
         setError(null);
         setQuestions([]);
+        setQuizName("Quiz");
         setSelectedAnswerId(null);
         setAnswerResult(null);
         setAnswerError(null);
         setIsSubmittingAnswer(false);
+        setScore(0);
 
         const data = await getQuestionsByCategory(categoryId);
 
         if (!ignore) {
           setQuestions(data);
+        }
+
+        try {
+          const categories = await getCategories();
+          const category = categories.find((item) => item.id === categoryId);
+
+          if (!ignore && category) {
+            setQuizName(category.name);
+          }
+        } catch (categoryError) {
+          console.error("Failed to load quiz name:", categoryError);
         }
       } catch (error) {
         if (!ignore) {
@@ -140,7 +158,7 @@ function QuizPage() {
   );
 
   const handleAnswerClick = async (answerId: string) => {
-    if (isSubmittingAnswer) {
+    if (isSubmittingAnswer || answerResult) {
       return;
     }
 
@@ -156,6 +174,7 @@ function QuizPage() {
       });
 
       setAnswerResult(result);
+      setScore((currentScore) => currentScore + result.points);
     } catch (error) {
       console.error("Failed to submit answer:", error);
       setAnswerError("Could not check the answer.");
@@ -166,6 +185,29 @@ function QuizPage() {
 
   return (
     <main className="quiz-page">
+      <div className="quiz-placeholder">
+        <div className="quiz-stat quiz-stat--name">
+          <span className="quiz-stat-label">Quiz</span>
+          <strong>{quizName}</strong>
+        </div>
+
+        <div  aria-hidden="true" />
+
+        <div className="quiz-stat-group">
+          <div className="quiz-stat quiz-stat--question">
+            <span className="quiz-stat-label">Question</span>
+            <strong>
+              {currentQuestionIndex + 1} / {questions.length}
+            </strong>
+          </div>
+
+          <div className="quiz-stat quiz-stat--score">
+            <span className="quiz-stat-label">Score</span>
+            <strong>{score}</strong>
+          </div>
+        </div>
+      </div>
+
       <section className="quiz-shell" aria-labelledby="quiz-title">
         <h1 id="quiz-title" className="visually-hidden">
           TechLingo quiz
@@ -216,9 +258,17 @@ function QuizPage() {
                 <span className="message-sender">TechLingo</span>
 
                 <div className="bubble bubble--robot">
-                  {answerResult.isCorrect
-                    ? `Correct! You got ${answerResult.points} points.`
-                    : `Not quite. The correct answer is "${answerResult.correctAnswer}".`}
+                    {answerResult.isCorrect ? (
+                      <>
+                      Correct! You got <span className="points">{answerResult.points}</span> points.
+                      </>
+                    ) : (
+                    <>
+                      Not quite. The correct answer is "{answerResult.correctAnswer}".
+                      <br />
+                      You got <span className="points wrong">{answerResult.points}</span> points.
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -266,6 +316,7 @@ function QuizPage() {
             </button>
           ))}
         </div>
+
       </section>
     </main>
   );
