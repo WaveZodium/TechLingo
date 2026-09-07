@@ -16,6 +16,9 @@ function OverviewPage() {
   useEffect(() => {
     async function loadCategories() {
       try {
+        setIsLoading(true);
+        setError(null);
+
         const data = await getCategories();
 
         setCategories(data);
@@ -30,28 +33,6 @@ function OverviewPage() {
     loadCategories();
   }, []);
 
-  // Visas medan kategorierna hämtas från backend.
-  if (isLoading) {
-    return (
-      <section className="overview">
-        <div className="overview__content">
-          <p>Loading categories...</p>
-        </div>
-      </section>
-    );
-  }
-
-  // Visas om hämtningen av kategorier misslyckas.
-  if (error) {
-    return (
-      <section className="overview">
-        <div className="overview__content">
-          <p>{error}</p>
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="overview">
       <div className="overview__content">
@@ -65,30 +46,37 @@ function OverviewPage() {
         </div>
 
         <div className="overview__categories">
-          {/* Skapar ett kort för varje kategori som hämtats från backend. */}
-          {categories.map((category, index) => (
-            <article
-              className="overview__card"
-              key={category.id}
-              style={{
-                animationDelay: `${index * -2}s`,
-              }}
-            >
-              <div className="overview__card-content">
-                <h2 className="overview__card-title">{category.name}</h2>
+          {isLoading && <p>Loading categories...</p>}
 
-                <p className="overview__card-description">
-                  {category.description}
-                </p>
+          {error && <p>{error}</p>}
 
-                {/* Skickar kategori-id i URL:en så att QuizPage kan hämta rätt frågor. */}
-                <Link to={`/quiz/${category.id}`} className="overview__button">
-                  <span>Start quiz</span>
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </div>
-            </article>
-          ))}
+          {!isLoading &&
+            !error &&
+            categories.map((category, index) => (
+              <article
+                className="overview__card"
+                key={category.id}
+                style={{
+                  animationDelay: `${index * -2}s`,
+                }}
+              >
+                <div className="overview__card-content">
+                  <h2 className="overview__card-title">{category.name}</h2>
+
+                  <p className="overview__card-description">
+                    {category.description}
+                  </p>
+
+                  <Link
+                    to={`/quiz/${category.id}`}
+                    className="overview__button"
+                  >
+                    <span>Start quiz</span>
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </article>
+            ))}
         </div>
       </div>
     </section>
