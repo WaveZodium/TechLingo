@@ -30,12 +30,12 @@ function Navbar({ onLoginClick }: NavbarProps) {
           {isAuth && (
             <>
               <NavLink
-                to="/overview"
+                to="/category"
                 className={({ isActive }) =>
                   `navbar__link ${isActive ? "navbar__link--active" : ""}`
                 }
               >
-                Overview
+                Categories
               </NavLink>
             </>
           )}

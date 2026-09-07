@@ -94,7 +94,7 @@ export default function AuthForm({
         login();
         onLoginSuccess();
 
-        navigate("/overview");
+        navigate("/category");
       }
     } catch (error) {
       if (axios.isAxiosError<ErrorResponse>(error)) {
