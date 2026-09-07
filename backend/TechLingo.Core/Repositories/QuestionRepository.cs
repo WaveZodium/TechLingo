@@ -33,4 +33,17 @@ public class QuestionRepository
             .Find(q => q.CategoryId == categoryId)
             .ToListAsync();
     }
+
+    public async Task<List<Question>> GetRandomByCategoryAsync(string categoryId, int count)
+    {
+        var questions = await _questions
+            .Find(q => q.CategoryId == categoryId)
+            .ToListAsync();
+
+        return questions
+            .OrderBy(_ => Guid.NewGuid())
+            .Take(count)
+            .ToList();
+    }
+
 }

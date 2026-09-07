@@ -35,11 +35,14 @@ public class QuestionService
     public async Task<List<QuestionDto>> GetByCategoryAsync(string categoryId)
     {
         var questions =
-            await _questionRepository.GetByCategoryAsync(categoryId);
+        await _questionRepository.GetRandomByCategoryAsync(
+            categoryId,
+            10
+        );
 
-        return questions
-            .Select(MapToDto)
-            .ToList();
+    return questions
+        .Select(MapToDto)
+        .ToList();
     }
 
     public async Task<AnswerResultDto?> ValidateAnswerAsync(
