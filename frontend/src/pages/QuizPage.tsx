@@ -244,11 +244,19 @@ function QuizPage() {
             <button
               className={`answer-button${
                 selectedAnswerId === answer.id ? " selected" : ""
+              }${
+                answerResult?.correctAnswerId === answer.id ? " correct" : ""
+              }${
+                answerResult &&
+                !answerResult.isCorrect &&
+                selectedAnswerId === answer.id
+                  ? " incorrect"
+                  : ""
               }`}
               key={answer.id}
               onClick={() => handleAnswerClick(answer.id)}
               type="button"
-               disabled={isSubmittingAnswer}
+              disabled={isSubmittingAnswer}
             >
               <span className="answer-letter">
                 {String.fromCharCode(65 + index)}
