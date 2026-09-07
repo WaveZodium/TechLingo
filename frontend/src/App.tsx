@@ -5,7 +5,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
-import OverviewPage from "./pages/OverviewPage";
+import CategoriesPage from "./pages/CategoriesPage";
 import QuizPage from "./pages/QuizPage";
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
           {/* endast för användare */}
           {/* Dessa routes kräver att användaren är autentiserad. */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/overview" element={<OverviewPage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
 
             {/* categoryId används för att identifiera vilken kategoris frågor som ska hämtas. */}
             <Route path="/quiz/:categoryId" element={<QuizPage />} />

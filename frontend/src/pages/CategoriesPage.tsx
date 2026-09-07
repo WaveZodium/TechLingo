@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import "../styles/OverviewPage.css";
+import "../styles/CategoriesPage.css";
 
 import { getCategories } from "../api/categoryApi";
 import type { Category } from "../types/category";
 
-function OverviewPage() {
+function CategoriesPage() {
   // Sparar kategorierna som hämtas från backend.
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,12 +34,12 @@ function OverviewPage() {
   }, []);
 
   return (
-    <section className="overview">
-      <div className="overview__content">
-        <div className="overview__header">
-          <h1 className="overview__title">Choose a category</h1>
+    <section className="category">
+      <div className="category__content">
+        <div className="category__header">
+          <h1 className="category__title">Choose a category</h1>
 
-          <p className="overview__description">
+          <p className="category__description">
             Pick a topic you want to master. Each quiz is fun, fast and packed
             with useful knowledge!
           </p>
@@ -83,4 +83,4 @@ function OverviewPage() {
   );
 }
 
-export default OverviewPage;
+export default CategoriesPage;
