@@ -19,25 +19,72 @@ public class QuizController : ControllerBase
         _quizService = quizService;
     }
 
-    [HttpPost("complete")]
-    public async Task<ActionResult<QuizResultDto>> CompleteQuiz(
-        CompleteQuizDto completeQuizDto)
+    [HttpPost("start/{categoryId}")]
+    public async Task<ActionResult<StartQuizResultDto>> StartQuiz(
+        string categoryId)
     {
-        var userId =
-            User.FindFirstValue(ClaimTypes.NameIdentifier) ??
-            User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        var userId = GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await _quizService.StartQuizAsync(
+            userId,
+            categoryId
+        );
+
+        if (result is null)
+            return BadRequest("Could not start quiz.");
+
+        return Ok(result);
+    }
+
+    [HttpPost("{sessionId}/answer")]
+    public async Task<ActionResult<AnswerResultDto>> SubmitAnswer(
+        string sessionId,
+        SubmitAnswerDto submitAnswerDto)
+    {
+        var userId = GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await _quizService.SubmitAnswerAsync(
+            sessionId,
+            userId,
+            submitAnswerDto
+        );
+
+        if (result is null)
+            return BadRequest("Could not submit answer.");
+
+        return Ok(result);
+    }
+
+    [HttpPost("{sessionId}/complete")]
+    public async Task<ActionResult<QuizResultDto>> CompleteQuiz(
+        string sessionId)
+    {
+        var userId = GetUserId();
 
         if (userId is null)
             return Unauthorized();
 
         var result = await _quizService.CompleteQuizAsync(
-            userId,
-            completeQuizDto
+            sessionId,
+            userId
         );
 
         if (result is null)
             return BadRequest("Could not complete quiz.");
 
         return Ok(result);
+    }
+
+    private string? GetUserId()
+    {
+        return
+            User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub);
     }
 }
