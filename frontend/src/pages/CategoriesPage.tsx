@@ -45,7 +45,7 @@ function CategoriesPage() {
           </p>
         </div>
 
-        <div className="overview__categories">
+        <div className="category__categories">
           {isLoading && <p>Loading categories...</p>}
 
           {error && <p>{error}</p>}
@@ -54,22 +54,22 @@ function CategoriesPage() {
             !error &&
             categories.map((category, index) => (
               <article
-                className="overview__card"
+                className="category__card"
                 key={category.id}
                 style={{
                   animationDelay: `${index * -2}s`,
                 }}
               >
-                <div className="overview__card-content">
-                  <h2 className="overview__card-title">{category.name}</h2>
+                <div className="category__card-content">
+                  <h2 className="category__card-title">{category.name}</h2>
 
-                  <p className="overview__card-description">
+                  <p className="category__card-description">
                     {category.description}
                   </p>
 
                   <Link
                     to={`/quiz/${category.id}`}
-                    className="overview__button"
+                    className="category__button"
                   >
                     <span>Start quiz</span>
                     <span aria-hidden="true">→</span>
