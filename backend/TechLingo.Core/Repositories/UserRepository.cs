@@ -47,5 +47,26 @@ namespace TechLingo.Core.Repositories
         {
             await _users.DeleteOneAsync(u => u.Id == id);
         }
+
+        public async Task<int?> AddPointsAsync(string userId, int points)
+        {
+            var update = Builders<User>.Update
+                .Inc(user => user.TotalScore, points);
+
+            var options = new FindOneAndUpdateOptions<User>
+            {
+                ReturnDocument = ReturnDocument.After
+            };
+
+            var updatedUser = await _users.FindOneAndUpdateAsync(
+                user => user.Id == userId,
+                update,
+                options
+            );
+
+            return updatedUser?.TotalScore;
+        }
+        
+        
     }
 }

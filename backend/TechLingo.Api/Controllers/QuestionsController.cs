@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TechLingo.Core.DTOs;
-using TechLingo.Core.Enums;
 using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
@@ -38,19 +39,32 @@ public class QuestionsController : ControllerBase
     }
 
     [HttpPost("question/answer")]
-    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(SubmitAnswerDto submitAnswerDto)
+    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(
+        SubmitAnswerDto submitAnswerDto)
     {
-        var result = await _questionService.ValidateAnswerAsync(submitAnswerDto);
+        var userId =
+            User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await _questionService.ValidateAnswerAsync(
+            submitAnswerDto,
+            userId);
 
         if (result is null)
+        {
             return NotFound(new AnswerResultDto
             {
                 IsCorrect = false,
                 Points = 0,
-                CorrectAnswer = String.Empty,
-                CorrectAnswerId = String.Empty,
-                ErrorMessage = "Question not found."
+                TotalScore = 0,
+                CorrectAnswer = string.Empty,
+                CorrectAnswerId = string.Empty,
+                ErrorMessage = "Question, answer or user not found."
             });
+        }
 
         return Ok(result);
     }

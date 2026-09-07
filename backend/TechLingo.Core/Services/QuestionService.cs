@@ -1,16 +1,21 @@
 using TechLingo.Core.DTOs;
 using TechLingo.Core.Entities;
 using TechLingo.Core.Repositories;
+using TechLingo.Core.Interfaces;
 
 namespace TechLingo.Core.Services;
 
 public class QuestionService
 {
     private readonly QuestionRepository _questionRepository;
+    private readonly IUserRepository _userRepository;
 
-    public QuestionService(QuestionRepository questionRepository)
+    public QuestionService(
+        QuestionRepository questionRepository,
+        IUserRepository userRepository)
     {
         _questionRepository = questionRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<List<QuestionDto>> GetAllAsync()
@@ -42,28 +47,65 @@ public class QuestionService
             .ToList();
     }
 
-    public async Task<AnswerResultDto?> ValidateAnswerAsync(SubmitAnswerDto submitAnswerDto)
+  public async Task<AnswerResultDto?> ValidateAnswerAsync(
+    SubmitAnswerDto submitAnswerDto,
+    string userId)
+{
+    var question = await _questionRepository
+        .GetByIdAsync(submitAnswerDto.questionId);
+
+    if (question is null)
+        return null;
+
+    var selectedOption = question.Options.FirstOrDefault(
+        option => option.Id == submitAnswerDto.answerId);
+
+    if (selectedOption is null)
+        return null;
+
+    var correctOption = question.Options.FirstOrDefault(
+        option => option.IsCorrect);
+
+    var isCorrect = selectedOption.IsCorrect;
+
+    var user = await _userRepository.GetByIdAsync(userId);
+
+    if (user is null)
+        return null;
+
+    var points = isCorrect ? 100 : -200;
+
+    var newTotalScore = Math.Max(
+        0,
+        user.TotalScore + points
+    );
+
+    var scoreChange =
+        newTotalScore - user.TotalScore;
+
+    var totalScore = await _userRepository.AddPointsAsync(
+        userId,
+        scoreChange
+    );
+
+    if (totalScore is null)
+        return null;
+
+    return new AnswerResultDto
     {
-        var question = await _questionRepository.GetByIdAsync(submitAnswerDto.questionId);
-
-        if (question is null) return null;
-
-        // Find the selected answer option.
-        var selectedOption = question.Options.FirstOrDefault(option => option.Id == submitAnswerDto.answerId);
-
-        var isCorrect = selectedOption?.IsCorrect ?? false;
-
-        var correctOption = question.Options.FirstOrDefault(option => option.IsCorrect);
-
-        return new AnswerResultDto
-        {
-            IsCorrect = isCorrect,
-            Points = isCorrect ? 100 : -200,
-            CorrectAnswer = isCorrect ? selectedOption!.Text : correctOption?.Text,
-            CorrectAnswerId = isCorrect ? selectedOption!.Id : correctOption?.Id,
-            ErrorMessage = isCorrect ? null : $"'{selectedOption!.Text}' is wrong! The correct answer is '{correctOption?.Text}'."
-        };
-    }
+        IsCorrect = isCorrect,
+        Points = isCorrect ? 100 : -200,
+        CorrectAnswer = isCorrect
+            ? selectedOption!.Text
+            : correctOption?.Text,
+        CorrectAnswerId = isCorrect
+            ? selectedOption!.Id
+            : correctOption?.Id,
+        ErrorMessage = isCorrect
+            ? null
+            : $"'{selectedOption!.Text}' is wrong! The correct answer is '{correctOption?.Text}'."
+    };
+}
 
     private static QuestionDto MapToDto(Question question)
     {
