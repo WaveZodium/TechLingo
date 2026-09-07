@@ -45,6 +45,75 @@
   color: var(--color-warm-ivory);
 }
 
+/* Quiz-information above the shell */
+
+.quiz-placeholder {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+
+  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+
+  margin: 0 auto 18px;
+}
+
+.quiz-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+
+  min-width: 0;
+  padding: 10px 16px;
+
+  color: var(--color-white);
+
+  background: rgba(10, 34, 82, 0.58);
+  border: 1px solid rgba(45, 105, 255, 0.3);
+  border-radius: 10px;
+
+  box-shadow: 0 0 16px rgba(0, 80, 255, 0.08);
+}
+
+.quiz-stat--score {
+  justify-self: end;
+}
+
+.quiz-stat--center {
+  justify-self: center;
+  min-width: 72px;
+  min-height: 40px;
+}
+
+.quiz-stat-group {
+  display: flex;
+  justify-self: end;
+  align-items: center;
+  gap: 10px;
+}
+
+.quiz-stat--question {
+  justify-self: stretch;
+}
+
+.quiz-stat-label {
+  color: rgba(245, 241, 232, 0.62);
+
+  font-family: var(--font-roboto-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quiz-stat strong {
+  overflow: hidden;
+
+  font-size: 1rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Hela quiz-kortet */
 
 .quiz-shell {
@@ -586,6 +655,34 @@
     border-radius: 20px;
   }
 
+  .quiz-placeholder {
+    width: min(calc(100% - 32px), var(--content-max-width));
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .quiz-stat {
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .quiz-stat-group {
+    gap: 6px;
+  }
+
+  .quiz-stat--center {
+    min-width: 0;
+    min-height: 36px;
+  }
+
+  .quiz-stat-label {
+    font-size: 0.62rem;
+  }
+
+  .quiz-stat strong {
+    font-size: 0.9rem;
+  }
+
   .conversation {
     gap: 18px;
   }
@@ -681,3 +778,12 @@
     transition: none;
   }
 }
+
+.points {
+  font-weight: 700;
+  color: #0f0;
+}
+.points.wrong {
+  color: #ff9a76;
+}
+
