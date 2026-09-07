@@ -1,6 +1,6 @@
 import "../styles/QuizPage.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import { getCategories } from "../api/categoryApi";
@@ -60,6 +60,9 @@ function QuizPage() {
 
   const [isCompletingQuiz, setIsCompletingQuiz] = useState(false);
 
+  const startQuizPromiseRef = useRef<ReturnType<typeof startQuiz> | null>(null);
+  const startQuizCategoryRef = useRef<string | null>(null);
+
   useEffect(() => {
     let ignore = false;
 
@@ -89,7 +92,15 @@ function QuizPage() {
         setSessionId(null);
         setQuizResult(null);
 
-        const quiz = await startQuiz(categoryId);
+        if (
+          startQuizCategoryRef.current !== categoryId ||
+          !startQuizPromiseRef.current
+        ) {
+          startQuizCategoryRef.current = categoryId;
+          startQuizPromiseRef.current = startQuiz(categoryId);
+        }
+
+        const quiz = await startQuizPromiseRef.current;
 
         if (!ignore) {
           setSessionId(quiz.sessionId);
