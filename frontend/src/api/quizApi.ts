@@ -6,13 +6,13 @@ import type {
   StartQuizResult,
   SubmitAnswerRequest,
 } from "../types/question";
-
+// starta ett nytt quiz
 export async function startQuiz(categoryId: string): Promise<StartQuizResult> {
   const response = await api.post<StartQuizResult>(`/Quiz/start/${categoryId}`);
 
   return response.data;
 }
-
+// skicka svar på en fråga
 export async function submitQuizAnswer(
   sessionId: string,
   request: SubmitAnswerRequest,
@@ -24,7 +24,7 @@ export async function submitQuizAnswer(
 
   return response.data;
 }
-
+// avsluta quiz och hämta resultatet
 export async function completeQuiz(sessionId: string): Promise<QuizResult> {
   const response = await api.post<QuizResult>(`/Quiz/${sessionId}/complete`);
 

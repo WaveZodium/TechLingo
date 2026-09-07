@@ -21,6 +21,7 @@ public class QuizService
         _quizSessionRepository = quizSessionRepository;
     }
 
+    // startar ett nytt quiz för en användare inom en viss kategori
     public async Task<StartQuizResultDto?> StartQuizAsync(
         string userId,
         string categoryId)
@@ -49,6 +50,7 @@ public class QuizService
         };
     }
 
+    // skickar ett svar på en fråga inom en pågående quizsession
     public async Task<AnswerResultDto?> SubmitAnswerAsync(
         string sessionId,
         string userId,
@@ -108,6 +110,7 @@ public class QuizService
         return result;
     }
 
+    // avslutar ett pågående quiz och beräknar resultatet
     public async Task<QuizResultDto?> CompleteQuizAsync(
         string sessionId,
         string userId)
@@ -119,20 +122,20 @@ public class QuizService
             return null;
 
         if (session.UserId != userId)
-            return null;
+            return null; // säkerställer att endast användaren som startade quizet kan avsluta det
 
         if (session.IsCompleted)
             return null;
 
-        if (session.Answers.Count != 10)
+        if (session.Answers.Count != 10) // säkerställer att alla frågor har besvarats innan quiz avslutas
             return null;
 
         var user =
-            await _userRepository.GetByIdAsync(userId);
+            await _userRepository.GetByIdAsync(userId); // hämtar användaren som genomför quizet
 
         if (user is null)
             return null;
-
+        // markerar quizsessionen som avslutad och beräknar poängen
         var completedSession =
             await _quizSessionRepository.CompleteAsync(
                 sessionId
@@ -142,7 +145,7 @@ public class QuizService
             return null;
 
         var quizScore = completedSession.Score;
-
+        // beräknar den nya totala poängen för användaren efter quizet
         var newTotalScore = Math.Max(
             0,
             user.TotalScore + quizScore
@@ -150,7 +153,7 @@ public class QuizService
 
         var scoreChange =
             newTotalScore - user.TotalScore;
-
+        // uppdaterar användarens totala poäng med förändringen
         var totalScore =
             await _userRepository.AddPointsAsync(
                 userId,
@@ -159,7 +162,7 @@ public class QuizService
 
         if (totalScore is null)
             return null;
-
+        // returnerar resultatet av quizet inklusive poängen användaren fick och den nya totala poängen
         return new QuizResultDto
         {
             QuizScore = quizScore,

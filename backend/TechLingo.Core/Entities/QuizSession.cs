@@ -5,6 +5,7 @@ namespace TechLingo.Core.Entities;
 
 public class QuizSession
 {
+    // representerar en pågående quizsession för en användare inom en viss kategori
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } =

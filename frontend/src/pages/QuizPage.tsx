@@ -92,6 +92,7 @@ function QuizPage() {
         setSessionId(null);
         setQuizResult(null);
 
+        //för att inte start 2 quiz (strict mode)
         if (
           startQuizCategoryRef.current !== categoryId ||
           !startQuizPromiseRef.current

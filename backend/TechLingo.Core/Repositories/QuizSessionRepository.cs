@@ -12,15 +12,15 @@ public class QuizSessionRepository
         _quizSessions =
             database.GetCollection<QuizSession>("quizSessions");
     }
-
+    // hanterar CRUD-operationer för quizsessioner i databasen
     public async Task CreateAsync(QuizSession quizSession)
     {
         await _quizSessions.InsertOneAsync(quizSession);
     }
-
+    // hämtar en quizsession baserat på dess ID
     public async Task<QuizSession?> GetByIdAsync(string id)
     {
-        return await _quizSessions
+        return await _quizSessions 
             .Find(session => session.Id == id)
             .FirstOrDefaultAsync();
     }
@@ -29,15 +29,18 @@ public class QuizSessionRepository
         string sessionId,
         QuizSessionAnswer answer)
     {
+        // skapar filter för att hitta den quizsession som ska uppdateras med det nya svaret
         var filter = Builders<QuizSession>.Filter.And(
             Builders<QuizSession>.Filter.Eq(
                 session => session.Id,
                 sessionId
             ),
+
             Builders<QuizSession>.Filter.Eq(
                 session => session.IsCompleted,
                 false
             ),
+            // säkerställer att quizsessionen inte redan är avslutad innan ett svar läggs till
             Builders<QuizSession>.Filter.Not(
                 Builders<QuizSession>.Filter.ElemMatch(
                     session => session.Answers,
@@ -56,7 +59,7 @@ public class QuizSessionRepository
                 session => session.Score,
                 answer.Points
             );
-
+        // utför uppdateringen av quizsessionen med det angivna filtret och uppdateringsdefinitionen
         var result = await _quizSessions.UpdateOneAsync(
             filter,
             update
@@ -64,10 +67,11 @@ public class QuizSessionRepository
 
         return result.ModifiedCount == 1;
     }
-
+    // markerar en quizsession som avslutad och returnerar den uppdaterade sessionen
     public async Task<QuizSession?> CompleteAsync(
         string sessionId)
     {
+        // skapar filter för att hitta den quizsession som ska markeras som avslutad
         var filter = Builders<QuizSession>.Filter.And(
             Builders<QuizSession>.Filter.Eq(
                 session => session.Id,
@@ -83,6 +87,7 @@ public class QuizSessionRepository
             )
         );
 
+        // skapar uppdateringsdefinitionen för att markera quizsessionen som avslutad och sätta avslutningstid
         var update = Builders<QuizSession>.Update
             .Set(
                 session => session.IsCompleted,
@@ -93,10 +98,11 @@ public class QuizSessionRepository
                 DateTime.UtcNow
             );
 
+        // skapar alternativ för att returnera den uppdaterade quizsessionen efter uppdateringen
         var options =
             new FindOneAndUpdateOptions<QuizSession>
             {
-                ReturnDocument = ReturnDocument.After
+                ReturnDocument = ReturnDocument.After // returnerar den uppdaterade quizsessionen efter uppdateringen
             };
 
         return await _quizSessions.FindOneAndUpdateAsync(
