@@ -5,7 +5,14 @@ import { useParams } from "react-router-dom";
 
 import { getCategories } from "../api/categoryApi";
 import { getQuestionsByCategory, submitAnswer } from "../api/questionApi";
-import type { AnswerResult, Question } from "../types/question";
+import { completeQuiz } from "../api/quizApi";
+
+import type {
+  AnswerResult,
+  Question,
+  QuizResult,
+  SubmitAnswerRequest,
+} from "../types/question";
 
 function RobotAvatar() {
   return (
@@ -36,9 +43,12 @@ function QuizPage() {
 
   // Sparar frågorna som hämtas från backend.
   const [questions, setQuestions] = useState<Question[]>([]);
+
+  // Sparar namnet på quizet.
   const [quizName, setQuizName] = useState("Quiz");
 
-  const [currentQuestionIndex /* setCurrentQuestionIndex */] = useState(0);
+  // Håller reda på vilken fråga som visas.
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Håller reda på vilket svar användaren har valt.
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
@@ -49,15 +59,24 @@ function QuizPage() {
 
   // Hanterar resultatet av ett svar.
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
-  
+
   // Hanterar om ett svar håller på att skickas in.
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
 
   // Hanterar eventuella fel vid inlämning av svar.
   const [answerError, setAnswerError] = useState<string | null>(null);
 
-  // Hanterar spelarens totala poäng.
+  // Hanterar poängen för den pågående quizrundan.
   const [score, setScore] = useState(0);
+
+  // Sparar svaren som användaren lämnar under rundan.
+  const [quizAnswers, setQuizAnswers] = useState<SubmitAnswerRequest[]>([]);
+
+  // Sparar resultatet när hela quizet är avslutat.
+  const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+
+  // Hanterar om quizet håller på att avslutas.
+  const [isCompletingQuiz, setIsCompletingQuiz] = useState(false);
 
   // Hämtar frågor när categoryId ändras.
   useEffect(() => {
@@ -73,13 +92,20 @@ function QuizPage() {
       try {
         setIsLoading(true);
         setError(null);
+
         setQuestions([]);
         setQuizName("Quiz");
+
+        setCurrentQuestionIndex(0);
         setSelectedAnswerId(null);
         setAnswerResult(null);
         setAnswerError(null);
         setIsSubmittingAnswer(false);
+
         setScore(0);
+        setQuizAnswers([]);
+        setQuizResult(null);
+        setIsCompletingQuiz(false);
 
         const data = await getQuestionsByCategory(categoryId);
 
@@ -89,6 +115,7 @@ function QuizPage() {
 
         try {
           const categories = await getCategories();
+
           const category = categories.find((item) => item.id === categoryId);
 
           if (!ignore && category) {
@@ -100,6 +127,7 @@ function QuizPage() {
       } catch (error) {
         if (!ignore) {
           console.error("Failed to load questions:", error);
+
           setError("Could not load questions.");
         }
       } finally {
@@ -157,8 +185,11 @@ function QuizPage() {
     (option) => option.id === selectedAnswerId,
   );
 
+  // Kontrollerar om detta är sista frågan.
+  const isLastQuestion = currentQuestionIndex === questions.length - 1;
+
   const handleAnswerClick = async (answerId: string) => {
-    if (isSubmittingAnswer || answerResult) {
+    if (isSubmittingAnswer || answerResult || quizResult) {
       return;
     }
 
@@ -174,13 +205,72 @@ function QuizPage() {
       });
 
       setAnswerResult(result);
+
+      // Lägger till poängen från frågan
+      // i den pågående rundans poäng.
       setScore((currentScore) => currentScore + result.points);
+
+      // Sparar svaret så hela rundan
+      // kan kontrolleras av backend i slutet.
+      setQuizAnswers((currentAnswers) => [
+        ...currentAnswers,
+        {
+          questionId: currentQuestion.id,
+          answerId,
+        },
+      ]);
     } catch (error) {
       console.error("Failed to submit answer:", error);
+
       setAnswerError("Could not check the answer.");
     } finally {
       setIsSubmittingAnswer(false);
     }
+  };
+
+  const handleNextQuestion = async () => {
+    if (!answerResult || isCompletingQuiz) {
+      return;
+    }
+
+    // Sista frågan avslutar hela quizrundan.
+    if (isLastQuestion) {
+      if (!categoryId) {
+        return;
+      }
+
+      try {
+        setIsCompletingQuiz(true);
+        setAnswerError(null);
+
+        const result = await completeQuiz({
+          categoryId,
+          answers: quizAnswers,
+        });
+
+        setQuizResult(result);
+
+        // Backend räknar själv fram
+        // den slutgiltiga rundpoängen.
+        setScore(result.quizScore);
+      } catch (error) {
+        console.error("Failed to complete quiz:", error);
+
+        setAnswerError("Could not complete the quiz.");
+      } finally {
+        setIsCompletingQuiz(false);
+      }
+
+      return;
+    }
+
+    // Går vidare till nästa fråga.
+    setCurrentQuestionIndex((currentIndex) => currentIndex + 1);
+
+    // Återställer state för nästa fråga.
+    setSelectedAnswerId(null);
+    setAnswerResult(null);
+    setAnswerError(null);
   };
 
   return (
@@ -188,14 +278,16 @@ function QuizPage() {
       <div className="quiz-placeholder">
         <div className="quiz-stat quiz-stat--name">
           <span className="quiz-stat-label">Quiz</span>
+
           <strong>{quizName}</strong>
         </div>
 
-        <div  aria-hidden="true" />
+        <div aria-hidden="true" />
 
         <div className="quiz-stat-group">
           <div className="quiz-stat quiz-stat--question">
             <span className="quiz-stat-label">Question</span>
+
             <strong>
               {currentQuestionIndex + 1} / {questions.length}
             </strong>
@@ -203,6 +295,7 @@ function QuizPage() {
 
           <div className="quiz-stat quiz-stat--score">
             <span className="quiz-stat-label">Score</span>
+
             <strong>{score}</strong>
           </div>
         </div>
@@ -258,17 +351,43 @@ function QuizPage() {
                 <span className="message-sender">TechLingo</span>
 
                 <div className="bubble bubble--robot">
-                    {answerResult.isCorrect ? (
-                      <>
-                      Correct! You got <span className="points">{answerResult.points}</span> points.
-                      </>
-                    ) : (
+                  {answerResult.isCorrect ? (
                     <>
-                      Not quite. The correct answer is "{answerResult.correctAnswer}".
+                      Correct! You got{" "}
+                      <span className="points">{answerResult.points}</span>{" "}
+                      points.
+                    </>
+                  ) : (
+                    <>
+                      Not quite. The correct answer is "
+                      {answerResult.correctAnswer}
+                      ".
                       <br />
-                      You got <span className="points wrong">{answerResult.points}</span> points.
+                      You got{" "}
+                      <span className="points wrong">
+                        {answerResult.points}
+                      </span>{" "}
+                      points.
                     </>
                   )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {quizResult && (
+            <div className="message-row message-row--robot">
+              <RobotAvatar />
+
+              <div className="message-content">
+                <span className="message-sender">TechLingo</span>
+
+                <div className="bubble bubble--robot">
+                  Quiz complete!
+                  <br />
+                  Quiz score: {quizResult.quizScore}
+                  <br />
+                  Total score: {quizResult.totalScore}
                 </div>
               </div>
             </div>
@@ -306,7 +425,11 @@ function QuizPage() {
               key={answer.id}
               onClick={() => handleAnswerClick(answer.id)}
               type="button"
-              disabled={isSubmittingAnswer}
+              disabled={
+                isSubmittingAnswer ||
+                answerResult !== null ||
+                quizResult !== null
+              }
             >
               <span className="answer-letter">
                 {String.fromCharCode(65 + index)}
@@ -317,6 +440,19 @@ function QuizPage() {
           ))}
         </div>
 
+        {answerResult && !quizResult && (
+          <button
+            type="button"
+            onClick={handleNextQuestion}
+            disabled={isCompletingQuiz}
+          >
+            {isCompletingQuiz
+              ? "Finishing..."
+              : isLastQuestion
+                ? "Finish quiz"
+                : "Next question"}
+          </button>
+        )}
       </section>
     </main>
   );

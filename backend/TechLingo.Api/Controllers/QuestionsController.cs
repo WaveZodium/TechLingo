@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using TechLingo.Core.DTOs;
 using TechLingo.Core.Services;
 
@@ -42,16 +40,8 @@ public class QuestionsController : ControllerBase
     public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(
         SubmitAnswerDto submitAnswerDto)
     {
-        var userId =
-            User.FindFirstValue(ClaimTypes.NameIdentifier) ??
-            User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
-        if (userId is null)
-            return Unauthorized();
-
-        var result = await _questionService.ValidateAnswerAsync(
-            submitAnswerDto,
-            userId);
+        var result =
+            await _questionService.ValidateAnswerAsync(submitAnswerDto);
 
         if (result is null)
         {
@@ -59,10 +49,9 @@ public class QuestionsController : ControllerBase
             {
                 IsCorrect = false,
                 Points = 0,
-                TotalScore = 0,
                 CorrectAnswer = string.Empty,
                 CorrectAnswerId = string.Empty,
-                ErrorMessage = "Question, answer or user not found."
+                ErrorMessage = "Question or answer not found."
             });
         }
 
