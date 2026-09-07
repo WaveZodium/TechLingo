@@ -3,8 +3,8 @@ import "../styles/QuizPage.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { getQuestionsByCategory } from "../api/questionApi";
-import type { Question } from "../types/question";
+import { getQuestionsByCategory, submitAnswer } from "../api/questionApi";
+import type { AnswerResult, Question } from "../types/question";
 
 function RobotAvatar() {
   return (
@@ -45,6 +45,15 @@ function QuizPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Hanterar resultatet av ett svar.
+  const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
+  
+  // Hanterar om ett svar håller på att skickas in.
+  const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
+
+  // Hanterar eventuella fel vid inlämning av svar.
+  const [answerError, setAnswerError] = useState<string | null>(null);
+
   // Hämtar frågor när categoryId ändras.
   useEffect(() => {
     let ignore = false;
@@ -61,6 +70,9 @@ function QuizPage() {
         setError(null);
         setQuestions([]);
         setSelectedAnswerId(null);
+        setAnswerResult(null);
+        setAnswerError(null);
+        setIsSubmittingAnswer(false);
 
         const data = await getQuestionsByCategory(categoryId);
 
@@ -127,6 +139,31 @@ function QuizPage() {
     (option) => option.id === selectedAnswerId,
   );
 
+  const handleAnswerClick = async (answerId: string) => {
+    if (isSubmittingAnswer) {
+      return;
+    }
+
+    setSelectedAnswerId(answerId);
+    setAnswerResult(null);
+    setAnswerError(null);
+    setIsSubmittingAnswer(true);
+
+    try {
+      const result = await submitAnswer({
+        questionId: currentQuestion.id,
+        answerId,
+      });
+
+      setAnswerResult(result);
+    } catch (error) {
+      console.error("Failed to submit answer:", error);
+      setAnswerError("Could not check the answer.");
+    } finally {
+      setIsSubmittingAnswer(false);
+    }
+  };
+
   return (
     <main className="quiz-page">
       <section className="quiz-shell" aria-labelledby="quiz-title">
@@ -170,6 +207,34 @@ function QuizPage() {
               <UserAvatar />
             </div>
           )}
+
+          {answerResult && (
+            <div className="message-row message-row--robot">
+              <RobotAvatar />
+
+              <div className="message-content">
+                <span className="message-sender">TechLingo</span>
+
+                <div className="bubble bubble--robot">
+                  {answerResult.isCorrect
+                    ? `Correct! You got ${answerResult.points} points.`
+                    : `Not quite. The correct answer is "${answerResult.correctAnswer}".`}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {answerError && (
+            <div className="message-row message-row--robot">
+              <RobotAvatar />
+
+              <div className="message-content">
+                <span className="message-sender">TechLingo</span>
+
+                <div className="bubble bubble--robot">{answerError}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="divider" />
@@ -181,8 +246,9 @@ function QuizPage() {
                 selectedAnswerId === answer.id ? " selected" : ""
               }`}
               key={answer.id}
-              onClick={() => setSelectedAnswerId(answer.id)}
+              onClick={() => handleAnswerClick(answer.id)}
               type="button"
+               disabled={isSubmittingAnswer}
             >
               <span className="answer-letter">
                 {String.fromCharCode(65 + index)}

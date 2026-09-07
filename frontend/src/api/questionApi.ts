@@ -1,5 +1,9 @@
 import api from "./api";
-import type { Question } from "../types/question";
+import type {
+  AnswerResult,
+  Question,
+  SubmitAnswerRequest,
+} from "../types/question";
 
 // Hämtar alla frågor som tillhör en specifik kategori.
 export async function getQuestionsByCategory(categoryId: string) {
@@ -9,5 +13,15 @@ export async function getQuestionsByCategory(categoryId: string) {
   );
 
   // Returnerar endast datan från Axios-svaret.
+  return response.data;
+}
+
+// Skickar ett svar på en fråga till servern och returnerar resultatet.
+export async function submitAnswer(request: SubmitAnswerRequest): Promise<AnswerResult> {
+  const response = await api.post<AnswerResult>(
+    "/Questions/question/answer",
+    request,
+  );
+
   return response.data;
 }
