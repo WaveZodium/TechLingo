@@ -4,15 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { getCategories } from "../api/categoryApi";
-import { getQuestionsByCategory, submitAnswer } from "../api/questionApi";
-import { completeQuiz } from "../api/quizApi";
+import { startQuiz, submitQuizAnswer, completeQuiz } from "../api/quizApi";
 
-import type {
-  AnswerResult,
-  Question,
-  QuizResult,
-  SubmitAnswerRequest,
-} from "../types/question";
+import type { AnswerResult, Question, QuizResult } from "../types/question";
 
 function RobotAvatar() {
   return (
@@ -38,47 +32,34 @@ function UserAvatar() {
 }
 
 function QuizPage() {
-  // Hämtar kategori-id från URL:en.
   const { categoryId } = useParams();
 
-  // Sparar frågorna som hämtas från backend.
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  // Sparar namnet på quizet.
   const [quizName, setQuizName] = useState("Quiz");
 
-  // Håller reda på vilken fråga som visas.
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // Håller reda på vilket svar användaren har valt.
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
 
-  // Hanterar laddningsstatus och eventuella fel.
   const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState<string | null>(null);
 
-  // Hanterar resultatet av ett svar.
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
 
-  // Hanterar om ett svar håller på att skickas in.
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
 
-  // Hanterar eventuella fel vid inlämning av svar.
   const [answerError, setAnswerError] = useState<string | null>(null);
 
-  // Hanterar poängen för den pågående quizrundan.
   const [score, setScore] = useState(0);
 
-  // Sparar svaren som användaren lämnar under rundan.
-  const [quizAnswers, setQuizAnswers] = useState<SubmitAnswerRequest[]>([]);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
-  // Sparar resultatet när hela quizet är avslutat.
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
 
-  // Hanterar om quizet håller på att avslutas.
   const [isCompletingQuiz, setIsCompletingQuiz] = useState(false);
 
-  // Hämtar frågor när categoryId ändras.
   useEffect(() => {
     let ignore = false;
 
@@ -100,17 +81,19 @@ function QuizPage() {
         setSelectedAnswerId(null);
         setAnswerResult(null);
         setAnswerError(null);
-        setIsSubmittingAnswer(false);
 
-        setScore(0);
-        setQuizAnswers([]);
-        setQuizResult(null);
+        setIsSubmittingAnswer(false);
         setIsCompletingQuiz(false);
 
-        const data = await getQuestionsByCategory(categoryId);
+        setScore(0);
+        setSessionId(null);
+        setQuizResult(null);
+
+        const quiz = await startQuiz(categoryId);
 
         if (!ignore) {
-          setQuestions(data);
+          setSessionId(quiz.sessionId);
+          setQuestions(quiz.questions);
         }
 
         try {
@@ -126,7 +109,7 @@ function QuizPage() {
         }
       } catch (error) {
         if (!ignore) {
-          console.error("Failed to load questions:", error);
+          console.error("Failed to start quiz:", error);
 
           setError("Could not load questions.");
         }
@@ -144,7 +127,6 @@ function QuizPage() {
     };
   }, [categoryId]);
 
-  // Loading
   if (isLoading) {
     return (
       <main className="quiz-page">
@@ -155,7 +137,6 @@ function QuizPage() {
     );
   }
 
-  // Fel
   if (error) {
     return (
       <main className="quiz-page">
@@ -166,7 +147,6 @@ function QuizPage() {
     );
   }
 
-  // Inga frågor
   if (questions.length === 0) {
     return (
       <main className="quiz-page">
@@ -177,19 +157,16 @@ function QuizPage() {
     );
   }
 
-  // Frågan som visas just nu.
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Hittar användarens valda svar.
   const selectedAnswer = currentQuestion.options.find(
     (option) => option.id === selectedAnswerId,
   );
 
-  // Kontrollerar om detta är sista frågan.
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleAnswerClick = async (answerId: string) => {
-    if (isSubmittingAnswer || answerResult || quizResult) {
+    if (isSubmittingAnswer || answerResult || quizResult || !sessionId) {
       return;
     }
 
@@ -199,26 +176,14 @@ function QuizPage() {
     setIsSubmittingAnswer(true);
 
     try {
-      const result = await submitAnswer({
+      const result = await submitQuizAnswer(sessionId, {
         questionId: currentQuestion.id,
         answerId,
       });
 
       setAnswerResult(result);
 
-      // Lägger till poängen från frågan
-      // i den pågående rundans poäng.
       setScore((currentScore) => currentScore + result.points);
-
-      // Sparar svaret så hela rundan
-      // kan kontrolleras av backend i slutet.
-      setQuizAnswers((currentAnswers) => [
-        ...currentAnswers,
-        {
-          questionId: currentQuestion.id,
-          answerId,
-        },
-      ]);
     } catch (error) {
       console.error("Failed to submit answer:", error);
 
@@ -233,9 +198,8 @@ function QuizPage() {
       return;
     }
 
-    // Sista frågan avslutar hela quizrundan.
     if (isLastQuestion) {
-      if (!categoryId) {
+      if (!sessionId) {
         return;
       }
 
@@ -243,15 +207,10 @@ function QuizPage() {
         setIsCompletingQuiz(true);
         setAnswerError(null);
 
-        const result = await completeQuiz({
-          categoryId,
-          answers: quizAnswers,
-        });
+        const result = await completeQuiz(sessionId);
 
         setQuizResult(result);
 
-        // Backend räknar själv fram
-        // den slutgiltiga rundpoängen.
         setScore(result.quizScore);
       } catch (error) {
         console.error("Failed to complete quiz:", error);
@@ -264,10 +223,8 @@ function QuizPage() {
       return;
     }
 
-    // Går vidare till nästa fråga.
     setCurrentQuestionIndex((currentIndex) => currentIndex + 1);
 
-    // Återställer state för nästa fråga.
     setSelectedAnswerId(null);
     setAnswerResult(null);
     setAnswerError(null);

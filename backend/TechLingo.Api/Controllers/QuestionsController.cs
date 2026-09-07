@@ -36,25 +36,4 @@ public class QuestionsController : ControllerBase
         return Ok(question);
     }
 
-    [HttpPost("question/answer")]
-    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(
-        SubmitAnswerDto submitAnswerDto)
-    {
-        var result =
-            await _questionService.ValidateAnswerAsync(submitAnswerDto);
-
-        if (result is null)
-        {
-            return NotFound(new AnswerResultDto
-            {
-                IsCorrect = false,
-                Points = 0,
-                CorrectAnswer = string.Empty,
-                CorrectAnswerId = string.Empty,
-                ErrorMessage = "Question or answer not found."
-            });
-        }
-
-        return Ok(result);
-    }
 }

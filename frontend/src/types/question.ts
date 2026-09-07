@@ -23,9 +23,9 @@ export interface SubmitAnswerRequest {
   questionId: string;
   answerId: string;
 }
-export interface CompleteQuizRequest {
-  categoryId: string;
-  answers: SubmitAnswerRequest[];
+export interface StartQuizResult {
+  sessionId: string;
+  questions: Question[];
 }
 
 export interface QuizResult {
