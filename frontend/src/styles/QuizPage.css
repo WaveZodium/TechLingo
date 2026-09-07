@@ -14,6 +14,37 @@
   color: var(--color-white);
 }
 
+/* Visuellt dold rubrik */
+
+.visually-hidden {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+
+  border: 0;
+}
+
+/* Statusmeddelanden */
+
+.quiz-status {
+  position: relative;
+  z-index: 1;
+
+  font-family: var(--font-roboto);
+  font-size: 1rem;
+
+  color: var(--color-warm-ivory);
+}
+
 /* Hela quiz-kortet */
 
 .quiz-shell {
@@ -112,17 +143,21 @@
   display: flex;
   flex-direction: column;
 
-  gap: 24px;
+  gap: 20px;
 }
 
 .message-row {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
 
-  gap: 18px;
+  gap: 14px;
 }
 
-.message-row.user {
+.message-row--robot {
+  justify-content: flex-start;
+}
+
+.message-row--user {
   justify-content: flex-end;
 
   animation: message-appear 0.28s ease-out both;
@@ -131,77 +166,104 @@
 @keyframes message-appear {
   from {
     opacity: 0;
-    transform: translateY(8px) scale(0.98);
+    transform: translateY(8px);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
-/* Meddelandebubblor */
+/* Innehållet bredvid avataren */
+
+.message-content {
+  display: flex;
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  gap: 6px;
+
+  max-width: min(720px, 72%);
+}
+
+.message-content--user {
+  align-items: flex-end;
+}
+
+/* Namn ovanför meddelandet */
+
+.message-sender {
+  padding-left: 5px;
+
+  color: rgba(245, 241, 232, 0.5);
+
+  font-family: var(--font-roboto-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+
+  letter-spacing: 0.04em;
+}
+
+.message-sender--user {
+  padding-left: 0;
+  padding-right: 5px;
+}
+
+/* Chattbubblor */
 
 .bubble {
-  position: relative;
+  width: fit-content;
+  max-width: 100%;
 
-  max-width: 680px;
-
-  padding: 16px 24px;
-
-  background: rgba(7, 55, 130, 0.72);
+  padding: 14px 18px;
 
   color: var(--color-white);
 
-  border: 1px solid rgba(80, 145, 255, 0.6);
-  border-radius: 12px;
-
   font-family: var(--font-roboto);
-  font-size: 1.1rem;
+  font-size: 1.02rem;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.45;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Robotens bubbla */
+
+.bubble--robot {
+  background: linear-gradient(
+    145deg,
+    rgba(7, 45, 104, 0.9),
+    rgba(9, 57, 128, 0.82)
+  );
+
+  border: 1px solid rgba(70, 135, 255, 0.32);
+
+  border-radius: 18px 18px 18px 6px;
 
   box-shadow:
-    0 0 12px rgba(0, 100, 255, 0.1),
-    inset 0 0 10px rgba(30, 100, 255, 0.05);
+    0 6px 18px rgba(0, 15, 50, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.bubble.robot::before {
-  content: "";
+/* Användarens bubbla */
 
-  position: absolute;
+.bubble--user {
+  background: linear-gradient(
+    145deg,
+    rgba(10, 88, 205, 0.92),
+    rgba(20, 117, 235, 0.86)
+  );
 
-  left: -11px;
-  bottom: 10px;
+  border: 1px solid rgba(95, 165, 255, 0.48);
 
-  width: 18px;
-  height: 18px;
+  border-radius: 18px 18px 6px 18px;
 
-  background: rgba(7, 55, 130, 0.95);
-
-  border-left: 1px solid rgba(80, 145, 255, 0.6);
-  border-bottom: 1px solid rgba(80, 145, 255, 0.6);
-
-  transform: rotate(45deg);
-}
-
-.bubble.user::after {
-  content: "";
-
-  position: absolute;
-
-  right: -11px;
-  bottom: 10px;
-
-  width: 18px;
-  height: 18px;
-
-  background: rgba(7, 55, 130, 0.95);
-
-  border-right: 1px solid rgba(80, 145, 255, 0.6);
-  border-top: 1px solid rgba(80, 145, 255, 0.6);
-
-  transform: rotate(45deg);
+  box-shadow:
+    0 6px 18px rgba(0, 60, 160, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* Avatarer */
@@ -214,21 +276,21 @@
 
   display: block;
 
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
 
   background: linear-gradient(
-    135deg,
-    rgba(7, 89, 234, 0.9),
-    rgba(22, 124, 255, 0.75)
+    145deg,
+    rgba(6, 64, 160, 0.95),
+    rgba(13, 102, 215, 0.82)
   );
 
-  border: 1px solid rgba(110, 180, 255, 0.8);
+  border: 1px solid rgba(92, 164, 255, 0.65);
   border-radius: 50%;
 
   box-shadow:
-    0 0 14px rgba(0, 100, 255, 0.25),
-    inset 0 0 8px rgba(255, 255, 255, 0.06);
+    0 6px 18px rgba(0, 58, 150, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Robot */
@@ -236,11 +298,11 @@
 .robot-face {
   position: absolute;
 
-  left: 12px;
-  top: 18px;
+  left: 11px;
+  top: 16px;
 
-  width: 30px;
-  height: 22px;
+  width: 28px;
+  height: 21px;
 
   border: 2px solid var(--color-white);
   border-radius: 7px;
@@ -249,11 +311,11 @@
 .robot-antenna {
   position: absolute;
 
-  left: 26px;
-  top: 9px;
+  left: 24px;
+  top: 8px;
 
   width: 2px;
-  height: 9px;
+  height: 8px;
 
   background: var(--color-white);
 }
@@ -277,7 +339,7 @@
 .robot-eye {
   position: absolute;
 
-  top: 6px;
+  top: 5px;
 
   width: 4px;
   height: 4px;
@@ -288,11 +350,11 @@
 }
 
 .robot-eye-left {
-  left: 7px;
+  left: 6px;
 }
 
 .robot-eye-right {
-  right: 7px;
+  right: 6px;
 }
 
 .robot-mouth {
@@ -300,7 +362,7 @@
 
   left: 6px;
   right: 6px;
-  bottom: 4px;
+  bottom: 3px;
 
   height: 3px;
 
@@ -312,8 +374,8 @@
 .user-head {
   position: absolute;
 
-  left: 19px;
-  top: 10px;
+  left: 17px;
+  top: 9px;
 
   width: 16px;
   height: 16px;
@@ -325,8 +387,8 @@
 .user-shoulders {
   position: absolute;
 
-  left: 12px;
-  bottom: 9px;
+  left: 10px;
+  bottom: 8px;
 
   width: 30px;
   height: 16px;
@@ -345,16 +407,16 @@
 
   height: 1px;
 
-  margin: 32px 0 28px;
+  margin: 34px 0 28px;
 
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(65, 135, 255, 0.55),
+    rgba(65, 135, 255, 0.45),
     transparent
   );
 
-  box-shadow: 0 0 10px rgba(22, 117, 255, 0.15);
+  box-shadow: 0 0 10px rgba(22, 117, 255, 0.12);
 }
 
 /* Svar */
@@ -480,9 +542,11 @@
   }
 
   .quiz-shell {
-    width: min(100% - 32px, 1100px);
-
     padding: 38px 32px 30px;
+  }
+
+  .message-content {
+    max-width: 78%;
   }
 }
 
@@ -495,7 +559,6 @@
   }
 
   .quiz-shell {
-    width: min(100% - 32px, 1100px);
     min-height: 0;
 
     padding: 28px 20px;
@@ -504,32 +567,68 @@
   }
 
   .conversation {
-    gap: 20px;
+    gap: 18px;
   }
 
   .message-row {
-    align-items: flex-start;
-
-    gap: 12px;
+    gap: 9px;
   }
 
-  .message-row.user {
-    align-items: center;
+  .message-content {
+    max-width: calc(100% - 52px);
   }
 
   .robot-avatar,
   .user-avatar {
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
+  }
 
-    transform: scale(0.88);
-    transform-origin: top center;
+  .robot-face {
+    left: 9px;
+    top: 14px;
+
+    width: 24px;
+    height: 18px;
+  }
+
+  .robot-antenna {
+    left: 20px;
+    top: 6px;
+  }
+
+  .user-head {
+    left: 14px;
+    top: 7px;
+
+    width: 14px;
+    height: 14px;
+  }
+
+  .user-shoulders {
+    left: 8px;
+    bottom: 7px;
+
+    width: 26px;
+    height: 14px;
+  }
+
+  .message-sender {
+    font-size: 0.62rem;
   }
 
   .bubble {
-    padding: 11px 15px;
+    padding: 12px 15px;
 
     font-size: 0.9rem;
+  }
+
+  .bubble--robot {
+    border-radius: 14px 14px 14px 5px;
+  }
+
+  .bubble--user {
+    border-radius: 14px 14px 5px 14px;
   }
 
   .answer-grid {
@@ -547,12 +646,14 @@
   }
 }
 
+/* Reduced motion */
+
 @media (prefers-reduced-motion: reduce) {
   .quiz-shell::before {
     animation: none;
   }
 
-  .message-row.user {
+  .message-row--user {
     animation: none;
   }
 

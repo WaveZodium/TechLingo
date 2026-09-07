@@ -10,6 +10,7 @@ function RobotAvatar() {
   return (
     <span className="robot-avatar" aria-hidden="true">
       <span className="robot-antenna" />
+
       <span className="robot-face">
         <span className="robot-eye robot-eye-left" />
         <span className="robot-eye robot-eye-right" />
@@ -29,22 +30,25 @@ function UserAvatar() {
 }
 
 function QuizPage() {
-  // Hämtar kategori-id från URL:en för att veta vilken kategoris frågor som ska visas.
+  // Hämtar kategori-id från URL:en.
   const { categoryId } = useParams();
 
   // Sparar frågorna som hämtas från backend.
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [currentQuestionIndex /* setCurrentQuestionIndex */] = useState(0); // aktivera när navigering mellan frågor implementeras
+
+  const [currentQuestionIndex /* setCurrentQuestionIndex */] = useState(0);
 
   // Håller reda på vilket svar användaren har valt.
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
 
-  // Hanterar laddningsstatus och eventuella fel vid hämtning.
+  // Hanterar laddningsstatus och eventuella fel.
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Hämtar frågor på nytt när categoryId ändras.
+  // Hämtar frågor när categoryId ändras.
   useEffect(() => {
+    let ignore = false;
+
     async function loadQuestions() {
       if (!categoryId) {
         setError("No category was selected.");
@@ -53,58 +57,72 @@ function QuizPage() {
       }
 
       try {
-        // Hämtar alla frågor som tillhör den valda kategorin.
+        setIsLoading(true);
+        setError(null);
+        setQuestions([]);
+        setSelectedAnswerId(null);
+
         const data = await getQuestionsByCategory(categoryId);
 
-        setQuestions(data);
+        if (!ignore) {
+          setQuestions(data);
+        }
       } catch (error) {
-        console.error("Failed to load questions:", error);
-        setError("Could not load questions.");
+        if (!ignore) {
+          console.error("Failed to load questions:", error);
+          setError("Could not load questions.");
+        }
       } finally {
-        setIsLoading(false);
+        if (!ignore) {
+          setIsLoading(false);
+        }
       }
     }
 
     loadQuestions();
+
+    return () => {
+      ignore = true;
+    };
   }, [categoryId]);
 
-  // Loading visas medan frågorna hämtas från backend.
+  // Loading
   if (isLoading) {
     return (
       <main className="quiz-page">
         <section className="quiz-shell">
-          <p>Loading questions...</p>
+          <p className="quiz-status">Loading questions...</p>
         </section>
       </main>
     );
   }
 
-  // kastar felmeddelande om hämtningen av frågor misslyckas.
+  // Fel
   if (error) {
     return (
       <main className="quiz-page">
         <section className="quiz-shell">
-          <p>{error}</p>
+          <p className="quiz-status">{error}</p>
         </section>
       </main>
     );
   }
 
-  // Hanterar fallet där kategorin inte innehåller några frågor.
+  // Inga frågor
   if (questions.length === 0) {
     return (
       <main className="quiz-page">
         <section className="quiz-shell">
-          <p>No questions found for this category.</p>
+          <p className="quiz-status">No questions found for this category.</p>
         </section>
       </main>
     );
   }
 
-  // Hämtar den fråga som ska visas just nu.
+  // Frågan som visas just nu.
   const currentQuestion = questions[currentQuestionIndex];
 
-  // Letar upp hela svarsalternativet utifrån det valda svarets id.
+  // Hittar användarens valda svar.
   const selectedAnswer = currentQuestion.options.find(
     (option) => option.id === selectedAnswerId,
   );
@@ -112,36 +130,42 @@ function QuizPage() {
   return (
     <main className="quiz-page">
       <section className="quiz-shell" aria-labelledby="quiz-title">
-        <h1
-          id="quiz-title"
-          style={{
-            position: "absolute",
-            width: 1,
-            height: 1,
-            overflow: "hidden",
-            clip: "rect(0 0 0 0)",
-          }}
-        >
+        <h1 id="quiz-title" className="visually-hidden">
           TechLingo quiz
         </h1>
 
         <div className="conversation" aria-live="polite">
-          <div className="message-row">
+          <div className="message-row message-row--robot">
             <RobotAvatar />
 
-            <div className="bubble robot">{currentQuestion.message}</div>
+            <div className="message-content">
+              <span className="message-sender">TechLingo</span>
+
+              <div className="bubble bubble--robot">
+                {currentQuestion.message}
+              </div>
+            </div>
           </div>
 
-          <div className="message-row">
+          <div className="message-row message-row--robot">
             <RobotAvatar />
 
-            <div className="bubble robot">{currentQuestion.prompt}</div>
+            <div className="message-content">
+              <span className="message-sender">TechLingo</span>
+
+              <div className="bubble bubble--robot">
+                {currentQuestion.prompt}
+              </div>
+            </div>
           </div>
 
-          {/* Visar användarens valda svar i chatten. */}
           {selectedAnswer && (
-            <div className="message-row user">
-              <div className="bubble user">{selectedAnswer.text}</div>
+            <div className="message-row message-row--user">
+              <div className="message-content message-content--user">
+                <span className="message-sender message-sender--user">You</span>
+
+                <div className="bubble bubble--user">{selectedAnswer.text}</div>
+              </div>
 
               <UserAvatar />
             </div>
@@ -150,8 +174,7 @@ function QuizPage() {
 
         <div className="divider" />
 
-        <div className="answer-grid" role="group" aria-label="Välj ett svar">
-          {/* Skapar en knapp för varje svarsalternativ som kommer från backend. */}
+        <div className="answer-grid" role="group" aria-label="Choose an answer">
           {currentQuestion.options.map((answer, index) => (
             <button
               className={`answer-button${
@@ -161,7 +184,6 @@ function QuizPage() {
               onClick={() => setSelectedAnswerId(answer.id)}
               type="button"
             >
-              {/* Omvandlar index 0, 1, 2, 3 till bokstäverna A, B, C, D. */}
               <span className="answer-letter">
                 {String.fromCharCode(65 + index)}
               </span>
