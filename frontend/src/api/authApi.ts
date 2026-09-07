@@ -61,3 +61,33 @@ export function getTokenExpiration(token: string) {
     return null;
   }
 }
+export type UserRole = "Admin" | "User";
+
+export function getTokenRole(token: string): UserRole | null {
+  try {
+    const payload = token.split(".")[1];
+
+    if (!payload) {
+      return null;
+    }
+
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    // Dekoda base64-strängen till JSON-objekt
+    const decodedPayload = JSON.parse(atob(base64));
+
+    // Hämta rollen från JWT-token payload
+    const role =
+      decodedPayload.role ??
+      decodedPayload[
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+      ];
+
+    if (role === "Admin" || role === "User") {
+      return role;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
