@@ -7,9 +7,9 @@
 .navbar {
   position: relative;
 
-  width: min(calc(100% - 64px), var(--content-max-width));
-  height: 72px;
+  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
 
+  height: 72px;
   margin: 20px auto 0;
 
   background: rgba(var(--color-navbar-rgba));
