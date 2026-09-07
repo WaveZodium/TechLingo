@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-import "../styles/CategoryPage.css";
+import "../styles/CategoriesPage.css";
 
 import { getCategories } from "../api/categoryApi";
 import type { Category } from "../types/category";
 
-function CategoryPage() {
+function CategoriesPage() {
   // Sparar kategorierna som hämtas från backend.
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -83,4 +83,4 @@ function CategoryPage() {
   );
 }
 
-export default CategoryPage;
+export default CategoriesPage;

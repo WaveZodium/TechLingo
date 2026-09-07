@@ -15,7 +15,7 @@ function HomePage() {
 
   function handleGetStarted() {
     if (isAuth) {
-      navigate("/category");
+      navigate("/categories");
     } else {
       openAuthPanel();
     }
