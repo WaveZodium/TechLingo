@@ -15,5 +15,6 @@ namespace TechLingo.Core.Interfaces
         Task UpdateAsync(User user);
         Task DeleteAsync(string id);
         Task<int?> AddPointsAsync(string userId, int points);
+
     }
 }

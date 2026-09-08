@@ -66,7 +66,6 @@ namespace TechLingo.Core.Repositories
 
             return updatedUser?.TotalScore;
         }
-        
-        
+
     }
 }

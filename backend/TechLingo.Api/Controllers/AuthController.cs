@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TechLingo.Core.DTOs;
+using TechLingo.Core.DTOs.Auth;
 using TechLingo.Core.Interfaces;
 
 namespace TechLingo.Api.Controllers

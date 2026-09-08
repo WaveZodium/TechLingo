@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TechLingo.Core.DTOs;
+using TechLingo.Core.DTOs.Auth;
 
 namespace TechLingo.Core.Interfaces
 {
