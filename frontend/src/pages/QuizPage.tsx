@@ -1,10 +1,15 @@
 import "../styles/QuizPage.css";
 
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import { getCategories } from "../api/categoryApi";
-import { startQuiz, submitQuizAnswer, completeQuiz } from "../api/quizApi";
+import {
+  startQuiz,
+  submitQuizAnswer,
+  completeQuiz,
+  quitQuiz,
+} from "../api/quizApi";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
 
@@ -32,6 +37,8 @@ function UserAvatar() {
 }
 
 function QuizPage() {
+  const navigate = useNavigate();
+
   const { categoryId } = useParams();
 
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -60,6 +67,8 @@ function QuizPage() {
 
   const [isCompletingQuiz, setIsCompletingQuiz] = useState(false);
 
+  const [isQuittingQuiz, setIsQuittingQuiz] = useState(false);
+
   const startQuizPromiseRef = useRef<ReturnType<typeof startQuiz> | null>(null);
   const startQuizCategoryRef = useRef<string | null>(null);
 
@@ -87,6 +96,7 @@ function QuizPage() {
 
         setIsSubmittingAnswer(false);
         setIsCompletingQuiz(false);
+        setIsQuittingQuiz(false);
 
         setScore(0);
         setSessionId(null);
@@ -202,6 +212,34 @@ function QuizPage() {
       setAnswerError("Could not check the answer.");
     } finally {
       setIsSubmittingAnswer(false);
+    }
+  };
+  const handleQuitQuiz = async () => {
+    if (!sessionId || isQuittingQuiz) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to quit? Your quiz progress will be lost.",
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setIsQuittingQuiz(true);
+      setAnswerError(null);
+
+      await quitQuiz(sessionId);
+
+      navigate("/categories");
+    } catch (error) {
+      console.error("Failed to quit quiz:", error);
+
+      setAnswerError("Could not quit the quiz.");
+    } finally {
+      setIsQuittingQuiz(false);
     }
   };
 
@@ -409,18 +447,32 @@ function QuizPage() {
           ))}
         </div>
 
-        {answerResult && !quizResult && (
-          <button
-            type="button"
-            onClick={handleNextQuestion}
-            disabled={isCompletingQuiz}
-          >
-            {isCompletingQuiz
-              ? "Finishing..."
-              : isLastQuestion
-                ? "Finish quiz"
-                : "Next question"}
-          </button>
+        {!quizResult && (
+          <div className="quiz-actions">
+            <button
+              className="quiz-quit-button"
+              type="button"
+              onClick={handleQuitQuiz}
+              disabled={
+                isQuittingQuiz || isCompletingQuiz || isSubmittingAnswer
+              }
+            >
+              {isQuittingQuiz ? "Quitting..." : "← Quit quiz"}
+            </button>
+
+            <button
+              className="quiz-next-button"
+              type="button"
+              onClick={handleNextQuestion}
+              disabled={!answerResult || isCompletingQuiz || isQuittingQuiz}
+            >
+              {isCompletingQuiz
+                ? "Finishing..."
+                : isLastQuestion
+                  ? "Finish quiz"
+                  : "Next question →"}
+            </button>
+          </div>
         )}
       </section>
     </main>

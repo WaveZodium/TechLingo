@@ -80,6 +80,27 @@ public class QuizController : ControllerBase
 
         return Ok(result);
     }
+    [HttpDelete("{sessionId}")]
+    public async Task<IActionResult> QuitQuiz(
+        string sessionId)
+    {
+        var userId = GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var deleted =
+            await _quizService.QuitQuizAsync(
+                sessionId,
+                userId
+            );
+
+        if (!deleted)
+            return BadRequest("Could not quit quiz.");
+
+        return NoContent();
+    }
+
 
     private string? GetUserId()
     {
