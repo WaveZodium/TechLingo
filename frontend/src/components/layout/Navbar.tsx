@@ -42,16 +42,26 @@ function Navbar({ onLoginClick }: NavbarProps) {
             </NavLink>
           )}
 
-          {role === "Admin" && (
-            <NavLink
-              to="/admin"
-              className={({ isActive }) =>
-                `navbar__link ${isActive ? "navbar__link--active" : ""}`
-              }
-            >
-              Admin panel
-            </NavLink>
-          )}
+          {isAuth &&
+            (role === "Admin" ? (
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Admin panel
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Profile
+              </NavLink>
+            ))}
         </nav>
 
         {isAuth ? (

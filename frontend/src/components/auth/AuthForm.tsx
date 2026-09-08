@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { SubmitEvent } from "react";
 import axios from "axios";
@@ -37,6 +37,8 @@ export default function AuthForm({
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const usernameInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (!isOpen) {
       setUsername("");
@@ -47,6 +49,10 @@ export default function AuthForm({
   }, [isOpen]);
 
   useEffect(() => {
+    if (isOpen) {
+      usernameInputRef.current?.focus();
+    }
+
     if (isRegisterMode) {
       setInfoMessage(null);
     }
@@ -58,7 +64,7 @@ export default function AuthForm({
         currentMessage?.type === "success" ? currentMessage : null,
       );
     }
-  }, [isRegisterMode]);
+  }, [isOpen, isRegisterMode]);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -130,6 +136,7 @@ export default function AuthForm({
 
       <form onSubmit={handleSubmit}>
         <FormField
+          ref={usernameInputRef}
           id="username"
           label="Username"
           value={username}

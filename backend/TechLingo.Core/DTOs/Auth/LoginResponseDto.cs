@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TechLingo.Core.DTOs
+namespace TechLingo.Core.DTOs.Auth
 {
     public class LoginResponseDto
     {

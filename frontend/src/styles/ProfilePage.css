@@ -1,0 +1,31 @@
+.profile__delete-button {
+  padding: 12px 20px;
+  border: 1px solid #ff5a67;
+  border-radius: 10px;
+
+  background-color: transparent;
+  color: #ff5a67;
+
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.profile__delete-button:hover {
+  background-color: #ff5a67;
+  color: #ffffff;
+}
+
+.profile__delete-button:active {
+  transform: scale(0.98);
+}
+
+.profile__delete-button:focus-visible {
+  outline: 3px solid rgba(255, 90, 103, 0.35);
+  outline-offset: 3px;
+}
