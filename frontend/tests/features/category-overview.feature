@@ -1,9 +1,14 @@
-Feature: Category overview
+Feature: Protected routes
 
-  Scenario: Start a quiz from the category overview
+  Scenario: Logged out user cannot access the category overview
+    Given I am logged out
+    When I navigate directly to the category overview
+    Then I should be redirected to the home page
+
+  Scenario: Regular user cannot access the admin page
     Given I am on the home page
     When I open the login panel
-    And I log in with valid admin credentials
+    And I log in with valid user credentials
     Then I should be redirected to the category overview
-    When I start a quiz
-    Then I should be redirected to the quiz page
+    When I navigate directly to the admin page
+    Then I should be redirected to the home page
