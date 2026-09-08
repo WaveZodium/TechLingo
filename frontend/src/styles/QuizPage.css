@@ -591,9 +591,59 @@
   z-index: 1;
 
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
 
   margin-top: 24px;
+}
+.quiz-quit-button {
+  padding: 13px 22px;
+
+  color: #ffb3b8;
+  background: rgba(120, 20, 35, 0.14);
+
+  border: 1px solid rgba(255, 90, 105, 0.55);
+  border-radius: 12px;
+
+  font-family: var(--font-roboto);
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 12px rgba(255, 60, 80, 0.08),
+    inset 0 0 8px rgba(255, 90, 105, 0.04);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.quiz-quit-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  color: #ffffff;
+  background: rgba(150, 30, 45, 0.28);
+
+  border-color: rgba(255, 110, 125, 0.9);
+
+  box-shadow:
+    0 0 18px rgba(255, 70, 90, 0.2),
+    inset 0 0 10px rgba(255, 120, 130, 0.06);
+}
+
+.quiz-quit-button:focus-visible {
+  outline: 2px solid #ff8b98;
+  outline-offset: 3px;
+}
+
+.quiz-quit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .quiz-next-button {
@@ -626,6 +676,11 @@
     transform 0.2s ease,
     background 0.2s ease,
     box-shadow 0.2s ease;
+}
+.quiz-next-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .quiz-next-button:hover:not(:disabled) {

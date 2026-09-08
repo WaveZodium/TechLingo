@@ -176,4 +176,24 @@ public class QuizService
             TotalScore = totalScore.Value
         };
     }
+    public async Task<bool> QuitQuizAsync(
+        string sessionId,
+        string userId)
+    {
+        var session =
+            await _quizSessionRepository.GetByIdAsync(sessionId);
+
+        if (session is null)
+            return false;
+
+        // Endast användaren som äger sessionen får radera den.
+        if (session.UserId != userId)
+            return false;
+
+        // Färdiga quiz ska inte kunna raderas via Quit.
+        if (session.IsCompleted)
+            return false;
+
+        return await _quizSessionRepository.DeleteAsync(sessionId);
+    }
 }
