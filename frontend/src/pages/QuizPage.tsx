@@ -10,6 +10,7 @@ import {
   completeQuiz,
   quitQuiz,
 } from "../api/quizApi";
+import { useUser } from "../context/UserContext";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
 
@@ -97,6 +98,8 @@ function QuizPage() {
   const startQuizCategoryRef = useRef<string | null>(null);
   const conversationRef = useRef<HTMLDivElement | null>(null);
   const quizTopRef = useRef<HTMLDivElement | null>(null);
+  const { loadProfile } = useUser();
+  const { updateTotalScore } = useUser();
 
   useEffect(() => {
     let ignore = false;
@@ -282,6 +285,8 @@ function QuizPage() {
       setAnswerResult(result);
 
       setScore((currentScore) => currentScore + result.points);
+
+      updateTotalScore(result.points);
     } catch (error) {
       console.error("Failed to submit answer:", error);
 
@@ -309,6 +314,7 @@ function QuizPage() {
       setAnswerError(null);
 
       await quitQuiz(sessionId);
+      await loadProfile();
 
       navigate("/categories");
     } catch (error) {
