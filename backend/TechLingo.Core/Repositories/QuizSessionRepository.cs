@@ -111,4 +111,13 @@ public class QuizSessionRepository
             options
         );
     }
+    public async Task<bool> DeleteAsync (string sessionId)
+    {
+        var result = await _quizSessions.DeleteOneAsync(
+            session => session.Id == sessionId
+        );
+
+        return result.DeletedCount == 1;
+    }
+
 }
