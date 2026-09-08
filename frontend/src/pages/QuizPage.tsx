@@ -447,33 +447,47 @@ function QuizPage() {
           ))}
         </div>
 
-        {!quizResult && (
-          <div className="quiz-actions">
-            <button
-              className="quiz-quit-button"
-              type="button"
-              onClick={handleQuitQuiz}
-              disabled={
-                isQuittingQuiz || isCompletingQuiz || isSubmittingAnswer
-              }
-            >
-              {isQuittingQuiz ? "Quitting..." : "← Quit quiz"}
-            </button>
+        <div className="quiz-actions">
+          {!quizResult ? (
+            <>
+              <button
+                className="quiz-quit-button"
+                type="button"
+                onClick={handleQuitQuiz}
+                disabled={
+                  isQuittingQuiz || isCompletingQuiz || isSubmittingAnswer
+                }
+              >
+                {isQuittingQuiz ? "Quitting..." : "← Quit quiz"}
+              </button>
 
-            <button
-              className="quiz-next-button"
-              type="button"
-              onClick={handleNextQuestion}
-              disabled={!answerResult || isCompletingQuiz || isQuittingQuiz}
-            >
-              {isCompletingQuiz
-                ? "Finishing..."
-                : isLastQuestion
-                  ? "Finish quiz"
-                  : "Next question →"}
-            </button>
-          </div>
-        )}
+              <button
+                className="quiz-next-button"
+                type="button"
+                onClick={handleNextQuestion}
+                disabled={!answerResult || isCompletingQuiz || isQuittingQuiz}
+              >
+                {isCompletingQuiz
+                  ? "Finishing..."
+                  : isLastQuestion
+                    ? "Finish quiz"
+                    : "Next question →"}
+              </button>
+            </>
+          ) : (
+            <>
+              <div />
+
+              <button
+                className="quiz-next-button"
+                type="button"
+                onClick={() => navigate("/categories")}
+              >
+                Back to categories →
+              </button>
+            </>
+          )}
+        </div>
       </section>
     </main>
   );
