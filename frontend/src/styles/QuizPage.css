@@ -64,11 +64,13 @@
   gap: 10px;
 
   min-width: 0;
+
   padding: 10px 16px;
 
   color: var(--color-white);
 
   background: rgba(10, 34, 82, 0.58);
+
   border: 1px solid rgba(45, 105, 255, 0.3);
   border-radius: 10px;
 
@@ -81,14 +83,17 @@
 
 .quiz-stat--center {
   justify-self: center;
+
   min-width: 72px;
   min-height: 40px;
 }
 
 .quiz-stat-group {
   display: flex;
+
   justify-self: end;
   align-items: center;
+
   gap: 10px;
 }
 
@@ -101,6 +106,7 @@
 
   font-family: var(--font-roboto-mono);
   font-size: 0.72rem;
+
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -110,6 +116,7 @@
 
   font-size: 1rem;
   font-weight: 600;
+
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -119,9 +126,12 @@
 .quiz-shell {
   position: relative;
 
+  display: flex;
+  flex-direction: column;
+
   width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
 
-  min-height: 680px;
+  height: 680px;
 
   margin: 0 auto;
 
@@ -212,12 +222,42 @@
   display: flex;
   flex-direction: column;
 
+  flex: 1;
+
+  min-height: 0;
+
   gap: 20px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding-right: 8px;
+
+  scroll-behavior: smooth;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(105, 180, 255, 0.45) transparent;
+}
+
+.conversation::-webkit-scrollbar {
+  width: 6px;
+}
+
+.conversation::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.conversation::-webkit-scrollbar-thumb {
+  background: rgba(105, 180, 255, 0.35);
+
+  border-radius: 999px;
 }
 
 .message-row {
   display: flex;
   align-items: flex-end;
+
+  flex-shrink: 0;
 
   gap: 14px;
 }
@@ -474,6 +514,8 @@
   position: relative;
   z-index: 1;
 
+  flex-shrink: 0;
+
   height: 1px;
 
   margin: 34px 0 28px;
@@ -493,6 +535,8 @@
 .answer-grid {
   position: relative;
   z-index: 1;
+
+  flex-shrink: 0;
 
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -536,7 +580,7 @@
     box-shadow 0.2s ease;
 }
 
-.answer-button:hover {
+.answer-button:hover:not(:disabled) {
   transform: translateY(-2px);
 
   background: rgba(10, 62, 145, 0.78);
@@ -586,9 +630,14 @@
     0 0 18px rgba(255, 65, 88, 0.3),
     inset 0 0 12px rgba(255, 155, 165, 0.08);
 }
+
+/* Actions */
+
 .quiz-actions {
   position: relative;
   z-index: 1;
+
+  flex-shrink: 0;
 
   display: flex;
   justify-content: space-between;
@@ -596,10 +645,12 @@
 
   margin-top: 24px;
 }
+
 .quiz-quit-button {
   padding: 13px 22px;
 
   color: #ffb3b8;
+
   background: rgba(120, 20, 35, 0.14);
 
   border: 1px solid rgba(255, 90, 105, 0.55);
@@ -627,6 +678,7 @@
   transform: translateY(-2px);
 
   color: #ffffff;
+
   background: rgba(150, 30, 45, 0.28);
 
   border-color: rgba(255, 110, 125, 0.9);
@@ -643,6 +695,7 @@
 
 .quiz-quit-button:disabled {
   opacity: 0.5;
+
   cursor: not-allowed;
 }
 
@@ -677,11 +730,6 @@
     background 0.2s ease,
     box-shadow 0.2s ease;
 }
-.quiz-next-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
-}
 
 .quiz-next-button:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -703,8 +751,11 @@
 }
 
 .quiz-next-button:disabled {
-  opacity: 0.6;
+  opacity: 0.45;
+
   cursor: not-allowed;
+
+  transform: none;
 }
 
 /* A B C D */
@@ -768,7 +819,9 @@
   }
 
   .quiz-shell {
-    min-height: 0;
+    width: min(calc(100% - 32px), var(--content-max-width));
+
+    height: 720px;
 
     padding: 28px 20px;
 
@@ -777,12 +830,15 @@
 
   .quiz-placeholder {
     width: min(calc(100% - 32px), var(--content-max-width));
+
     gap: 8px;
+
     margin-bottom: 14px;
   }
 
   .quiz-stat {
     gap: 6px;
+
     padding: 8px 10px;
   }
 
@@ -805,6 +861,8 @@
 
   .conversation {
     gap: 18px;
+
+    padding-right: 4px;
   }
 
   .message-row {
@@ -875,11 +933,28 @@
   }
 
   .divider {
-    margin: 26px 0 22px;
+    margin: 20px 0 18px;
   }
 
   .answer-button {
     min-height: 54px;
+  }
+
+  .quiz-actions {
+    margin-top: 18px;
+
+    gap: 12px;
+  }
+
+  .quiz-quit-button,
+  .quiz-next-button {
+    padding: 11px 14px;
+
+    font-size: 0.9rem;
+  }
+
+  .quiz-next-button {
+    min-width: 0;
   }
 }
 
@@ -897,12 +972,20 @@
   .answer-button {
     transition: none;
   }
+
+  .conversation {
+    scroll-behavior: auto;
+  }
 }
+
+/* Points */
 
 .points {
   font-weight: 700;
+
   color: #0f0;
 }
+
 .points.wrong {
   color: #ff9a76;
 }
