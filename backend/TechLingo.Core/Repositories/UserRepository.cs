@@ -66,14 +66,6 @@ namespace TechLingo.Core.Repositories
 
             return updatedUser?.TotalScore;
         }
-        
-        
 
-        public async Task<bool> DeleteUserAsync(string userId)
-        {
-            var result = await _users.DeleteOneAsync(u => u.Id == userId);
-
-            return result.DeletedCount > 0;
-        }
     }
 }

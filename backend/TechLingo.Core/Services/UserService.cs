@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TechLingo.Core.DTOs;
+using TechLingo.Core.Entities;
 using TechLingo.Core.Interfaces;
 
 namespace TechLingo.Core.Services
@@ -14,9 +16,32 @@ namespace TechLingo.Core.Services
             _userRepository = userRepository;
         }
 
+        public async Task<UserProfileDto?> GetUserByIdAsync(string userId)
+        {
+            User? user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return new UserProfileDto
+            {
+                Username = user.Username
+            };
+        }
         public async Task<bool> DeleteUserAsync(string userId)
         {
-            return await _userRepository.DeleteUserAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            await _userRepository.DeleteAsync(userId);
+
+            return true;
         }
     }
 }

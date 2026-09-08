@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using TechLingo.Core.DTOs;
+using TechLingo.Core.Interfaces;
 using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers
@@ -9,11 +11,32 @@ namespace TechLingo.Api.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(UserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [Authorize]
+        [HttpGet("account")]
+        public async Task<IActionResult> GetUserById()
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            UserProfileDto? user = await _userService.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
         }
 
         [Authorize]

@@ -1,4 +1,4 @@
-﻿using TechLingo.Core.DTOs;
+﻿using TechLingo.Core.DTOs.Auth;
 using TechLingo.Core.Entities;
 using TechLingo.Core.Enums;
 using TechLingo.Core.Interfaces;
