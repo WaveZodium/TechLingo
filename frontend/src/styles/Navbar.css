@@ -7,9 +7,9 @@
 .navbar {
   position: relative;
 
-  width: min(calc(100% - 64px), var(--content-max-width));
-  height: 72px;
+  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
 
+  height: 72px;
   margin: 20px auto 0;
 
   background: rgba(var(--color-navbar-rgba));
@@ -102,7 +102,7 @@
   height: auto;
 }
 
-/* Home + Overview */
+/* Home + Categories */
 
 .navbar__links {
   position: absolute;
@@ -215,6 +215,8 @@
   font-weight: 500;
 
   text-decoration: none;
+
+  cursor: pointer;
 
   box-shadow:
     0 0 10px rgba(0, 100, 255, 0.18),

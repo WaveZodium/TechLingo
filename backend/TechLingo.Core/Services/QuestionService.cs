@@ -35,33 +35,49 @@ public class QuestionService
     public async Task<List<QuestionDto>> GetByCategoryAsync(string categoryId)
     {
         var questions =
-            await _questionRepository.GetByCategoryAsync(categoryId);
+        await _questionRepository.GetRandomByCategoryAsync(
+            categoryId,
+            10
+        );
 
-        return questions
-            .Select(MapToDto)
-            .ToList();
+    return questions
+        .Select(MapToDto)
+        .ToList();
     }
 
-    public async Task<AnswerResultDto?> ValidateAnswerAsync(SubmitAnswerDto submitAnswerDto)
+    public async Task<AnswerResultDto?> ValidateAnswerAsync(
+        SubmitAnswerDto submitAnswerDto)
     {
-        var question = await _questionRepository.GetByIdAsync(submitAnswerDto.questionId);
+        var question = await _questionRepository
+            .GetByIdAsync(submitAnswerDto.questionId);
 
-        if (question is null) return null;
+        if (question is null)
+            return null;
 
-        // Find the selected answer option.
-        var selectedOption = question.Options.FirstOrDefault(option => option.Id == submitAnswerDto.answerId);
+        var selectedOption = question.Options.FirstOrDefault(
+            option => option.Id == submitAnswerDto.answerId);
 
-        var isCorrect = selectedOption?.IsCorrect ?? false;
+        if (selectedOption is null)
+            return null;
 
-        var correctOption = question.Options.FirstOrDefault(option => option.IsCorrect);
+        var correctOption = question.Options.FirstOrDefault(
+            option => option.IsCorrect);
+
+        var isCorrect = selectedOption.IsCorrect;
 
         return new AnswerResultDto
         {
             IsCorrect = isCorrect,
             Points = isCorrect ? 100 : -200,
-            CorrectAnswer = isCorrect ? selectedOption!.Text : correctOption?.Text,
-            CorrectAnswerId = isCorrect ? selectedOption!.Id : correctOption?.Id,
-            ErrorMessage = isCorrect ? null : $"'{selectedOption!.Text}' is wrong! The correct answer is '{correctOption?.Text}'."
+            CorrectAnswer = isCorrect
+                ? selectedOption.Text
+                : correctOption?.Text,
+            CorrectAnswerId = isCorrect
+                ? selectedOption.Id
+                : correctOption?.Id,
+            ErrorMessage = isCorrect
+                ? null
+                : $"'{selectedOption.Text}' is wrong! The correct answer is '{correctOption?.Text}'."
         };
     }
 

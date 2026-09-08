@@ -1,12 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap");
 
 :root {
-  --content-max-width: 1440px;
-  --page-gutter: 32px;
+  --content-max-width: 1680px;
+  --page-gutter: clamp(32px, 5vw, 96px);
+
   --color-background: #011637;
   --color-navbar: #0a2252;
-  /* Navbar färg med opacity 0.5 */
+  /* Färg för navbar med opacity 0.5 */
   --color-navbar-rgba: 10, 34, 82, 0.5;
+
   --color-lightblue: #0056fb;
   --color-warm-ivory: #f5f1e8;
   --color-secondary-lightblue: #023e7d;
@@ -54,24 +56,28 @@ button {
   font-family: inherit;
 }
 
-/* Scrollbar - Chrome, Edge, Safari */
+/* Scrollbar - Chromium */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 14px;
 }
 
 ::-webkit-scrollbar-track {
   background: #011637;
-  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #0759ea, #167cff);
+  background: linear-gradient(180deg, #0a2a5f, #0d3f86);
 
-  border-radius: 999px;
   border: 2px solid #011637;
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #1268f5, #288cff);
+  background: linear-gradient(180deg, #0d397a, #1252a8);
+}
+@media (max-width: 600px) {
+  :root {
+    --page-gutter: 16px;
+  }
 }

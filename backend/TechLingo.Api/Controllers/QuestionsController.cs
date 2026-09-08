@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechLingo.Core.DTOs;
-using TechLingo.Core.Enums;
 using TechLingo.Core.Services;
 
 namespace TechLingo.Api.Controllers;
 
-[Authorize(Roles = nameof(UserRole.Admin))]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class QuestionsController : ControllerBase
@@ -37,21 +36,4 @@ public class QuestionsController : ControllerBase
         return Ok(question);
     }
 
-    [HttpPost("question/answer")]
-    public async Task<ActionResult<AnswerResultDto>> SubmitQuestion(SubmitAnswerDto submitAnswerDto)
-    {
-        var result = await _questionService.ValidateAnswerAsync(submitAnswerDto);
-
-        if (result is null)
-            return NotFound(new AnswerResultDto
-            {
-                IsCorrect = false,
-                Points = 0,
-                CorrectAnswer = String.Empty,
-                CorrectAnswerId = String.Empty,
-                ErrorMessage = "Question not found."
-            });
-
-        return Ok(result);
-    }
 }
