@@ -8,6 +8,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import QuizPage from "./pages/QuizPage";
 import AdminPage from "./pages/AdminPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -25,7 +26,10 @@ function App() {
 
             {/* categoryId används för att identifiera vilken kategoris frågor som ska hämtas. */}
             <Route path="/quiz/:categoryId" element={<QuizPage />} />
+
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
+
           {/* Endast admin */}
           <Route element={<ProtectedRoute requiredRole="Admin" />}>
             <Route path="/admin" element={<AdminPage />} />
