@@ -77,42 +77,26 @@ function QuizPage() {
   const navigate = useNavigate();
 
   const { categoryId } = useParams();
-
+  
   const [questions, setQuestions] = useState<Question[]>([]);
-
   const [quizName, setQuizName] = useState("Quiz");
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [error, setError] = useState<string | null>(null);
-
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
-
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
-
   const [answerError, setAnswerError] = useState<string | null>(null);
-
   const [score, setScore] = useState(0);
-
   const [sessionId, setSessionId] = useState<string | null>(null);
-
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
-
   const [isCompletingQuiz, setIsCompletingQuiz] = useState(false);
-
   const [isQuittingQuiz, setIsQuittingQuiz] = useState(false);
-
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-
   const startQuizPromiseRef = useRef<ReturnType<typeof startQuiz> | null>(null);
-
   const startQuizCategoryRef = useRef<string | null>(null);
-
   const conversationRef = useRef<HTMLDivElement | null>(null);
+  const quizTopRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -198,6 +182,15 @@ function QuizPage() {
       ignore = true;
     };
   }, [categoryId]);
+
+  useEffect(() => {
+  if (!isLoading && questions.length > 0) {
+    quizTopRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+}, [isLoading, questions]);
 
   useEffect(() => {
     const conversation = conversationRef.current;
@@ -389,7 +382,7 @@ function QuizPage() {
 
   return (
     <main className="quiz-page">
-      <div className="quiz-placeholder">
+      <div className="quiz-placeholder" ref={quizTopRef}>
         <div className="quiz-stat quiz-stat--name">
           <span className="quiz-stat-label">Quiz</span>
 
