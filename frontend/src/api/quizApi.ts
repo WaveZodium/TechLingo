@@ -30,3 +30,7 @@ export async function completeQuiz(sessionId: string): Promise<QuizResult> {
 
   return response.data;
 }
+//avsluta quiz
+export async function quitQuiz(sessionId: string): Promise<void> {
+  await api.delete(`/Quiz/${sessionId}`);
+}
