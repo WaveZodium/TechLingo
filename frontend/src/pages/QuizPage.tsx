@@ -1,7 +1,7 @@
 import "../styles/QuizPage.css";
 
-import { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getCategories } from "../api/categoryApi";
 import {
@@ -12,6 +12,26 @@ import {
 } from "../api/quizApi";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
+
+type ChatMessage =
+  | {
+      id: string;
+      sender: "robot" | "user";
+      type: "text";
+      text: string;
+    }
+  | {
+      id: string;
+      sender: "robot";
+      type: "feedback";
+      result: AnswerResult;
+    }
+  | {
+      id: string;
+      sender: "robot";
+      type: "result";
+      result: QuizResult;
+    };
 
 function RobotAvatar() {
   return (
@@ -34,6 +54,23 @@ function UserAvatar() {
       <span className="user-shoulders" />
     </span>
   );
+}
+
+function createQuestionMessages(question: Question): ChatMessage[] {
+  return [
+    {
+      id: `${question.id}-message`,
+      sender: "robot",
+      type: "text",
+      text: question.message,
+    },
+    {
+      id: `${question.id}-prompt`,
+      sender: "robot",
+      type: "text",
+      text: question.prompt,
+    },
+  ];
 }
 
 function QuizPage() {
@@ -69,8 +106,13 @@ function QuizPage() {
 
   const [isQuittingQuiz, setIsQuittingQuiz] = useState(false);
 
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+
   const startQuizPromiseRef = useRef<ReturnType<typeof startQuiz> | null>(null);
+
   const startQuizCategoryRef = useRef<string | null>(null);
+
+  const conversationRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let ignore = false;
@@ -102,7 +144,9 @@ function QuizPage() {
         setSessionId(null);
         setQuizResult(null);
 
-        //för att inte start 2 quiz (strict mode)
+        setChatMessages([]);
+
+        // För att inte starta två quiz i StrictMode.
         if (
           startQuizCategoryRef.current !== categoryId ||
           !startQuizPromiseRef.current
@@ -116,6 +160,12 @@ function QuizPage() {
         if (!ignore) {
           setSessionId(quiz.sessionId);
           setQuestions(quiz.questions);
+
+          const firstQuestion = quiz.questions[0];
+
+          if (firstQuestion) {
+            setChatMessages(createQuestionMessages(firstQuestion));
+          }
         }
 
         try {
@@ -149,6 +199,19 @@ function QuizPage() {
     };
   }, [categoryId]);
 
+  useEffect(() => {
+    const conversation = conversationRef.current;
+
+    if (!conversation) {
+      return;
+    }
+
+    conversation.scrollTo({
+      top: conversation.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [chatMessages, answerError]);
+
   if (isLoading) {
     return (
       <main className="quiz-page">
@@ -181,10 +244,6 @@ function QuizPage() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  const selectedAnswer = currentQuestion.options.find(
-    (option) => option.id === selectedAnswerId,
-  );
-
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
 
   const handleAnswerClick = async (answerId: string) => {
@@ -203,6 +262,30 @@ function QuizPage() {
         answerId,
       });
 
+      const selectedAnswer = currentQuestion.options.find(
+        (option) => option.id === answerId,
+      );
+
+      if (!selectedAnswer) {
+        return;
+      }
+
+      setChatMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: `${currentQuestion.id}-answer`,
+          sender: "user",
+          type: "text",
+          text: selectedAnswer.text,
+        },
+        {
+          id: `${currentQuestion.id}-feedback`,
+          sender: "robot",
+          type: "feedback",
+          result,
+        },
+      ]);
+
       setAnswerResult(result);
 
       setScore((currentScore) => currentScore + result.points);
@@ -214,6 +297,7 @@ function QuizPage() {
       setIsSubmittingAnswer(false);
     }
   };
+
   const handleQuitQuiz = async () => {
     if (!sessionId || isQuittingQuiz) {
       return;
@@ -262,6 +346,16 @@ function QuizPage() {
         setQuizResult(result);
 
         setScore(result.quizScore);
+
+        setChatMessages((currentMessages) => [
+          ...currentMessages,
+          {
+            id: `${sessionId}-result`,
+            sender: "robot",
+            type: "result",
+            result,
+          },
+        ]);
       } catch (error) {
         console.error("Failed to complete quiz:", error);
 
@@ -273,7 +367,20 @@ function QuizPage() {
       return;
     }
 
-    setCurrentQuestionIndex((currentIndex) => currentIndex + 1);
+    const nextQuestionIndex = currentQuestionIndex + 1;
+
+    const nextQuestion = questions[nextQuestionIndex];
+
+    if (!nextQuestion) {
+      return;
+    }
+
+    setChatMessages((currentMessages) => [
+      ...currentMessages,
+      ...createQuestionMessages(nextQuestion),
+    ]);
+
+    setCurrentQuestionIndex(nextQuestionIndex);
 
     setSelectedAnswerId(null);
     setAnswerResult(null);
@@ -313,92 +420,71 @@ function QuizPage() {
           TechLingo quiz
         </h1>
 
-        <div className="conversation" aria-live="polite">
-          <div className="message-row message-row--robot">
-            <RobotAvatar />
+        <div ref={conversationRef} className="conversation" aria-live="polite">
+          {chatMessages.map((message) => {
+            if (message.sender === "user") {
+              return (
+                <div key={message.id} className="message-row message-row--user">
+                  <div className="message-content message-content--user">
+                    <span className="message-sender message-sender--user">
+                      You
+                    </span>
 
-            <div className="message-content">
-              <span className="message-sender">TechLingo</span>
+                    <div className="bubble bubble--user">{message.text}</div>
+                  </div>
 
-              <div className="bubble bubble--robot">
-                {currentQuestion.message}
-              </div>
-            </div>
-          </div>
+                  <UserAvatar />
+                </div>
+              );
+            }
 
-          <div className="message-row message-row--robot">
-            <RobotAvatar />
+            return (
+              <div key={message.id} className="message-row message-row--robot">
+                <RobotAvatar />
 
-            <div className="message-content">
-              <span className="message-sender">TechLingo</span>
+                <div className="message-content">
+                  <span className="message-sender">TechLingo</span>
 
-              <div className="bubble bubble--robot">
-                {currentQuestion.prompt}
-              </div>
-            </div>
-          </div>
+                  <div className="bubble bubble--robot">
+                    {message.type === "text" && message.text}
 
-          {selectedAnswer && (
-            <div className="message-row message-row--user">
-              <div className="message-content message-content--user">
-                <span className="message-sender message-sender--user">You</span>
+                    {message.type === "feedback" &&
+                      (message.result.isCorrect ? (
+                        <>
+                          Correct! You got{" "}
+                          <span className="points">
+                            {message.result.points}
+                          </span>{" "}
+                          points.
+                        </>
+                      ) : (
+                        <>
+                          Not quite. The correct answer is "
+                          {message.result.correctAnswer}
+                          ".
+                          <br />
+                          You got{" "}
+                          <span className="points wrong">
+                            {message.result.points}
+                          </span>{" "}
+                          points.
+                        </>
+                      ))}
 
-                <div className="bubble bubble--user">{selectedAnswer.text}</div>
-              </div>
-
-              <UserAvatar />
-            </div>
-          )}
-
-          {answerResult && (
-            <div className="message-row message-row--robot">
-              <RobotAvatar />
-
-              <div className="message-content">
-                <span className="message-sender">TechLingo</span>
-
-                <div className="bubble bubble--robot">
-                  {answerResult.isCorrect ? (
-                    <>
-                      Correct! You got{" "}
-                      <span className="points">{answerResult.points}</span>{" "}
-                      points.
-                    </>
-                  ) : (
-                    <>
-                      Not quite. The correct answer is "
-                      {answerResult.correctAnswer}
-                      ".
-                      <br />
-                      You got{" "}
-                      <span className="points wrong">
-                        {answerResult.points}
-                      </span>{" "}
-                      points.
-                    </>
-                  )}
+                    {message.type === "result" && (
+                      <>
+                        Quiz complete!
+                        <br />
+                        Quiz score: {message.result.quizScore}
+                        <br />
+                        Total score: {message.result.totalScore}
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {quizResult && (
-            <div className="message-row message-row--robot">
-              <RobotAvatar />
-
-              <div className="message-content">
-                <span className="message-sender">TechLingo</span>
-
-                <div className="bubble bubble--robot">
-                  Quiz complete!
-                  <br />
-                  Quiz score: {quizResult.quizScore}
-                  <br />
-                  Total score: {quizResult.totalScore}
-                </div>
-              </div>
-            </div>
-          )}
+            );
+          })}
 
           {answerError && (
             <div className="message-row message-row--robot">
