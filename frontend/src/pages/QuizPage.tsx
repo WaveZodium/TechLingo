@@ -410,17 +410,20 @@ function QuizPage() {
         </div>
 
         {answerResult && !quizResult && (
-          <button
-            type="button"
-            onClick={handleNextQuestion}
-            disabled={isCompletingQuiz}
-          >
-            {isCompletingQuiz
-              ? "Finishing..."
-              : isLastQuestion
-                ? "Finish quiz"
-                : "Next question"}
-          </button>
+          <div className="quiz-actions">
+            <button
+              className="quiz-next-button"
+              type="button"
+              onClick={handleNextQuestion}
+              disabled={isCompletingQuiz}
+            >
+              {isCompletingQuiz
+                ? "Finishing..."
+                : isLastQuestion
+                  ? "Finish quiz"
+                  : "Next question →"}
+            </button>
+          </div>
         )}
       </section>
     </main>
