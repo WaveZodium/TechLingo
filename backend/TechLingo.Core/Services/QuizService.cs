@@ -32,6 +32,13 @@ public class QuizService
         if (questions.Count != 10)
             return null;
 
+        foreach (var question in questions)
+        {
+            question.Options = question.Options
+                .OrderBy(_ => Guid.NewGuid())
+                .ToList();
+        }
+
         var quizSession = new QuizSession
         {
             UserId = userId,
