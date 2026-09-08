@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 
@@ -15,20 +15,43 @@ interface NavbarProps {
 function Navbar({ onLoginClick }: NavbarProps) {
   const { isAuth, role, logoutUser } = useAuth();
   const { profile } = useUser();
+  const location = useLocation();
+  const isQuizActive = location.pathname.startsWith("/quiz/");
 
   return (
     <header className="navbar">
       <div className="navbar__content">
-        <Link to="/" className="navbar__logo-link" aria-label="TechLingo home">
+        <Link
+          to="/"
+          onClick={(event) => {
+            if (isQuizActive) {
+              event.preventDefault();
+            }
+          }}
+          aria-label="TechLingo home"
+          aria-disabled={isQuizActive}
+          tabIndex={isQuizActive ? -1 : 0}
+          className={`navbar__logo-link ${
+            isQuizActive ? "navbar__logo-link--disabled" : ""
+          }`}
+        >
           <img src={logo} alt="TechLingo" className="navbar__logo" />
         </Link>
 
         <nav className="navbar__links">
           <NavLink
             to="/"
-            end
+            onClick={(event) => {
+              if (isQuizActive) {
+                event.preventDefault();
+              }
+            }}
+            aria-disabled={isQuizActive}
+            tabIndex={isQuizActive ? -1 : 0}
             className={({ isActive }) =>
-              `navbar__link ${isActive ? "navbar__link--active" : ""}`
+              `navbar__link ${isActive ? "navbar__link--active" : ""} ${
+                isQuizActive ? "navbar__link--disabled" : ""
+              }`
             }
           >
             Home
@@ -37,8 +60,17 @@ function Navbar({ onLoginClick }: NavbarProps) {
           {isAuth && (
             <NavLink
               to="/categories"
+              onClick={(event) => {
+                if (isQuizActive) {
+                  event.preventDefault();
+                }
+              }}
+              aria-disabled={isQuizActive}
+              tabIndex={isQuizActive ? -1 : 0}
               className={({ isActive }) =>
-                `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                `navbar__link ${isActive ? "navbar__link--active" : ""} ${
+                  isQuizActive ? "navbar__link--disabled" : ""
+                }`
               }
             >
               Categories
@@ -49,8 +81,17 @@ function Navbar({ onLoginClick }: NavbarProps) {
             (role === "Admin" ? (
               <NavLink
                 to="/admin"
+                onClick={(event) => {
+                  if (isQuizActive) {
+                    event.preventDefault();
+                  }
+                }}
+                aria-disabled={isQuizActive}
+                tabIndex={isQuizActive ? -1 : 0}
                 className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                  `navbar__link ${isActive ? "navbar__link--active" : ""} ${
+                    isQuizActive ? "navbar__link--disabled" : ""
+                  }`
                 }
               >
                 Admin panel
@@ -58,8 +99,17 @@ function Navbar({ onLoginClick }: NavbarProps) {
             ) : (
               <NavLink
                 to="/profile"
+                onClick={(event) => {
+                  if (isQuizActive) {
+                    event.preventDefault();
+                  }
+                }}
+                aria-disabled={isQuizActive}
+                tabIndex={isQuizActive ? -1 : 0}
                 className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                  `navbar__link ${isActive ? "navbar__link--active" : ""} ${
+                    isQuizActive ? "navbar__link--disabled" : ""
+                  }`
                 }
               >
                 Profile
