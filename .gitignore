@@ -21,6 +21,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.local
 
 # IDE and editor settings
 .vs/
@@ -35,7 +36,25 @@ lerna-debug.log*
 *.sln.docstates
 *.rsuser
 *.sw?
+*.ntvs*
+*.njsproj
+*.sln
 
 # Operating-system files
 .DS_Store
 Thumbs.db
+
+# Playwright generated files
+
+.features-gen/
+
+test-results/
+
+playwright-report/
+
+blob-report/
+ 
+# Test environment
+
+.env.test
+ 
