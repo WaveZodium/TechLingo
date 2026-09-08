@@ -10,6 +10,7 @@ import {
   completeQuiz,
   quitQuiz,
 } from "../api/quizApi";
+import { useUser } from "../context/UserContext";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
 
@@ -71,6 +72,8 @@ function QuizPage() {
 
   const startQuizPromiseRef = useRef<ReturnType<typeof startQuiz> | null>(null);
   const startQuizCategoryRef = useRef<string | null>(null);
+  const { loadProfile } = useUser();
+  const { updateTotalScore } = useUser();
 
   useEffect(() => {
     let ignore = false;
@@ -206,6 +209,8 @@ function QuizPage() {
       setAnswerResult(result);
 
       setScore((currentScore) => currentScore + result.points);
+
+      updateTotalScore(result.points);
     } catch (error) {
       console.error("Failed to submit answer:", error);
 
@@ -232,6 +237,7 @@ function QuizPage() {
       setAnswerError(null);
 
       await quitQuiz(sessionId);
+      await loadProfile();
 
       navigate("/categories");
     } catch (error) {
@@ -262,6 +268,7 @@ function QuizPage() {
         setQuizResult(result);
 
         setScore(result.quizScore);
+        await loadProfile();
       } catch (error) {
         console.error("Failed to complete quiz:", error);
 

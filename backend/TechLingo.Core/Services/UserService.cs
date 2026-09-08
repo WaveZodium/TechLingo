@@ -27,7 +27,8 @@ namespace TechLingo.Core.Services
 
             return new UserProfileDto
             {
-                Username = user.Username
+                Username = user.Username,
+                TotalScore = user.TotalScore
             };
         }
         public async Task<bool> DeleteUserAsync(string userId)

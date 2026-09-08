@@ -6,12 +6,15 @@ import logo from "../../assets/TechlingoALTlogo.png";
 
 import "../../styles/Navbar.css";
 
+import { useUser } from "../../context/UserContext";
+
 interface NavbarProps {
   onLoginClick: () => void;
 }
 
 function Navbar({ onLoginClick }: NavbarProps) {
   const { isAuth, role, logoutUser } = useAuth();
+  const { profile } = useUser();
 
   return (
     <header className="navbar">
@@ -62,6 +65,13 @@ function Navbar({ onLoginClick }: NavbarProps) {
                 Profile
               </NavLink>
             ))}
+
+          {isAuth && profile && (
+            <div className="navbar__score">
+              <span className="navbar__score-label">Totalscore:</span>
+              <span className="navbar__score-value">{profile.totalScore}</span>
+            </div>
+          )}
         </nav>
 
         {isAuth ? (
