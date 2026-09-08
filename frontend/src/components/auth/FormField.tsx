@@ -1,3 +1,5 @@
+import { forwardRef } from "react";
+
 interface FormFieldProps {
   id: string;
   label: string;
@@ -6,24 +8,23 @@ interface FormFieldProps {
   onChange: (value: string) => void;
 }
 
-export default function FormField({
-  id,
-  label,
-  type = "text",
-  value,
-  onChange,
-}: FormFieldProps) {
-  return (
-    <div className="auth-form__field">
-      <label htmlFor={id}>{label}</label>
+const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
+  function FormField({ id, label, type = "text", value, onChange }, ref) {
+    return (
+      <div className="auth-form__field">
+        <label htmlFor={id}>{label}</label>
 
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        required
-      />
-    </div>
-  );
-}
+        <input
+          ref={ref}
+          id={id}
+          type={type}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          required
+        />
+      </div>
+    );
+  },
+);
+
+export default FormField;
