@@ -353,17 +353,7 @@
   font-weight: 700;
 }
 
-.navbar__link--disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 .navbar__login:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.navbar__logo-link--disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
