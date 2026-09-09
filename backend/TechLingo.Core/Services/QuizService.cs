@@ -176,6 +176,30 @@ public class QuizService
             TotalScore = totalScore.Value
         };
     }
+
+    public async Task<List<QuizHistoryDto>> GetQuizHistoryAsync(
+    string userId,
+    int count = 5)
+    {
+        var sessions =
+            await _quizSessionRepository
+                .GetLatestCompletedByUserAsync(userId, count);
+
+        return sessions
+            .Select(session => new QuizHistoryDto
+            {
+                SessionId = session.Id,
+                CategoryId = session.CategoryId,
+                QuizScore = session.Score,
+                CorrectAnswers = session.Answers.Count(
+                    answer => answer.IsCorrect
+                ),
+                TotalQuestions = session.QuestionIds.Count,
+                CompletedAt = session.CompletedAt
+            })
+            .ToList();
+    }
+
     public async Task<bool> QuitQuizAsync(
         string sessionId,
         string userId)
