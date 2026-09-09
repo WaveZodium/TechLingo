@@ -5,6 +5,7 @@ import type {
   QuizResult,
   StartQuizResult,
   SubmitAnswerRequest,
+  QuizHistory,
 } from "../types/question";
 // starta ett nytt quiz
 export async function startQuiz(categoryId: string): Promise<StartQuizResult> {
@@ -33,4 +34,10 @@ export async function completeQuiz(sessionId: string): Promise<QuizResult> {
 //avsluta quiz
 export async function quitQuiz(sessionId: string): Promise<void> {
   await api.delete(`/Quiz/${sessionId}`);
+}
+// hämta quizhistorik
+export async function getQuizHistory(): Promise<QuizHistory[]> {
+  const response = await api.get<QuizHistory[]>(`/Quiz/history`);
+
+  return response.data;
 }
