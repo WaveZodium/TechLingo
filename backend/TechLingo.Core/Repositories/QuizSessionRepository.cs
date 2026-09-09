@@ -133,5 +133,33 @@ public class QuizSessionRepository
             .Limit(count)
             .ToListAsync();
     }
+    public async Task CreateIndexesAsync()
+{
+    var indexKeys = Builders<QuizSession>
+        .IndexKeys
+        .Ascending(session => session.StartedAt);
+
+    var options = new CreateIndexOptions<QuizSession>
+    {
+        Name = "unfinished_quiz_session_ttl",
+        ExpireAfter = TimeSpan.FromHours(2),
+
+        PartialFilterExpression =
+            Builders<QuizSession>.Filter.Eq(
+                session => session.IsCompleted,
+                false
+            )
+    };
+
+    var indexModel =
+        new CreateIndexModel<QuizSession>(
+            indexKeys,
+            options
+        );
+
+    await _quizSessions.Indexes.CreateOneAsync(
+        indexModel
+    );
+}
 
 }

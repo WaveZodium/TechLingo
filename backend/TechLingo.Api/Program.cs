@@ -135,13 +135,19 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 
-// Seed the database with initial data
+// Seed the database with initial data and create necessary indexes for quiz sessions
 using (var scope = app.Services.CreateScope())
 {
     var seeder =
         scope.ServiceProvider.GetRequiredService<MongoDbSeeder>();
 
     await seeder.SeedAsync();
+
+    var quizSessionRepository =
+        scope.ServiceProvider
+            .GetRequiredService<QuizSessionRepository>();
+
+    await quizSessionRepository.CreateIndexesAsync();
 }
 
 
