@@ -80,6 +80,24 @@ public class QuizController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet("history")]
+    public async Task<ActionResult<List<QuizHistoryDto>>> GetQuizHistory()
+    {
+        var userId = GetUserId();
+
+        if (userId is null)
+            return Unauthorized();
+
+        var history =
+            await _quizService.GetQuizHistoryAsync(
+                userId,
+                5
+            );
+
+        return Ok(history);
+    }
+
     [HttpDelete("{sessionId}")]
     public async Task<IActionResult> QuitQuiz(
         string sessionId)

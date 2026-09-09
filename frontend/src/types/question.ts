@@ -32,3 +32,12 @@ export interface QuizResult {
   quizScore: number;
   totalScore: number;
 }
+
+export interface QuizHistory {
+  sessionId: string;
+  categoryId: string;
+  quizScore: number;
+  correctAnswers: number;
+  totalQuestions: number;
+  completedAt: string | null;
+}

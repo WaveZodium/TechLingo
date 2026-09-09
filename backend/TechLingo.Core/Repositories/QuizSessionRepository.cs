@@ -120,4 +120,18 @@ public class QuizSessionRepository
         return result.DeletedCount == 1;
     }
 
+    // hämtar de senaste avslutade quizsessionerna för en specifik användare
+    public async Task<List<QuizSession>> GetLatestCompletedByUserAsync(
+    string userId,
+    int count)
+    {
+        return await _quizSessions
+            .Find(session =>
+                session.UserId == userId &&
+                session.IsCompleted)
+            .SortByDescending(session => session.CompletedAt)
+            .Limit(count)
+            .ToListAsync();
+    }
+
 }
