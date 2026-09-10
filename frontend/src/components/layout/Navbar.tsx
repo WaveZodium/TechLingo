@@ -223,7 +223,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   />
                 )}
 
-                <span className="navbar__score-label">Totalscore:</span>
+                <span className="navbar__score-label">Total score:</span>
 
                 <span className="navbar__score-value">
                   {profile.totalScore}

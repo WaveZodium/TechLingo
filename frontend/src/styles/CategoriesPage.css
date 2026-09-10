@@ -12,10 +12,11 @@
 }
 
 .category__content {
-  width: min(100% - 64px, 1100px);
+  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+
   margin: 0 auto;
 
-  padding-top: 75px;
+  padding-top: 60px;
   padding-bottom: 80px;
 }
 
