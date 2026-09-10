@@ -114,6 +114,7 @@ function QuizPage() {
   const conversationRef = useRef<HTMLDivElement | null>(null);
 
   const quizTopRef = useRef<HTMLDivElement | null>(null);
+  const { loadProfile } = useUser();
 
   /*
    * Startar quizet och laddar frågorna.

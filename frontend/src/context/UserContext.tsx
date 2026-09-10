@@ -13,7 +13,7 @@ import { useAuth } from "./AuthContext";
 type UserContextType = {
   profile: UserProfile | null;
   loadProfile: () => Promise<void>;
-  updateTotalScore: (points: number) => void;
+
 };
 
 type UserProviderProps = {
@@ -40,21 +40,10 @@ export function UserProvider({ children }: UserProviderProps) {
     }
   }, [isAuth]);
 
-  function updateTotalScore(points: number) {
-    setProfile((currentProfile) => {
-      if (!currentProfile) {
-        return null;
-      }
 
-      return {
-        ...currentProfile,
-        totalScore: currentProfile.totalScore + points,
-      };
-    });
-  }
 
   return (
-    <UserContext.Provider value={{ profile, loadProfile, updateTotalScore }}>
+    <UserContext.Provider value={{ profile, loadProfile}}>
       {children}
     </UserContext.Provider>
   );

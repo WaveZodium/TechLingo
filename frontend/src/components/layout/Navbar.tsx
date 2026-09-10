@@ -25,18 +25,10 @@ function Navbar({ onLoginClick }: NavbarProps) {
     event: MouseEvent<HTMLAnchorElement>,
     path: string,
   ) => {
-    /*
-     * Om inget quiz pågår låter vi Link/NavLink
-     * navigera precis som vanligt.
-     */
     if (!isQuizActive) {
       return;
     }
 
-    /*
-     * Ett quiz pågår, så stoppa den vanliga
-     * navigationen tills användaren har svarat.
-     */
     event.preventDefault();
 
     const confirmed = window.confirm(
@@ -48,12 +40,6 @@ function Navbar({ onLoginClick }: NavbarProps) {
     }
 
     try {
-      /*
-       * QuizContext:
-       * - raderar sessionen
-       * - sätter activeSessionId till null
-       * - laddar om användarens riktiga total score
-       */
       await quitActiveSession();
 
       navigate(path);
@@ -63,10 +49,6 @@ function Navbar({ onLoginClick }: NavbarProps) {
   };
 
   const handleLogout = async () => {
-    /*
-     * Om inget quiz pågår fungerar logout
-     * precis som tidigare.
-     */
     if (!isQuizActive) {
       logoutUser();
       return;
@@ -82,9 +64,8 @@ function Navbar({ onLoginClick }: NavbarProps) {
 
     try {
       /*
-       * Sessionen måste tas bort INNAN logout.
-       * Annars försvinner token först och DELETE-anropet
-       * kan inte längre autentiseras.
+       * Quiz-sessionen måste raderas innan logout,
+       * eftersom token behövs för DELETE-anropet.
        */
       await quitActiveSession();
 
@@ -151,7 +132,9 @@ function Navbar({ onLoginClick }: NavbarProps) {
                 Profile
               </NavLink>
             ))}
+        </nav>
 
+        <div className="navbar__actions">
           {isAuth && profile && (
             <div className="navbar__score">
               <span className="navbar__score-label">Totalscore:</span>
@@ -159,43 +142,43 @@ function Navbar({ onLoginClick }: NavbarProps) {
               <span className="navbar__score-value">{profile.totalScore}</span>
             </div>
           )}
-        </nav>
 
-        {isAuth ? (
-          <button
-            onClick={handleLogout}
-            className="navbar__login"
-            type="button"
-          >
-            <svg
-              className="navbar__login-icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+          {isAuth ? (
+            <button
+              onClick={handleLogout}
+              className="navbar__login"
+              type="button"
             >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-            </svg>
+              <svg
+                className="navbar__login-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+              </svg>
 
-            <span>Logout</span>
-          </button>
-        ) : (
-          <button
-            onClick={onLoginClick}
-            className="navbar__login"
-            type="button"
-          >
-            <svg
-              className="navbar__login-icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+              <span>Logout</span>
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="navbar__login"
+              type="button"
             >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-            </svg>
+              <svg
+                className="navbar__login-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+              </svg>
 
-            <span>Login</span>
-          </button>
-        )}
+              <span>Login</span>
+            </button>
+          )}
+        </div>
       </div>
     </header>
   );
