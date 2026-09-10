@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { deleteAccount, getUserProfile } from "../api/userApi";
-import { getQuizHistory } from "../api/quizApi";
 import { getCategories } from "../api/categoryApi";
+import { getQuizHistory } from "../api/quizApi";
+import { deleteAccount, getUserProfile } from "../api/userApi";
 
+import ProfileAccountSettings from "../components/profile/ProfileAccountSettings";
+import ProfileQuizHistory from "../components/profile/ProfileQuizHistory";
+import ProfileSummaryCard from "../components/profile/ProfileSummaryCard";
 import { useAuth } from "../context/AuthContext";
 
-import type { UserProfile } from "../types/user";
 import type { QuizHistory } from "../types/question";
+import type { UserProfile } from "../types/user";
 
 import "../styles/ProfilePage.css";
 
@@ -112,102 +115,16 @@ function ProfilePage() {
 
   return (
     <main className="profile-page">
-      <section className="profile-card">
-        <div className="profile-user">
-          <div className="profile-avatar" aria-hidden="true">
-            {profile?.username?.charAt(0).toUpperCase() ?? "U"}
-          </div>
+      <ProfileSummaryCard profile={profile} />
 
-          <div className="profile-user-info">
-            <span className="profile-label">Profile</span>
+      <ProfileQuizHistory
+        quizHistory={quizHistory}
+        getCategoryName={getCategoryName}
+        formatDate={formatDate}
+        onStartQuiz={() => navigate("/categories")}
+      />
 
-            <h1>{profile?.username}</h1>
-
-            <span className="profile-username">@{profile?.username}</span>
-          </div>
-        </div>
-
-        <div className="profile-score">
-          <span className="profile-label">Total score</span>
-
-          <strong>{profile?.totalScore ?? 0}</strong>
-
-          <span className="profile-score-unit">points</span>
-        </div>
-      </section>
-
-      <section className="profile-section">
-        <div className="profile-section-header">
-          <div>
-            <span className="profile-label">Activity</span>
-
-            <h2>Recent quizzes</h2>
-          </div>
-
-          <span className="profile-history-count">
-            Last {quizHistory.length}
-          </span>
-        </div>
-
-        {quizHistory.length === 0 ? (
-          <div className="profile-empty">
-            <p>No completed quizzes yet.</p>
-
-            <button type="button" onClick={() => navigate("/categories")}>
-              Start a quiz →
-            </button>
-          </div>
-        ) : (
-          <div className="quiz-history-list">
-            {quizHistory.map((quiz) => (
-              <article className="quiz-history-item" key={quiz.sessionId}>
-                <div className="quiz-history-info">
-                  <strong>{getCategoryName(quiz.categoryId)}</strong>
-
-                  <span>
-                    {quiz.correctAnswers} / {quiz.totalQuestions} correct
-                  </span>
-                </div>
-
-                <div className="quiz-history-result">
-                  <strong
-                    className={
-                      quiz.quizScore >= 0
-                        ? "quiz-history-score quiz-history-score--positive"
-                        : "quiz-history-score quiz-history-score--negative"
-                    }
-                  >
-                    {quiz.quizScore > 0 ? "+" : ""}
-                    {quiz.quizScore} pts
-                  </strong>
-
-                  <time>{formatDate(quiz.completedAt)}</time>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="profile-section profile-account profile-section--danger">
-        <div>
-          <span className="profile-label">Account</span>
-
-          <h2>Account settings</h2>
-
-          <p>
-            Permanently delete your TechLingo account and all associated data.
-          </p>
-        </div>
-
-        <button
-          onClick={handleDeleteAccount}
-          className="profile__delete-button"
-          type="button"
-        >
-          Delete account
-        </button>
-      </section>
+      <ProfileAccountSettings onDeleteAccount={handleDeleteAccount} />
 
       {error && <p className="profile-status profile-status--error">{error}</p>}
     </main>

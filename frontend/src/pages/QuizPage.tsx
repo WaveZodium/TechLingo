@@ -6,53 +6,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getCategories } from "../api/categoryApi";
 import { startQuiz, submitQuizAnswer, completeQuiz } from "../api/quizApi";
 
+import QuizActions from "../components/quiz/QuizActions";
+import QuizAnswerGrid from "../components/quiz/QuizAnswerGrid";
+import QuizConversation from "../components/quiz/QuizConversation";
+import QuizStats from "../components/quiz/QuizStats";
 import { useQuiz } from "../context/QuizContext";
 import { useUser } from "../context/UserContext";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
-
-type ChatMessage =
-  | {
-      id: string;
-      sender: "robot" | "user";
-      type: "text";
-      text: string;
-    }
-  | {
-      id: string;
-      sender: "robot";
-      type: "feedback";
-      result: AnswerResult;
-    }
-  | {
-      id: string;
-      sender: "robot";
-      type: "result";
-      result: QuizResult;
-    };
-
-function RobotAvatar() {
-  return (
-    <span className="robot-avatar" aria-hidden="true">
-      <span className="robot-antenna" />
-
-      <span className="robot-face">
-        <span className="robot-eye robot-eye-left" />
-        <span className="robot-eye robot-eye-right" />
-        <span className="robot-mouth" />
-      </span>
-    </span>
-  );
-}
-
-function UserAvatar() {
-  return (
-    <span className="user-avatar" aria-hidden="true">
-      <span className="user-head" />
-      <span className="user-shoulders" />
-    </span>
-  );
-}
+import type { ChatMessage } from "../types/quiz";
 
 function createQuestionMessages(question: Question): ChatMessage[] {
   return [
@@ -386,191 +348,48 @@ function QuizPage() {
 
   return (
     <main className="quiz-page">
-      <div className="quiz-placeholder" ref={quizTopRef}>
-        <div className="quiz-stat quiz-stat--name">
-          <span className="quiz-stat-label">Quiz</span>
-
-          <strong>{quizName}</strong>
-        </div>
-
-        <div aria-hidden="true" />
-
-        <div className="quiz-stat-group">
-          <div className="quiz-stat quiz-stat--question">
-            <span className="quiz-stat-label">Question</span>
-
-            <strong>
-              {currentQuestionIndex + 1} / {questions.length}
-            </strong>
-          </div>
-
-          <div className="quiz-stat quiz-stat--score">
-            <span className="quiz-stat-label">Score</span>
-
-            <strong>{score}</strong>
-          </div>
-        </div>
-      </div>
+      <QuizStats
+        ref={quizTopRef}
+        quizName={quizName}
+        currentQuestionIndex={currentQuestionIndex}
+        questionCount={questions.length}
+        score={score}
+      />
 
       <section className="quiz-shell" aria-labelledby="quiz-title">
         <h1 id="quiz-title" className="visually-hidden">
           TechLingo quiz
         </h1>
 
-        <div ref={conversationRef} className="conversation" aria-live="polite">
-          {chatMessages.map((message) => {
-            if (message.sender === "user") {
-              return (
-                <div key={message.id} className="message-row message-row--user">
-                  <div className="message-content message-content--user">
-                    <span className="message-sender message-sender--user">
-                      You
-                    </span>
-
-                    <div className="bubble bubble--user">{message.text}</div>
-                  </div>
-
-                  <UserAvatar />
-                </div>
-              );
-            }
-
-            return (
-              <div key={message.id} className="message-row message-row--robot">
-                <RobotAvatar />
-
-                <div className="message-content">
-                  <span className="message-sender">TechLingo</span>
-
-                  <div className="bubble bubble--robot">
-                    {message.type === "text" && message.text}
-
-                    {message.type === "feedback" &&
-                      (message.result.isCorrect ? (
-                        <>
-                          Correct! You got{" "}
-                          <span className="points">
-                            {message.result.points}
-                          </span>{" "}
-                          points.
-                        </>
-                      ) : (
-                        <>
-                          Not quite. The correct answer is "
-                          {message.result.correctAnswer}".
-                          <br />
-                          You got{" "}
-                          <span className="points wrong">
-                            {message.result.points}
-                          </span>{" "}
-                          points.
-                        </>
-                      ))}
-
-                    {message.type === "result" && (
-                      <>
-                        Quiz complete!
-                        <br />
-                        Quiz score: {message.result.quizScore}
-                        <br />
-                        Total score: {message.result.totalScore}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {answerError && (
-            <div className="message-row message-row--robot">
-              <RobotAvatar />
-
-              <div className="message-content">
-                <span className="message-sender">TechLingo</span>
-
-                <div className="bubble bubble--robot">{answerError}</div>
-              </div>
-            </div>
-          )}
-        </div>
+        <QuizConversation
+          ref={conversationRef}
+          chatMessages={chatMessages}
+          answerError={answerError}
+        />
 
         <div className="divider" />
 
-        <div className="answer-grid" role="group" aria-label="Choose an answer">
-          {currentQuestion.options.map((answer, index) => (
-            <button
-              className={`answer-button${
-                selectedAnswerId === answer.id ? " selected" : ""
-              }${
-                answerResult?.correctAnswerId === answer.id ? " correct" : ""
-              }${
-                answerResult &&
-                !answerResult.isCorrect &&
-                selectedAnswerId === answer.id
-                  ? " incorrect"
-                  : ""
-              }`}
-              key={answer.id}
-              onClick={() => handleAnswerClick(answer.id)}
-              type="button"
-              disabled={
-                isSubmittingAnswer ||
-                answerResult !== null ||
-                quizResult !== null ||
-                isQuittingQuiz
-              }
-            >
-              <span className="answer-letter">
-                {String.fromCharCode(65 + index)}
-              </span>
+        <QuizAnswerGrid
+          currentQuestion={currentQuestion}
+          selectedAnswerId={selectedAnswerId}
+          answerResult={answerResult}
+          quizResult={quizResult}
+          isSubmittingAnswer={isSubmittingAnswer}
+          isQuittingQuiz={isQuittingQuiz}
+          onAnswerClick={handleAnswerClick}
+        />
 
-              <span>{answer.text}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className="quiz-actions">
-          {!quizResult ? (
-            <>
-              <button
-                className="quiz-quit-button"
-                type="button"
-                onClick={handleQuitQuiz}
-                disabled={
-                  isQuittingQuiz || isCompletingQuiz || isSubmittingAnswer
-                }
-              >
-                {isQuittingQuiz ? "Quitting..." : "← Quit quiz"}
-              </button>
-
-              <button
-                className="quiz-next-button"
-                type="button"
-                onClick={handleNextQuestion}
-                disabled={!answerResult || isCompletingQuiz || isQuittingQuiz}
-              >
-                {isCompletingQuiz
-                  ? "Finishing..."
-                  : isLastQuestion
-                    ? "Finish quiz"
-                    : "Next question →"}
-              </button>
-            </>
-          ) : (
-            <>
-              <div />
-
-              <button
-                className="quiz-next-button"
-                type="button"
-                onClick={() => navigate("/categories")}
-              >
-                Back to categories →
-              </button>
-            </>
-          )}
-        </div>
+        <QuizActions
+          quizResult={quizResult}
+          answerResult={answerResult}
+          isQuittingQuiz={isQuittingQuiz}
+          isCompletingQuiz={isCompletingQuiz}
+          isSubmittingAnswer={isSubmittingAnswer}
+          isLastQuestion={isLastQuestion}
+          onQuit={handleQuitQuiz}
+          onNext={handleNextQuestion}
+          onBackToCategories={() => navigate("/categories")}
+        />
       </section>
     </main>
   );
