@@ -280,7 +280,7 @@
     background 0.2s ease;
 }
 
-.navbar__login:hover:not(:disabled) {
+.navbar__login:hover {
   transform: translateY(-2px);
 
   background: linear-gradient(135deg, #1268f5, #288cff);
@@ -300,30 +300,6 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-/* Disabled under active quiz */
-
-.navbar__link--disabled {
-  opacity: 0.4;
-
-  cursor: not-allowed;
-}
-
-.navbar__login:disabled {
-  opacity: 0.4;
-
-  cursor: not-allowed;
-}
-
-.navbar__logo-link--disabled {
-  opacity: 0.4;
-
-  cursor: not-allowed;
-}
-
-.navbar__logo-link--disabled:hover {
-  cursor: not-allowed;
 }
 
 /* Tablet */
@@ -447,10 +423,6 @@
     font-size: 0.76rem;
   }
 
-.navbar__login:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
   .navbar__login span {
     display: none;
   }
@@ -462,8 +434,6 @@
     padding: 0;
   }
 
-.navbar__logo-link--disabled:hover {
-  cursor: not-allowed;
   .navbar__logo {
     width: 90px;
   }
