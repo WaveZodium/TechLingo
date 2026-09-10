@@ -1,5 +1,5 @@
 import api from "./api";
-import type { UserProfile } from "../types/user";
+import type { LeaderboardUser, UserProfile } from "../types/user";
 
 export async function getUserProfile() {
   const response = await api.get<UserProfile>("/user/account");
@@ -9,4 +9,10 @@ export async function getUserProfile() {
 
 export async function deleteAccount() {
   await api.delete("/user/account");
+}
+
+export async function getLeaderboard() {
+  const response = await api.get<LeaderboardUser[]>("/user/leaderboard");
+
+  return response.data;
 }
