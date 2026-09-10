@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TechLingo.Core.Entities;
 using TechLingo.Core.Interfaces;
+using TechLingo.Core.Enums;
 
 namespace TechLingo.Core.Repositories
 {
@@ -66,6 +67,16 @@ namespace TechLingo.Core.Repositories
 
             return updatedUser?.TotalScore;
         }
+
+        public async Task<List<User>> GetTopUsersAsync(int limit)
+        {
+            return await _users
+                .Find(user => user.Role == UserRole.User)
+                .SortByDescending(user => user.TotalScore)
+                .Limit(limit)
+                .ToListAsync();
+        }
+        
 
     }
 }
