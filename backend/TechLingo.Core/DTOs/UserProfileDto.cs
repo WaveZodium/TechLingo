@@ -6,7 +6,7 @@ namespace TechLingo.Core.DTOs
 {
     public class UserProfileDto
     {
-        public string Username { get; set; }
-        public int TotalScore { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public int TotalScore { get; set; } = 0;
     }
 }
