@@ -63,10 +63,6 @@ function Navbar({ onLoginClick }: NavbarProps) {
     }
 
     try {
-      /*
-       * Quiz-sessionen måste raderas innan logout,
-       * eftersom token behövs för DELETE-anropet.
-       */
       await quitActiveSession();
 
       logoutUser();
@@ -107,6 +103,18 @@ function Navbar({ onLoginClick }: NavbarProps) {
               }
             >
               Categories
+            </NavLink>
+          )}
+
+          {isAuth && (
+            <NavLink
+              to="/leaderboard"
+              onClick={(event) => handleNavigation(event, "/leaderboard")}
+              className={({ isActive }) =>
+                `navbar__link ${isActive ? "navbar__link--active" : ""}`
+              }
+            >
+              Leaderboard
             </NavLink>
           )}
 
