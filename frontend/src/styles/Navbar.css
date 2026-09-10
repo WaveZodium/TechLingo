@@ -4,6 +4,14 @@
   inherits: false;
 }
 
+@property --mobile-menu-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* Navbar */
+
 .navbar {
   position: relative;
 
@@ -72,7 +80,7 @@
   }
 }
 
-/* Navbarens innehåll */
+/* Innehåll */
 
 .navbar__content {
   position: relative;
@@ -105,7 +113,7 @@
   height: auto;
 }
 
-/* Navigation */
+/* Desktop navigation */
 
 .navbar__links {
   position: absolute;
@@ -139,6 +147,8 @@
 
   text-decoration: none;
 
+  white-space: nowrap;
+
   transition:
     color 0.2s ease,
     text-shadow 0.2s ease;
@@ -154,7 +164,7 @@
     0 0 32px rgba(105, 223, 255, 0.35);
 }
 
-/* Blå linje under aktiv sida */
+/* Aktiv länk */
 
 .navbar__link::after {
   content: "";
@@ -192,7 +202,7 @@
   width: 32px;
 }
 
-/* Högerdelen: score + login/logout */
+/* Högerdelen */
 
 .navbar__actions {
   margin-left: auto;
@@ -203,7 +213,7 @@
   gap: 18px;
 }
 
-/* Total score */
+/* Score */
 
 .navbar__score {
   height: 38px;
@@ -242,7 +252,7 @@
   font-weight: 700;
 }
 
-/* Leaderboard medal */
+/* Medalj */
 
 .navbar__medal {
   width: 28px;
@@ -315,153 +325,371 @@
   stroke-linejoin: round;
 }
 
+/* Hamburger */
+
+.navbar__menu-button {
+  display: none;
+
+  margin-left: auto;
+
+  width: 42px;
+  height: 42px;
+
+  padding: 9px;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 5px;
+
+  color: var(--color-white);
+
+  background: rgba(0, 86, 251, 0.12);
+
+  border: 1px solid rgba(70, 130, 255, 0.55);
+  border-radius: 11px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 10px rgba(0, 100, 255, 0.1),
+    inset 0 0 6px rgba(255, 255, 255, 0.03);
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.navbar__menu-button:hover {
+  background: rgba(0, 100, 255, 0.22);
+
+  border-color: rgba(105, 223, 255, 0.75);
+
+  box-shadow: 0 0 14px rgba(0, 110, 255, 0.2);
+}
+
+.navbar__menu-button span {
+  width: 21px;
+  height: 2px;
+
+  display: block;
+
+  background: currentColor;
+
+  border-radius: 999px;
+
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease;
+}
+
+/* Hamburger blir X */
+
+.navbar__menu-button--open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar__menu-button--open span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar__menu-button--open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu - dold på desktop */
+
+.navbar__mobile-menu {
+  display: none;
+}
+
 /* Tablet */
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) and (min-width: 701px) {
   .navbar__content {
-    padding: 0 28px;
+    padding: 0 26px;
   }
 
   .navbar__links {
-    gap: 30px;
+    gap: 26px;
+  }
+
+  .navbar__link {
+    font-size: 0.9rem;
   }
 
   .navbar__actions {
-    gap: 10px;
+    gap: 9px;
   }
 
   .navbar__score {
-    padding: 0 11px;
+    padding: 0 10px;
   }
 
   .navbar__score-label {
     display: none;
   }
-}
-
-@media (max-width: 700px) {
-  .navbar {
-    width: min(100% - 32px, 1100px);
-
-    height: 64px;
-
-    margin-top: 14px;
-  }
-
-  .navbar__content {
-    padding: 0 22px;
-  }
-
-  .navbar__logo {
-    width: 100px;
-  }
-
-  .navbar__links {
-    gap: 24px;
-  }
-
-  .navbar__link {
-    font-size: 0.85rem;
-  }
-
-  .navbar__link::after {
-    bottom: 8px;
-  }
-
-  .navbar__link--active::after {
-    width: 26px;
-  }
-
-  .navbar__score {
-    height: 36px;
-
-    padding: 0 10px;
-  }
-
-  .navbar__score-value {
-    font-size: 0.82rem;
-  }
-
-  .navbar__medal {
-    width: 24px;
-    height: 24px;
-  }
 
   .navbar__login {
-    height: 36px;
-
-    padding: 0 12px;
-
-    font-size: 0.85rem;
-  }
-
-  .navbar__login-icon {
-    width: 16px;
-    height: 16px;
+    padding: 0 11px;
   }
 }
 
 /* Mobil */
 
-@media (max-width: 540px) {
+@media (max-width: 700px) {
+  .navbar {
+    width: calc(100% - 32px);
+
+    height: 64px;
+
+    margin-top: 14px;
+
+    border-radius: 20px;
+  }
+
+  .navbar__content {
+    padding: 0 18px;
+  }
+
+  .navbar__logo {
+    width: 105px;
+  }
+
+  /* Desktop navigation göms */
+
+  .navbar__links,
+  .navbar__actions {
+    display: none;
+  }
+
+  /* Hamburger visas */
+
+  .navbar__menu-button {
+    display: flex;
+  }
+
+  /* Dropdown */
+
+  .navbar__mobile-menu {
+    position: relative;
+
+    width: calc(100% - 32px);
+
+    margin: 10px auto 0;
+    padding: 18px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    background: rgba(var(--color-navbar-rgba));
+
+    border: 1px solid rgba(70, 130, 255, 0.38);
+    border-radius: 18px;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+
+    box-shadow:
+      0 12px 30px rgba(0, 20, 70, 0.35),
+      inset 0 0 18px rgba(55, 120, 255, 0.06);
+
+    overflow: hidden;
+
+    z-index: 20;
+  }
+
+  /* Animerad kant runt mobilmenyn */
+
+  .navbar__mobile-menu::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    padding: 1px;
+
+    border-radius: inherit;
+
+    background: conic-gradient(
+      from var(--mobile-menu-angle),
+      transparent 0deg,
+      transparent 310deg,
+      #126cff 330deg,
+      #69dfff 342deg,
+      #126cff 352deg,
+      transparent 360deg
+    );
+
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    animation: mobile-menu-border-spin 10s linear infinite;
+
+    pointer-events: none;
+  }
+
+  @keyframes mobile-menu-border-spin {
+    to {
+      --mobile-menu-angle: 360deg;
+    }
+  }
+
+  .navbar__mobile-links {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navbar__mobile-link {
+    position: relative;
+
+    padding: 14px 12px;
+
+    color: var(--color-warm-ivory);
+
+    border-bottom: 1px solid rgba(105, 180, 255, 0.12);
+
+    font-family: var(--font-roboto);
+    font-size: 1rem;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition:
+      color 0.2s ease,
+      background 0.2s ease,
+      padding-left 0.2s ease;
+  }
+
+  .navbar__mobile-link:last-child {
+    border-bottom: 0;
+  }
+
+  .navbar__mobile-link:hover {
+    padding-left: 17px;
+
+    color: var(--color-white);
+
+    background: rgba(20, 90, 190, 0.12);
+  }
+
+  .navbar__mobile-link--active {
+    color: #69dfff;
+
+    text-shadow: 0 0 10px rgba(105, 223, 255, 0.25);
+  }
+
+  .navbar__mobile-link--active::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 50%;
+
+    width: 3px;
+    height: 22px;
+
+    transform: translateY(-50%);
+
+    background: #1675ff;
+
+    border-radius: 999px;
+
+    box-shadow: 0 0 8px rgba(22, 117, 255, 0.7);
+  }
+
+  /* Score + logout */
+
+  .navbar__mobile-actions {
+    position: relative;
+    z-index: 1;
+
+    padding-top: 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    border-top: 1px solid rgba(105, 180, 255, 0.16);
+  }
+
+  .navbar__score--mobile {
+    flex: 1;
+
+    justify-content: flex-start;
+
+    height: 42px;
+
+    padding: 0 14px;
+  }
+
+  .navbar__score--mobile .navbar__score-label {
+    display: inline;
+  }
+
+  .navbar__medal {
+    width: 26px;
+    height: 26px;
+  }
+
+  .navbar__mobile-login {
+    height: 42px;
+
+    flex-shrink: 0;
+  }
+}
+
+/* Små mobiler */
+
+@media (max-width: 420px) {
+  .navbar {
+    width: calc(100% - 24px);
+  }
+
+  .navbar__mobile-menu {
+    width: calc(100% - 24px);
+
+    padding: 14px;
+  }
+
   .navbar__content {
     padding: 0 14px;
   }
 
-  .navbar__links {
-    position: static;
-
-    height: 100%;
-
-    margin-left: auto;
-    margin-right: 12px;
-
-    transform: none;
-
-    gap: 14px;
-  }
-
-  .navbar__actions {
-    margin-left: 0;
-
-    gap: 7px;
-  }
-
-  .navbar__score {
-    height: 36px;
-
-    padding: 0 9px;
-  }
-
-  .navbar__score-label {
-    display: none;
-  }
-
-  .navbar__score-value {
-    font-size: 0.76rem;
-  }
-
-  .navbar__medal {
-    width: 22px;
-    height: 22px;
-  }
-
-  .navbar__login span {
-    display: none;
-  }
-
-  .navbar__login {
-    width: 36px;
-    height: 36px;
-
-    padding: 0;
-  }
-
   .navbar__logo {
-    width: 90px;
+    width: 95px;
   }
 
-  .navbar__link {
-    font-size: 0.78rem;
+  .navbar__mobile-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .navbar__score--mobile {
+    width: 100%;
+  }
+
+  .navbar__mobile-login {
+    width: 100%;
   }
 }

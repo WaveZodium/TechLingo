@@ -27,6 +27,8 @@ function Navbar({ onLoginClick }: NavbarProps) {
 
   const { isQuizActive, quitActiveSession } = useQuiz();
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [leaderboardPosition, setLeaderboardPosition] = useState<number | null>(
     null,
   );
@@ -83,6 +85,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
     path: string,
   ) => {
     if (!isQuizActive) {
+      setIsMenuOpen(false);
       return;
     }
 
@@ -99,6 +102,8 @@ function Navbar({ onLoginClick }: NavbarProps) {
     try {
       await quitActiveSession();
 
+      setIsMenuOpen(false);
+
       navigate(path);
     } catch (error) {
       console.error("Failed to quit quiz before navigation:", error);
@@ -107,6 +112,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
 
   const handleLogout = async () => {
     if (!isQuizActive) {
+      setIsMenuOpen(false);
       logoutUser();
       return;
     }
@@ -122,6 +128,8 @@ function Navbar({ onLoginClick }: NavbarProps) {
     try {
       await quitActiveSession();
 
+      setIsMenuOpen(false);
+
       logoutUser();
     } catch (error) {
       console.error("Failed to quit quiz before logout:", error);
@@ -129,131 +137,289 @@ function Navbar({ onLoginClick }: NavbarProps) {
   };
 
   return (
-    <header className="navbar">
-      <div className="navbar__content">
-        <Link
-          to="/"
-          onClick={(event) => handleNavigation(event, "/")}
-          aria-label="TechLingo home"
-          className="navbar__logo-link"
-        >
-          <img src={logo} alt="TechLingo" className="navbar__logo" />
-        </Link>
-
-        <nav className="navbar__links">
-          <NavLink
+    <>
+      <header className="navbar">
+        <div className="navbar__content">
+          <Link
             to="/"
             onClick={(event) => handleNavigation(event, "/")}
-            className={({ isActive }) =>
-              `navbar__link ${isActive ? "navbar__link--active" : ""}`
-            }
+            aria-label="TechLingo home"
+            className="navbar__logo-link"
           >
-            Home
-          </NavLink>
+            <img src={logo} alt="TechLingo" className="navbar__logo" />
+          </Link>
 
-          {isAuth && (
+          {/* Desktop navigation */}
+
+          <nav className="navbar__links">
             <NavLink
-              to="/categories"
-              onClick={(event) => handleNavigation(event, "/categories")}
+              to="/"
+              onClick={(event) => handleNavigation(event, "/")}
               className={({ isActive }) =>
                 `navbar__link ${isActive ? "navbar__link--active" : ""}`
               }
             >
-              Categories
+              Home
             </NavLink>
-          )}
 
-          {isAuth && (
-            <NavLink
-              to="/leaderboard"
-              onClick={(event) => handleNavigation(event, "/leaderboard")}
-              className={({ isActive }) =>
-                `navbar__link ${isActive ? "navbar__link--active" : ""}`
-              }
-            >
-              Leaderboard
-            </NavLink>
-          )}
-
-          {isAuth &&
-            (role === "Admin" ? (
+            {isAuth && (
               <NavLink
-                to="/admin"
-                onClick={(event) => handleNavigation(event, "/admin")}
+                to="/categories"
+                onClick={(event) => handleNavigation(event, "/categories")}
                 className={({ isActive }) =>
                   `navbar__link ${isActive ? "navbar__link--active" : ""}`
                 }
               >
-                Admin panel
+                Categories
               </NavLink>
+            )}
+
+            {isAuth && (
+              <NavLink
+                to="/leaderboard"
+                onClick={(event) => handleNavigation(event, "/leaderboard")}
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Leaderboard
+              </NavLink>
+            )}
+
+            {isAuth &&
+              (role === "Admin" ? (
+                <NavLink
+                  to="/admin"
+                  onClick={(event) => handleNavigation(event, "/admin")}
+                  className={({ isActive }) =>
+                    `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                  }
+                >
+                  Admin panel
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/profile"
+                  onClick={(event) => handleNavigation(event, "/profile")}
+                  className={({ isActive }) =>
+                    `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                  }
+                >
+                  Profile
+                </NavLink>
+              ))}
+          </nav>
+
+          {/* Desktop actions */}
+
+          <div className="navbar__actions">
+            {isAuth && profile && (
+              <div className="navbar__score">
+                {leaderboardMedal && (
+                  <img
+                    src={leaderboardMedal}
+                    alt={`Leaderboard position ${leaderboardPosition}`}
+                    className="navbar__medal"
+                  />
+                )}
+
+                <span className="navbar__score-label">Totalscore:</span>
+
+                <span className="navbar__score-value">
+                  {profile.totalScore}
+                </span>
+              </div>
+            )}
+
+            {isAuth ? (
+              <button
+                onClick={handleLogout}
+                className="navbar__login"
+                type="button"
+              >
+                <svg
+                  className="navbar__login-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                </svg>
+
+                <span>Logout</span>
+              </button>
             ) : (
+              <button
+                onClick={onLoginClick}
+                className="navbar__login"
+                type="button"
+              >
+                <svg
+                  className="navbar__login-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                </svg>
+
+                <span>Login</span>
+              </button>
+            )}
+          </div>
+
+          {/* Hamburger button */}
+
+          <button
+            className={`navbar__menu-button ${
+              isMenuOpen ? "navbar__menu-button--open" : ""
+            }`}
+            type="button"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen((current) => !current)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile menu */}
+
+      {isMenuOpen && (
+        <nav className="navbar__mobile-menu">
+          <div className="navbar__mobile-links">
+            <NavLink
+              to="/"
+              onClick={(event) => handleNavigation(event, "/")}
+              className={({ isActive }) =>
+                `navbar__mobile-link ${
+                  isActive ? "navbar__mobile-link--active" : ""
+                }`
+              }
+            >
+              Home
+            </NavLink>
+
+            {isAuth && (
               <NavLink
-                to="/profile"
-                onClick={(event) => handleNavigation(event, "/profile")}
+                to="/categories"
+                onClick={(event) => handleNavigation(event, "/categories")}
                 className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
                 }
               >
-                Profile
+                Categories
               </NavLink>
-            ))}
+            )}
+
+            {isAuth && (
+              <NavLink
+                to="/leaderboard"
+                onClick={(event) => handleNavigation(event, "/leaderboard")}
+                className={({ isActive }) =>
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
+                }
+              >
+                Leaderboard
+              </NavLink>
+            )}
+
+            {isAuth &&
+              (role === "Admin" ? (
+                <NavLink
+                  to="/admin"
+                  onClick={(event) => handleNavigation(event, "/admin")}
+                  className={({ isActive }) =>
+                    `navbar__mobile-link ${
+                      isActive ? "navbar__mobile-link--active" : ""
+                    }`
+                  }
+                >
+                  Admin panel
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/profile"
+                  onClick={(event) => handleNavigation(event, "/profile")}
+                  className={({ isActive }) =>
+                    `navbar__mobile-link ${
+                      isActive ? "navbar__mobile-link--active" : ""
+                    }`
+                  }
+                >
+                  Profile
+                </NavLink>
+              ))}
+          </div>
+
+          <div className="navbar__mobile-actions">
+            {isAuth && profile && (
+              <div className="navbar__score navbar__score--mobile">
+                {leaderboardMedal && (
+                  <img
+                    src={leaderboardMedal}
+                    alt={`Leaderboard position ${leaderboardPosition}`}
+                    className="navbar__medal"
+                  />
+                )}
+
+                <span className="navbar__score-label">Totalscore:</span>
+
+                <span className="navbar__score-value">
+                  {profile.totalScore}
+                </span>
+              </div>
+            )}
+
+            {isAuth ? (
+              <button
+                type="button"
+                className="navbar__login navbar__mobile-login"
+                onClick={handleLogout}
+              >
+                <svg
+                  className="navbar__login-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                </svg>
+
+                <span>Logout</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="navbar__login navbar__mobile-login"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  onLoginClick();
+                }}
+              >
+                <svg
+                  className="navbar__login-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                </svg>
+
+                <span>Login</span>
+              </button>
+            )}
+          </div>
         </nav>
-
-        <div className="navbar__actions">
-          {isAuth && profile && (
-            <div className="navbar__score">
-              {leaderboardMedal && (
-                <img
-                  src={leaderboardMedal}
-                  alt={`Leaderboard position ${leaderboardPosition}`}
-                  className="navbar__medal"
-                />
-              )}
-
-              <span className="navbar__score-label">Totalscore:</span>
-
-              <span className="navbar__score-value">{profile.totalScore}</span>
-            </div>
-          )}
-
-          {isAuth ? (
-            <button
-              onClick={handleLogout}
-              className="navbar__login"
-              type="button"
-            >
-              <svg
-                className="navbar__login-icon"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="8" r="4" />
-                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-              </svg>
-
-              <span>Logout</span>
-            </button>
-          ) : (
-            <button
-              onClick={onLoginClick}
-              className="navbar__login"
-              type="button"
-            >
-              <svg
-                className="navbar__login-icon"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="8" r="4" />
-                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-              </svg>
-
-              <span>Login</span>
-            </button>
-          )}
-        </div>
-      </div>
-    </header>
+      )}
+    </>
   );
 }
 
