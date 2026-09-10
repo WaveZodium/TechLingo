@@ -59,5 +59,14 @@ namespace TechLingo.Api.Controllers
 
             return NoContent();
         }
+        
+        [Authorize]
+        [HttpGet("leaderboard")]
+        public async Task<IActionResult> GetLeaderboard()
+        {
+            var leaderboard = await _userService.GetLeaderboardAsync();
+
+            return Ok(leaderboard);
+        }
     }
 }

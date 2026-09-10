@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getCategories } from "../api/categoryApi";
 import { startQuiz, submitQuizAnswer, completeQuiz } from "../api/quizApi";
 
-import { useUser } from "../context/UserContext";
 import { useQuiz } from "../context/QuizContext";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
@@ -78,56 +77,33 @@ function QuizPage() {
   const { activeSessionId, startSession, finishSession, quitActiveSession } =
     useQuiz();
 
-  const { updateTotalScore } = useUser();
-
   const [questions, setQuestions] = useState<Question[]>([]);
   const [quizName, setQuizName] = useState("Quiz");
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
   const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [error, setError] = useState<string | null>(null);
-
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
-
   const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
-
   const [answerError, setAnswerError] = useState<string | null>(null);
-
   const [score, setScore] = useState(0);
-
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
-
   const [isCompletingQuiz, setIsCompletingQuiz] = useState(false);
-
   const [isQuittingQuiz, setIsQuittingQuiz] = useState(false);
-
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   const startQuizPromiseRef = useRef<ReturnType<typeof startQuiz> | null>(null);
-
   const startQuizCategoryRef = useRef<string | null>(null);
-
   const conversationRef = useRef<HTMLDivElement | null>(null);
-
   const quizTopRef = useRef<HTMLDivElement | null>(null);
-  const { loadProfile } = useUser();
 
-  /*
-   * Startar quizet och laddar frågorna.
-   */
   useEffect(() => {
     let ignore = false;
 
     async function loadQuestions() {
       if (!categoryId) {
         setError("No category was selected.");
-
         setIsLoading(false);
-
         return;
       }
 
@@ -137,41 +113,28 @@ function QuizPage() {
 
         setQuestions([]);
         setQuizName("Quiz");
-
         setCurrentQuestionIndex(0);
         setSelectedAnswerId(null);
         setAnswerResult(null);
         setAnswerError(null);
-
         setIsSubmittingAnswer(false);
         setIsCompletingQuiz(false);
         setIsQuittingQuiz(false);
-
         setScore(0);
         setQuizResult(null);
-
         setChatMessages([]);
 
-        /*
-         * Förhindrar dubbla startQuiz-anrop
-         * från React StrictMode.
-         */
         if (
           startQuizCategoryRef.current !== categoryId ||
           !startQuizPromiseRef.current
         ) {
           startQuizCategoryRef.current = categoryId;
-
           startQuizPromiseRef.current = startQuiz(categoryId);
         }
 
         const quiz = await startQuizPromiseRef.current;
 
         if (!ignore) {
-          /*
-           * QuizContext äger nu den
-           * aktiva sessionen.
-           */
           startSession(quiz.sessionId);
 
           setQuestions(quiz.questions);
@@ -197,7 +160,6 @@ function QuizPage() {
       } catch (error) {
         if (!ignore) {
           console.error("Failed to start quiz:", error);
-
           setError("Could not load questions.");
         }
       } finally {
@@ -214,10 +176,6 @@ function QuizPage() {
     };
   }, [categoryId, startSession]);
 
-  /*
-   * Scrollar webbsidan till toppen
-   * av quizet när frågorna laddat klart.
-   */
   useEffect(() => {
     if (!isLoading && questions.length > 0) {
       quizTopRef.current?.scrollIntoView({
@@ -227,10 +185,6 @@ function QuizPage() {
     }
   }, [isLoading, questions]);
 
-  /*
-   * Scrollar inne i chatten när
-   * ett nytt meddelande visas.
-   */
   useEffect(() => {
     const conversation = conversationRef.current;
 
@@ -284,10 +238,8 @@ function QuizPage() {
     }
 
     setSelectedAnswerId(answerId);
-
     setAnswerResult(null);
     setAnswerError(null);
-
     setIsSubmittingAnswer(true);
 
     try {
@@ -323,24 +275,14 @@ function QuizPage() {
       setAnswerResult(result);
 
       setScore((currentScore) => currentScore + result.points);
-
-      /*
-       * Uppdaterar navbarens score
-       * visuellt medan quizet pågår.
-       */
-      updateTotalScore(result.points);
     } catch (error) {
       console.error("Failed to submit answer:", error);
-
       setAnswerError("Could not check the answer.");
     } finally {
       setIsSubmittingAnswer(false);
     }
   };
 
-  /*
-   * Quizets egna Quit-knapp.
-   */
   const handleQuitQuiz = async () => {
     if (!activeSessionId || isQuittingQuiz) {
       return;
@@ -356,21 +298,13 @@ function QuizPage() {
 
     try {
       setIsQuittingQuiz(true);
-
       setAnswerError(null);
 
-      /*
-       * QuizContext:
-       * - DELETE session
-       * - activeSessionId = null
-       * - loadProfile()
-       */
       await quitActiveSession();
 
       navigate("/categories");
     } catch (error) {
       console.error("Failed to quit quiz:", error);
-
       setAnswerError("Could not quit the quiz.");
     } finally {
       setIsQuittingQuiz(false);
@@ -382,10 +316,6 @@ function QuizPage() {
       return;
     }
 
-    /*
-     * Fråga 10:
-     * avsluta quizet.
-     */
     if (isLastQuestion) {
       if (!activeSessionId) {
         return;
@@ -393,26 +323,15 @@ function QuizPage() {
 
       try {
         setIsCompletingQuiz(true);
-
         setAnswerError(null);
 
-        /*
-         * Spara ID:t innan finishSession()
-         * sätter activeSessionId till null.
-         */
         const completedSessionId = activeSessionId;
 
         const result = await completeQuiz(completedSessionId);
 
-        /*
-         * Quizet är nu färdigt i
-         * backend och ska inte längre
-         * betraktas som en aktiv session.
-         */
-        finishSession();
+        await finishSession();
 
         setQuizResult(result);
-
         setScore(result.quizScore);
 
         setChatMessages((currentMessages) => [
@@ -426,7 +345,6 @@ function QuizPage() {
         ]);
       } catch (error) {
         console.error("Failed to complete quiz:", error);
-
         setAnswerError("Could not complete the quiz.");
       } finally {
         setIsCompletingQuiz(false);
@@ -435,10 +353,6 @@ function QuizPage() {
       return;
     }
 
-    /*
-     * Fråga 1–9:
-     * gå vidare.
-     */
     const nextQuestionIndex = currentQuestionIndex + 1;
 
     const nextQuestion = questions[nextQuestionIndex];
@@ -453,9 +367,7 @@ function QuizPage() {
     ]);
 
     setCurrentQuestionIndex(nextQuestionIndex);
-
     setSelectedAnswerId(null);
-
     setAnswerResult(null);
     setAnswerError(null);
   };
@@ -533,8 +445,7 @@ function QuizPage() {
                       ) : (
                         <>
                           Not quite. The correct answer is "
-                          {message.result.correctAnswer}
-                          ".
+                          {message.result.correctAnswer}".
                           <br />
                           You got{" "}
                           <span className="points wrong">

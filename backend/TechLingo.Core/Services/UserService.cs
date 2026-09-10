@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TechLingo.Core.DTOs;
 using TechLingo.Core.Entities;
 using TechLingo.Core.Interfaces;
@@ -44,5 +46,18 @@ namespace TechLingo.Core.Services
 
             return true;
         }
+        public async Task<List<LeaderboardUserDto>> GetLeaderboardAsync()
+        {
+            var users = await _userRepository.GetTopUsersAsync(5);
+
+            return users
+                .Select(user => new LeaderboardUserDto
+                {
+                    Username = user.Username,
+                    TotalScore = user.TotalScore
+                })
+                .ToList();
+        }
+
     }
 }
