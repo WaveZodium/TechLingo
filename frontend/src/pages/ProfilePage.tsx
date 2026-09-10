@@ -189,7 +189,7 @@ function ProfilePage() {
         )}
       </section>
 
-      <section className="profile-section profile-account">
+      <section className="profile-section profile-account profile-section--danger">
         <div>
           <span className="profile-label">Account</span>
 
