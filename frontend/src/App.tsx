@@ -9,6 +9,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import QuizPage from "./pages/QuizPage";
 import AdminPage from "./pages/AdminPage";
 import ProfilePage from "./pages/ProfilePage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
             <Route path="/quiz/:categoryId" element={<QuizPage />} />
 
             <Route path="/profile" element={<ProfilePage />} />
+
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
           </Route>
 
           {/* Endast admin */}
