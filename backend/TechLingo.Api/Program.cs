@@ -50,14 +50,22 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
     return client.GetDatabase(mongoSettings.DatabaseName);
 });
 
+// Seeders
 builder.Services.AddScoped<MongoDbSeeder>();
-builder.Services.AddScoped<QuizService>();
+builder.Services.AddScoped<CategorySeeder>();
+builder.Services.AddScoped<UserSeeder>();
+builder.Services.AddScoped<QuestionSeeder>();
+
+// Repositories
 builder.Services.AddScoped<QuizSessionRepository>();
 builder.Services.AddScoped<QuestionRepository>();
 builder.Services.AddScoped<CategoryRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// Services
+builder.Services.AddScoped<QuizService>();
 builder.Services.AddScoped<QuestionService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IUserService, UserService>();
