@@ -7,6 +7,7 @@ import { getCategories } from "../api/categoryApi";
 import { startQuiz, submitQuizAnswer, completeQuiz } from "../api/quizApi";
 
 import { useQuiz } from "../context/QuizContext";
+import { useUser } from "../context/UserContext";
 
 import type { AnswerResult, Question, QuizResult } from "../types/question";
 
@@ -73,6 +74,8 @@ function createQuestionMessages(question: Question): ChatMessage[] {
 function QuizPage() {
   const navigate = useNavigate();
   const { categoryId } = useParams();
+
+  const { loadProfile } = useUser();
 
   const { activeSessionId, startSession, finishSession, quitActiveSession } =
     useQuiz();
@@ -343,6 +346,15 @@ function QuizPage() {
             result,
           },
         ]);
+
+        try {
+          await loadProfile();
+        } catch (profileError) {
+          console.error(
+            "Quiz completed, but failed to refresh user profile:",
+            profileError,
+          );
+        }
       } catch (error) {
         console.error("Failed to complete quiz:", error);
         setAnswerError("Could not complete the quiz.");
