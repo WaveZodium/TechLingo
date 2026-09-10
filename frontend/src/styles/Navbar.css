@@ -447,6 +447,10 @@
     font-size: 0.76rem;
   }
 
+.navbar__login:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
   .navbar__login span {
     display: none;
   }
@@ -458,6 +462,8 @@
     padding: 0;
   }
 
+.navbar__logo-link--disabled:hover {
+  cursor: not-allowed;
   .navbar__logo {
     width: 90px;
   }
