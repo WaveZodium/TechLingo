@@ -78,7 +78,24 @@ function Navbar({ onLoginClick }: NavbarProps) {
     }
   }
 
+  function getScoreRankClass() {
+    switch (leaderboardPosition) {
+      case 1:
+        return "navbar__score--gold";
+
+      case 2:
+        return "navbar__score--silver";
+
+      case 3:
+        return "navbar__score--bronze";
+
+      default:
+        return "";
+    }
+  }
+
   const leaderboardMedal = getLeaderboardMedal();
+  const scoreRankClass = getScoreRankClass();
 
   const handleNavigation = async (
     event: MouseEvent<HTMLAnchorElement>,
@@ -214,7 +231,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
 
           <div className="navbar__actions">
             {isAuth && profile && (
-              <div className="navbar__score">
+              <div className={`navbar__score ${scoreRankClass}`}>
                 {leaderboardMedal && (
                   <img
                     src={leaderboardMedal}
@@ -361,7 +378,9 @@ function Navbar({ onLoginClick }: NavbarProps) {
 
           <div className="navbar__mobile-actions">
             {isAuth && profile && (
-              <div className="navbar__score navbar__score--mobile">
+              <div
+                className={`navbar__score navbar__score--mobile ${scoreRankClass}`}
+              >
                 {leaderboardMedal && (
                   <img
                     src={leaderboardMedal}
@@ -370,7 +389,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   />
                 )}
 
-                <span className="navbar__score-label">Totalscore:</span>
+                <span className="navbar__score-label">Total score:</span>
 
                 <span className="navbar__score-value">
                   {profile.totalScore}

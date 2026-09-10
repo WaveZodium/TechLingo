@@ -10,6 +10,12 @@
   inherits: false;
 }
 
+@property --score-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
 /* Navbar */
 
 .navbar {
@@ -216,6 +222,8 @@
 /* Score */
 
 .navbar__score {
+  position: relative;
+
   height: 38px;
 
   box-sizing: border-box;
@@ -237,6 +245,128 @@
   box-shadow:
     0 0 10px rgba(0, 100, 255, 0.08),
     inset 0 0 6px rgba(255, 255, 255, 0.03);
+}
+
+/* Rank-animation runt score */
+
+.navbar__score--gold,
+.navbar__score--silver,
+.navbar__score--bronze {
+  border-color: transparent;
+}
+
+/* Gemensam animerad kant */
+
+.navbar__score--gold::before,
+.navbar__score--silver::before,
+.navbar__score--bronze::before {
+  content: "";
+
+  position: absolute;
+  inset: -2px;
+
+  padding: 2px;
+
+  border-radius: inherit;
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: navbar-score-border-spin 8s linear infinite;
+
+  pointer-events: none;
+}
+
+/* 1:a plats - Guld */
+
+.navbar__score--gold::before {
+  background: conic-gradient(
+    from var(--score-angle),
+    rgba(255, 215, 0, 0.12) 0deg,
+    rgba(255, 215, 0, 0.12) 250deg,
+    #8c5b00 275deg,
+    #c99000 292deg,
+    #ffd700 307deg,
+    #fff4a3 320deg,
+    #ffd700 333deg,
+    #c99000 348deg,
+    rgba(255, 215, 0, 0.12) 360deg
+  );
+
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.85));
+}
+
+.navbar__score--gold {
+  box-shadow:
+    0 0 8px rgba(255, 215, 0, 0.18),
+    0 0 18px rgba(255, 190, 0, 0.09),
+    inset 0 0 7px rgba(255, 215, 0, 0.05);
+}
+
+/* 2:a plats - Silver */
+
+.navbar__score--silver::before {
+  background: conic-gradient(
+    from var(--score-angle),
+    rgba(210, 220, 235, 0.1) 0deg,
+    rgba(210, 220, 235, 0.1) 250deg,
+    #596575 275deg,
+    #8e9aab 292deg,
+    #d6dee8 307deg,
+    #ffffff 320deg,
+    #dce5ee 333deg,
+    #8794a5 348deg,
+    rgba(210, 220, 235, 0.1) 360deg
+  );
+
+  filter: drop-shadow(0 0 4px rgba(220, 230, 245, 0.78));
+}
+
+.navbar__score--silver {
+  box-shadow:
+    0 0 8px rgba(220, 230, 245, 0.16),
+    0 0 18px rgba(190, 205, 225, 0.08),
+    inset 0 0 7px rgba(255, 255, 255, 0.05);
+}
+
+/* 3:e plats - Brons */
+
+.navbar__score--bronze::before {
+  background: conic-gradient(
+    from var(--score-angle),
+    rgba(205, 127, 50, 0.1) 0deg,
+    rgba(205, 127, 50, 0.1) 250deg,
+    #663616 275deg,
+    #9b5727 292deg,
+    #cd7f32 307deg,
+    #f0b16b 320deg,
+    #cd7f32 333deg,
+    #925020 348deg,
+    rgba(205, 127, 50, 0.1) 360deg
+  );
+
+  filter: drop-shadow(0 0 4px rgba(205, 127, 50, 0.75));
+}
+
+.navbar__score--bronze {
+  box-shadow:
+    0 0 8px rgba(205, 127, 50, 0.16),
+    0 0 18px rgba(205, 127, 50, 0.08),
+    inset 0 0 7px rgba(255, 190, 120, 0.04);
+}
+
+@keyframes navbar-score-border-spin {
+  to {
+    --score-angle: 360deg;
+  }
 }
 
 .navbar__score-label {
