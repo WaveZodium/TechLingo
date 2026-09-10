@@ -242,6 +242,19 @@
   font-weight: 700;
 }
 
+/* Leaderboard medal */
+
+.navbar__medal {
+  width: 28px;
+  height: 28px;
+
+  flex-shrink: 0;
+
+  object-fit: contain;
+
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+}
+
 /* Login / Logout */
 
 .navbar__login {
@@ -369,6 +382,11 @@
     font-size: 0.82rem;
   }
 
+  .navbar__medal {
+    width: 24px;
+    height: 24px;
+  }
+
   .navbar__login {
     height: 36px;
 
@@ -421,6 +439,11 @@
 
   .navbar__score-value {
     font-size: 0.76rem;
+  }
+
+  .navbar__medal {
+    width: 22px;
+    height: 22px;
   }
 
   .navbar__login span {

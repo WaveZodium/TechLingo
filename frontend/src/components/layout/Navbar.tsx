@@ -1,11 +1,17 @@
-import type { MouseEvent } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+
+import { getLeaderboard } from "../../api/userApi";
 
 import { useAuth } from "../../context/AuthContext";
 import { useUser } from "../../context/UserContext";
 import { useQuiz } from "../../context/QuizContext";
 
 import logo from "../../assets/TechlingoALTlogo.png";
+
+import goldMedal from "../../assets/goldmedalTL.png";
+import silverMedal from "../../assets/silvermedalTL.png";
+import bronzeMedal from "../../assets/bronzemedalTL.png";
 
 import "../../styles/Navbar.css";
 
@@ -20,6 +26,57 @@ function Navbar({ onLoginClick }: NavbarProps) {
   const { profile } = useUser();
 
   const { isQuizActive, quitActiveSession } = useQuiz();
+
+  const [leaderboardPosition, setLeaderboardPosition] = useState<number | null>(
+    null,
+  );
+
+  useEffect(() => {
+    async function loadLeaderboardPosition() {
+      if (!isAuth || !profile || role === "Admin") {
+        setLeaderboardPosition(null);
+        return;
+      }
+
+      try {
+        const leaderboard = await getLeaderboard();
+
+        const position =
+          leaderboard.findIndex((user) => user.username === profile.username) +
+          1;
+
+        if (position >= 1 && position <= 3) {
+          setLeaderboardPosition(position);
+        } else {
+          setLeaderboardPosition(null);
+        }
+      } catch (error) {
+        console.error("Failed to load leaderboard position:", error);
+
+        setLeaderboardPosition(null);
+      }
+    }
+
+    loadLeaderboardPosition();
+  }, [isAuth, profile?.username, profile?.totalScore, role]);
+
+  function getLeaderboardMedal() {
+    switch (leaderboardPosition) {
+      case 1:
+        return goldMedal;
+
+      case 2:
+        return silverMedal;
+
+      case 3:
+        return bronzeMedal;
+
+      default:
+        return null;
+    }
+  }
+
+  const leaderboardMedal = getLeaderboardMedal();
 
   const handleNavigation = async (
     event: MouseEvent<HTMLAnchorElement>,
@@ -145,6 +202,14 @@ function Navbar({ onLoginClick }: NavbarProps) {
         <div className="navbar__actions">
           {isAuth && profile && (
             <div className="navbar__score">
+              {leaderboardMedal && (
+                <img
+                  src={leaderboardMedal}
+                  alt={`Leaderboard position ${leaderboardPosition}`}
+                  className="navbar__medal"
+                />
+              )}
+
               <span className="navbar__score-label">Totalscore:</span>
 
               <span className="navbar__score-value">{profile.totalScore}</span>
