@@ -132,7 +132,6 @@
   flex-direction: column;
 
   width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
-  
 
   height: 610px;
 
@@ -817,7 +816,7 @@
 
 @media (max-width: 580px) {
   .quiz-page {
-    padding-top: 35px;
+    padding-top: 60px;
     padding-bottom: 50px;
   }
 
