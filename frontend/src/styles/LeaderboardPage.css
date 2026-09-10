@@ -5,10 +5,7 @@
 }
 
 .leaderboard-page {
-  width: min(
-    calc(100% - (var(--page-gutter) * 2)),
-    var(--content-max-width)
-  );
+  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
 
   min-height: calc(100vh - 92px);
 
@@ -136,33 +133,13 @@
 
   gap: 20px;
 
-  border-top: 1px solid rgba(105, 180, 255, 0.13);
+  background: transparent;
 
-  transition:
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+  border-top: 1px solid rgba(105, 180, 255, 0.13);
 }
 
 .leaderboard-row:first-child {
   border-top: 0;
-}
-
-.leaderboard-row:hover {
-  background: rgba(20, 75, 160, 0.14);
-}
-
-/* Top 3 */
-
-.leaderboard-row:nth-child(1) {
-  background: rgba(255, 205, 55, 0.055);
-}
-
-.leaderboard-row:nth-child(2) {
-  background: rgba(210, 220, 235, 0.035);
-}
-
-.leaderboard-row:nth-child(3) {
-  background: rgba(205, 125, 65, 0.035);
 }
 
 /* Position / medals */
