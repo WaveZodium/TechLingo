@@ -1,12 +1,11 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
+import { useUser } from "../../context/UserContext";
 
 import logo from "../../assets/TechlingoALTlogo.png";
 
 import "../../styles/Navbar.css";
-
-import { useUser } from "../../context/UserContext";
 
 interface NavbarProps {
   onLoginClick: () => void;
@@ -15,7 +14,9 @@ interface NavbarProps {
 function Navbar({ onLoginClick }: NavbarProps) {
   const { isAuth, role, logoutUser } = useAuth();
   const { profile } = useUser();
+
   const location = useLocation();
+
   const isQuizActive = location.pathname.startsWith("/quiz/");
 
   return (
@@ -115,46 +116,53 @@ function Navbar({ onLoginClick }: NavbarProps) {
                 Profile
               </NavLink>
             ))}
+        </nav>
 
+        <div className="navbar__actions">
           {isAuth && profile && (
             <div className="navbar__score">
-              <span className="navbar__score-label">Totalscore:</span>
+              <span className="navbar__score-label">Userscore:</span>
+
               <span className="navbar__score-value">{profile.totalScore}</span>
             </div>
           )}
-        </nav>
 
-        {isAuth ? (
-          <button onClick={logoutUser} className="navbar__login" type="button">
-            <svg
-              className="navbar__login-icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+          {isAuth ? (
+            <button
+              onClick={logoutUser}
+              className="navbar__login"
+              type="button"
             >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-            </svg>
+              <svg
+                className="navbar__login-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+              </svg>
 
-            <span>Logout</span>
-          </button>
-        ) : (
-          <button
-            onClick={onLoginClick}
-            className="navbar__login"
-            type="button"
-          >
-            <svg
-              className="navbar__login-icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+              <span>Logout</span>
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="navbar__login"
+              type="button"
             >
-              <circle cx="12" cy="8" r="4" />
-              <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-            </svg>
+              <svg
+                className="navbar__login-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+              </svg>
 
-            <span>Login</span>
-          </button>
-        )}
+              <span>Login</span>
+            </button>
+          )}
+        </div>
       </div>
     </header>
   );
