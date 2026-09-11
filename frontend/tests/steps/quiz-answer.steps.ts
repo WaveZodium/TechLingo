@@ -77,9 +77,7 @@ Then("I should see the quiz completion result", async ({ page }) => {
   await expect(resultBubble).toContainText("Total score:");
 });
 
-/*
- * Correct answer
- */
+//correct answer
 
 When("I answer a question correctly", async ({ page }) => {
   await page.route("**/Quiz/*/answer", async (route) => {
@@ -120,9 +118,7 @@ Then("my quiz score should be 100", async ({ page }) => {
   await expect(page.locator(".quiz-stat--score strong")).toHaveText("100");
 });
 
-/*
- * Incorrect answer
- */
+//Incorrect answer
 
 When("I answer a question incorrectly", async ({ page }) => {
   await page.route("**/Quiz/*/answer", async (route) => {
@@ -163,9 +159,7 @@ Then("my quiz score should be -200", async ({ page }) => {
   await expect(page.locator(".quiz-stat--score strong")).toHaveText("-200");
 });
 
-/*
- * Answer only once
- */
+// Answer only once
 
 Then("all answer buttons should be disabled", async ({ page }) => {
   const answerGroup = page.getByRole("group", {
@@ -181,9 +175,7 @@ Then("all answer buttons should be disabled", async ({ page }) => {
   }
 });
 
-/*
- * Quit quiz
- */
+// Quit quiz
 
 When("I quit the quiz", async ({ page }) => {
   page.once("dialog", async (dialog) => {
