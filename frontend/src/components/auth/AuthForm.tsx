@@ -140,6 +140,7 @@ export default function AuthForm({
           id="username"
           label="Username"
           value={username}
+          autoComplete="username"
           onChange={setUsername}
         />
 
