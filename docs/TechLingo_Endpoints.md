@@ -1,6 +1,6 @@
 # TechLingo API-endpoints
 
-Detta dokument beskriver den nuvarande API-strukturen i TechLingo och är uppdaterat enligt de aktiva controllers och services i backend.
+Detta dokument beskriver de endpoints som faktiskt exponeras av backendens controllers och `Program.cs`. Route-namn skrivs med gemener, vilket är den konvention som används av API:t. ASP.NET Core matchar routes skiftlägesokänsligt.
 
 ## Basadresser
 
@@ -9,102 +9,182 @@ Vid lokal körning används normalt:
 - HTTP: `http://localhost:5121`
 - HTTPS: `https://localhost:7101`
 
-Alla relativa routes i tabellerna nedan kombineras med en av basadresserna.
+HTTP-profilen binder till alla nätverksinterface (`0.0.0.0`). HTTPS-profilen använder localhost för HTTPS och port 5121 för HTTP. Alla relativa routes nedan kombineras med en basadress.
+
+## Autentisering
+
+Skyddade endpoints kräver en giltig JWT-token:
+
+```http
+Authorization: Bearer <jwt-token>
+```
+
+Token valideras mot issuer, audience, signeringsnyckel och giltighetstid. Saknad eller ogiltig token ger normalt `401 Unauthorized`. Admin-endpoints kräver dessutom rollen `Admin` och ger `403 Forbidden` om användaren är inloggad men saknar rollen.
 
 ## Publika endpoints
 
-| Metod | Endpoint | Autentisering | Används till | Begäran | Lyckat svar |
-| --- | --- | --- | --- | --- | --- |
-| `POST` | `/api/Auth/register` | Nej | Registrerar en ny användare. | JSON med `username` och `password`. | `200 OK` med ett meddelande. |
-| `POST` | `/api/Auth/login` | Nej | Loggar in en användare och returnerar en JWT-token. | JSON med `username` och `password`. | `200 OK` med `{ "token": "..." }`. |
-| `GET` | `/api/Categories` | Nej | Hämtar alla kategorier. | Ingen. | `200 OK` med en lista av kategorier. |
-| `GET` | `/api/Categories/{id}` | Nej | Hämtar en kategori med ett specifikt id. | `id` i URL:en. | `200 OK` med kategorin, eller `404 Not Found`. |
+### Auth
 
-## Skyddade endpoints
-
-Skyddade endpoints kräver en giltig JWT-token i `Authorization`-headern.
-
-| Metod | Endpoint | Används till | Begäran | Lyckat svar |
+| Metod | Endpoint | Begäran | Lyckat svar | Vanliga fel |
 | --- | --- | --- | --- | --- |
-| `GET` | `/api/Categories/{categoryId}/questions` | Hämtar alla frågor i en viss kategori. | `categoryId` i URL:en. | `200 OK` med en lista av frågor. |
-| `GET` | `/api/Questions` | Hämtar alla frågor. | Ingen. | `200 OK` med en lista av frågor. |
-| `GET` | `/api/Questions/{id}` | Hämtar en specifik fråga via id. | `id` i URL:en. | `200 OK` med frågan, eller `404 Not Found`. |
-| `POST` | `/api/Questions/{id}/answer` | Kontrollerar användarens val för en specifik fråga och räknar ut poäng. | JSON-sträng med det valda svarsalternativets id, till exempel `"2"`. | `200 OK` med resultatet, eller `404 Not Found` om frågan saknas. |
+| `POST` | `/api/auth/register` | `RegisterRequestDto` | `200 OK` med `RegisterResponseDto` | `400 Bad Request` |
+| `POST` | `/api/auth/login` | `LoginRequestDto` | `200 OK` med `LoginResponseDto` | `401 Unauthorized` |
 
-### Svara på en fråga
-
-Anropet skickar det valda svarsalternativets id som en JSON-sträng. Det ska alltså inte skickas som ett objekt med egenskapen `answerOptionId`.
-
-Request:
-
-```http
-POST /api/Questions/{questionId}/answer
-Content-Type: application/json
-Authorization: Bearer <jwt-token>
-```
-
-```json
-"2"
-```
-
-Rätt svar ger `100` poäng och fel svar ger `-200` poäng. Ett lyckat svar kan till exempel se ut så här:
+Request för både register och login:
 
 ```json
 {
-  "isCorrect": false,
-  "points": -200,
-  "correctAnswer": "Rätt svar",
-  "correctAnswerId": "1",
-  "errorMessage": "'Det valda svaret' is wrong! The correct answer is 'Rätt svar'."
+  "username": "alex",
+  "password": "secret"
 }
 ```
 
-Vid rätt svar är `errorMessage` `null`. Om frågan inte hittas returnerar endpointen `404 Not Found` med ett resultatobjekt där `errorMessage` är `"Question not found."`.
+Svar från register:
 
-### JWT-token
-
-Skyddade endpoints ska anropas med en Authorization-header:
-
-```http
-Authorization: Bearer <jwt-token>
+```json
+{
+  "message": "..."
+}
 ```
 
-Om token saknas eller är ogiltig returneras normalt `401 Unauthorized` innan kontrollern bearbetar anropet.
+Svar från login:
+
+```json
+{
+  "token": "<jwt-token>"
+}
+```
+
+Fel från auth-endpoints har formen:
+
+```json
+{
+  "errorMessage": "..."
+}
+```
+
+### Kategorier
+
+Kategorier är publika. Frågelistan per kategori är också publik, till skillnad från de fristående fråge-endpoints under `/api/questions`.
+
+| Metod | Endpoint | Används till | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- | --- |
+| `GET` | `/api/categories` | Hämtar alla kategorier. | `200 OK` med en lista av `Category`. | - |
+| `GET` | `/api/categories/{id}` | Hämtar en kategori. | `200 OK` med `Category`. | `404 Not Found` |
+| `GET` | `/api/categories/{categoryId}/questions` | Hämtar aktiva frågor i en kategori. | `200 OK` med en lista av `QuestionDto`. | - |
+
+`Category` innehåller `id`, `name`, `slug`, `description`, `isActive` och `createdAt`.
+
+## Skyddade quiz- och fråge-endpoints
+
+### Frågor
+
+| Metod | Endpoint | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- |
+| `GET` | `/api/questions` | `200 OK` med `List<QuestionDto>`. | `401 Unauthorized` |
+| `GET` | `/api/questions/{id}` | `200 OK` med `QuestionDto`. | `401 Unauthorized`, `404 Not Found` |
+
+`QuestionDto` har fälten `id`, `categoryId`, `message`, `prompt` och `options`. Varje option har `id` och `text`. Fältet `isCorrect` exponeras inte i detta publika DTO.
+
+### Quizflöde
+
+Ett quiz genomförs i ordningen `start` -> `answer` (en eller flera gånger) -> `complete`.
+
+| Metod | Endpoint | Begäran | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- | --- |
+| `POST` | `/api/quiz/start/{categoryId}` | Ingen body. | `200 OK` med `StartQuizResultDto`. | `400 Bad Request`, `401 Unauthorized` |
+| `POST` | `/api/quiz/{sessionId}/answer` | `SubmitAnswerDto`. | `200 OK` med `AnswerResultDto`. | `400 Bad Request`, `401 Unauthorized` |
+| `POST` | `/api/quiz/{sessionId}/complete` | Ingen body. | `200 OK` med `QuizResultDto`. | `400 Bad Request`, `401 Unauthorized` |
+| `GET` | `/api/quiz/history` | Ingen. | `200 OK` med de fem senaste `QuizHistoryDto`. | `401 Unauthorized` |
+| `DELETE` | `/api/quiz/{sessionId}` | Ingen body. Avslutar/raderar en pågående session. | `204 No Content`. | `400 Bad Request`, `401 Unauthorized` |
+
+Request för att svara på en fråga:
+
+```json
+{
+  "questionId": "<question-id>",
+  "answerId": "<answer-option-id>"
+}
+```
+
+`StartQuizResultDto` innehåller `sessionId` och `questions`. `AnswerResultDto` innehåller `isCorrect`, `points`, `correctAnswer`, `correctAnswerId` och `errorMessage`. `QuizResultDto` innehåller `quizScore` och `totalScore`. Historikposter innehåller `sessionId`, `categoryId`, `quizScore`, `correctAnswers`, `totalQuestions` och `completedAt`.
+
+Det finns inte längre någon `/api/questions/{id}/answer`-endpoint. Svar skickas alltid inom ramen för en quiz-session via `/api/quiz/{sessionId}/answer`. Poäng- och valideringsreglerna hanteras av `QuizService`.
+
+## Användar-endpoints
+
+| Metod | Endpoint | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- |
+| `GET` | `/api/user/account` | `200 OK` med `UserProfileDto`: `username`, `totalScore`. | `401 Unauthorized`, `404 Not Found` |
+| `DELETE` | `/api/user/account` | `204 No Content`. Tar bort det inloggade kontot. | `401 Unauthorized`, `404 Not Found` |
+| `GET` | `/api/user/leaderboard` | `200 OK` med en lista av `LeaderboardUserDto`: `username`, `totalScore`. | `401 Unauthorized` |
+
+## Admin-endpoints
+
+Alla endpoints i detta avsnitt kräver JWT-token med rollen `Admin`.
+
+### Användare
+
+| Metod | Endpoint | Begäran | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- | --- |
+| `GET` | `/api/admin/users` | Ingen. | `200 OK` med `List<UserDto>`. | `401`, `403` |
+| `GET` | `/api/admin/users/{id}` | Ingen. | `200 OK` med `UserDto`. | `401`, `403`, `404` |
+| `POST` | `/api/admin/users` | `CreateUserDto`. | `201 Created` med `UserDto`. | `400`, `401`, `403` |
+| `PUT` | `/api/admin/users/{id}` | `UpdateUserDto`. | `200 OK` med `UserDto`. | `401`, `403`, `404` |
+| `DELETE` | `/api/admin/users/{id}` | Ingen. | `204 No Content`. | `401`, `403`, `404` |
+| `PATCH` | `/api/admin/users/{id}/password` | `ChangePasswordDto`. | `204 No Content`. | `401`, `403`, `404` |
+
+`UserDto` har `id`, `username` och `role`. Requestfält:
+
+- `CreateUserDto`: `username`, `password`, `role`
+- `UpdateUserDto`: `username`, `role`
+- `ChangePasswordDto`: `newPassword`
+
+### Kategorier
+
+| Metod | Endpoint | Begäran | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- | --- |
+| `GET` | `/api/admin/categories` | Ingen. | `200 OK` med `List<AdminCategoryDto>`. | `401`, `403` |
+| `GET` | `/api/admin/categories/{id}` | Ingen. | `200 OK` med `AdminCategoryDto`. | `401`, `403`, `404` |
+| `POST` | `/api/admin/categories` | `CreateCategoryDto`. | `201 Created` med `AdminCategoryDto`. | `401`, `403` |
+| `PUT` | `/api/admin/categories/{id}` | `UpdateCategoryDto`. | `200 OK` med `AdminCategoryDto`. | `401`, `403`, `404` |
+| `DELETE` | `/api/admin/categories/{id}` | Ingen. | `204 No Content`. | `401`, `403`, `404`, `409` |
+
+`AdminCategoryDto` har `id`, `name`, `slug`, `description`, `isActive` och `createdAt`. Både `CreateCategoryDto` och `UpdateCategoryDto` har `name`, `slug`, `description` och `isActive`.
+
+### Frågor
+
+| Metod | Endpoint | Begäran | Lyckat svar | Vanliga fel |
+| --- | --- | --- | --- | --- |
+| `GET` | `/api/admin/questions` | Ingen. | `200 OK` med `List<AdminQuestionDto>`. | `401`, `403` |
+| `GET` | `/api/admin/questions/{id}` | Ingen. | `200 OK` med `AdminQuestionDto`. | `401`, `403`, `404` |
+| `POST` | `/api/admin/questions` | `CreateQuestionDto`. | `201 Created` med `AdminQuestionDto`. | `400`, `401`, `403` |
+| `PUT` | `/api/admin/questions/{id}` | `UpdateQuestionDto`. | `200 OK` med `AdminQuestionDto`. | `400`, `401`, `403`, `404` |
+| `DELETE` | `/api/admin/questions/{id}` | Ingen. | `204 No Content`. | `401`, `403`, `404` |
+
+`AdminQuestionDto` har `id`, `categoryId`, `message`, `prompt`, `options`, `explanation`, `isActive` och `createdAt`. Både `CreateQuestionDto` och `UpdateQuestionDto` har `categoryId`, `message`, `prompt`, `options`, `explanation` och `isActive`.
+
+Varje admin-option har `id`, `text` och `isCorrect`. `isCorrect` ska därför endast användas i adminflödet och aldrig i det publika `QuestionDto`.
 
 ## Health check
 
-| Metod | Endpoint | Autentisering | Används till | Lyckat svar |
+| Metod | Endpoint | Autentisering | Lyckat svar | Fel |
 | --- | --- | --- | --- | --- |
-| `GET` | `/health/mongodb` | Nej | Kontrollerar att API:t kan ansluta till MongoDB. | `200 OK` med `{ "status": "ok", "database": "..." }`. |
-
-Om MongoDB inte kan nås returneras `503 Service Unavailable` med felinformation.
-
-## Exempelendpoint från ASP.NET Core-mallen
-
-Detta är en kvarvarande standardendpoint från ASP.NET Core-mallen och hör inte till TechLingos quizfunktion:
-
-| Metod | Endpoint | Autentisering | Används till |
-| --- | --- | --- | --- |
-| `GET` | `/WeatherForecast` | Nej | Returnerar fem slumpmässigt genererade väderprognoser. |
+| `GET` | `/health/mongodb` | Nej | `200 OK` med `{ "status": "ok", "database": "..." }`. | `503 Service Unavailable` om MongoDB inte kan nås |
 
 ## Swagger och OpenAPI i Development
 
-När miljön är `Development` är följande dokumentationsroutes tillgängliga:
+När miljön är `Development` exponeras följande dokumentationsroutes:
 
 | Endpoint | Används till |
 | --- | --- |
-| `/swagger` | Öppnar Swagger UI för att testa och inspektera API:t. |
-| `/swagger/v1/swagger.json` | Returnerar Swagger-dokumentet i JSON-format. |
-| `/openapi/v1.json` | Returnerar OpenAPI-dokumentet i JSON-format. |
+| `/swagger` | Swagger UI för att testa och inspektera API:t. |
+| `/swagger/v1/swagger.json` | Swagger-dokumentet i JSON-format. |
+| `/openapi/v1.json` | OpenAPI-dokumentet i JSON-format. |
 
-Swagger/OpenAPI-routes exponeras enligt `Program.cs` endast i Development-miljön.
+## CORS och övriga noteringar
 
-## Noteringar
-
-- `CategoriesController` är routad som `/api/Categories` via `[controller]`.
-- `QuestionsController` är routad som `/api/Questions` via `[controller]`.
-- Frågor per kategori ligger under kategoriresursen: `/api/Categories/{categoryId}/questions`.
-- Svar på frågor skickas till `/api/Questions/{id}/answer` som en JSON-sträng med svarsalternativets id.
-- Poängregeln för answer-endpointen är `+100` för rätt svar och `-200` för fel svar.
-- API:t använder CORS-policyn `Frontend` för `http://localhost:5173`.
-- Register- och login-anropen tar emot JSON med fälten `username` och `password`.
+- CORS-policyn `Frontend` tillåter `http://localhost:5173` och `http://10.12.127.142:5173`.
+- `UseHttpsRedirection()` är aktiverad, så HTTP-anrop kan omdirigeras till HTTPS beroende på körprofil och miljö.
+- Backendens seeding av MongoDB körs när applikationen startar.
+- Det finns ingen aktiv `/WeatherForecast`-endpoint i den aktuella lösningen.
