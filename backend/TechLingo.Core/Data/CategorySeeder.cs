@@ -10,6 +10,7 @@ namespace TechLingo.Core.Data
         {
             var categoryIds = new Dictionary<string, string>();
 
+            // Seed Internet Culture category
             var internetCulture = await categories
                 .Find(c => c.Slug == "internet-culture")
                 .FirstOrDefaultAsync();
@@ -28,6 +29,7 @@ namespace TechLingo.Core.Data
 
             categoryIds["internet-culture"] = internetCulture.Id;
 
+            // Seed IT Abbreviations category
             var itAbbreviations = await categories
                 .Find(c => c.Slug == "it-abbreviations")
                 .FirstOrDefaultAsync();
@@ -45,6 +47,44 @@ namespace TechLingo.Core.Data
             }
 
             categoryIds["it-abbreviations"] = itAbbreviations.Id;
+
+            // Seed Cybersecurity Basics category
+            var cybersecurityBasics = await categories
+                .Find(c => c.Slug == "cybersecurity-basics")
+                .FirstOrDefaultAsync();
+
+            if (cybersecurityBasics is null)
+            {
+                cybersecurityBasics = new Category
+                {
+                    Name = "Cybersecurity Basics",
+                    Slug = "cybersecurity-basics",
+                    Description = "Learn common cybersecurity concepts, threats and protective measures."
+                };
+
+                await categories.InsertOneAsync(cybersecurityBasics);
+            }
+
+            categoryIds["cybersecurity-basics"] = cybersecurityBasics.Id;
+
+            // Seed Programming Languages category
+            var programmingLanguages = await categories
+                .Find(c => c.Slug == "programming-languages")
+                .FirstOrDefaultAsync();
+
+            if (programmingLanguages is null)
+            {
+                programmingLanguages = new Category
+                {
+                    Name = "Programming Languages",
+                    Slug = "programming-languages",
+                    Description = "Learn popular programming languages and their syntax."
+                };
+
+                await categories.InsertOneAsync(programmingLanguages);
+            }
+
+            categoryIds["programming-languages"] = programmingLanguages.Id;
 
             return categoryIds;
         }
