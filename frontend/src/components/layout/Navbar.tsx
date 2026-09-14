@@ -203,28 +203,29 @@ function Navbar({ onLoginClick }: NavbarProps) {
               </NavLink>
             )}
 
-            {isAuth &&
-              (role === "Admin" ? (
-                <NavLink
-                  to="/admin"
-                  onClick={(event) => handleNavigation(event, "/admin")}
-                  className={({ isActive }) =>
-                    `navbar__link ${isActive ? "navbar__link--active" : ""}`
-                  }
-                >
-                  Admin panel
-                </NavLink>
-              ) : (
-                <NavLink
-                  to="/profile"
-                  onClick={(event) => handleNavigation(event, "/profile")}
-                  className={({ isActive }) =>
-                    `navbar__link ${isActive ? "navbar__link--active" : ""}`
-                  }
-                >
-                  Profile
-                </NavLink>
-              ))}
+            {isAuth && (
+              <NavLink
+                to="/profile"
+                onClick={(event) => handleNavigation(event, "/profile")}
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Profile
+              </NavLink>
+            )}
+
+            {isAuth && role === "Admin" && (
+              <NavLink
+                to="/admin"
+                onClick={(event) => handleNavigation(event, "/admin")}
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Admin panel
+              </NavLink>
+            )}
           </nav>
 
           {/* Desktop actions */}
@@ -348,32 +349,33 @@ function Navbar({ onLoginClick }: NavbarProps) {
               </NavLink>
             )}
 
-            {isAuth &&
-              (role === "Admin" ? (
-                <NavLink
-                  to="/admin"
-                  onClick={(event) => handleNavigation(event, "/admin")}
-                  className={({ isActive }) =>
-                    `navbar__mobile-link ${
-                      isActive ? "navbar__mobile-link--active" : ""
-                    }`
-                  }
-                >
-                  Admin panel
-                </NavLink>
-              ) : (
-                <NavLink
-                  to="/profile"
-                  onClick={(event) => handleNavigation(event, "/profile")}
-                  className={({ isActive }) =>
-                    `navbar__mobile-link ${
-                      isActive ? "navbar__mobile-link--active" : ""
-                    }`
-                  }
-                >
-                  Profile
-                </NavLink>
-              ))}
+            {isAuth && (
+              <NavLink
+                to="/profile"
+                onClick={(event) => handleNavigation(event, "/profile")}
+                className={({ isActive }) =>
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
+                }
+              >
+                Profile
+              </NavLink>
+            )}
+
+            {isAuth && role === "Admin" && (
+              <NavLink
+                to="/admin"
+                onClick={(event) => handleNavigation(event, "/admin")}
+                className={({ isActive }) =>
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
+                }
+              >
+                Admin panel
+              </NavLink>
+            )}
           </div>
 
           <div className="navbar__mobile-actions">
