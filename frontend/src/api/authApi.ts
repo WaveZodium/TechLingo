@@ -91,3 +91,20 @@ export function getTokenRole(token: string): UserRole | null {
     return null;
   }
 }
+
+export function getTokenUserId(token: string): string | null {
+  try {
+    const payload = token.split(".")[1];
+
+    if (!payload) {
+      return null;
+    }
+
+    const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const decodedPayload = JSON.parse(atob(base64));
+
+    return typeof decodedPayload.sub === "string" ? decodedPayload.sub : null;
+  } catch {
+    return null;
+  }
+}
