@@ -20,7 +20,7 @@ public class QuizSessionRepository
     // hämtar en quizsession baserat på dess ID
     public async Task<QuizSession?> GetByIdAsync(string id)
     {
-        return await _quizSessions 
+        return await _quizSessions
             .Find(session => session.Id == id)
             .FirstOrDefaultAsync();
     }
@@ -111,7 +111,7 @@ public class QuizSessionRepository
             options
         );
     }
-    public async Task<bool> DeleteAsync (string sessionId)
+    public async Task<bool> DeleteAsync(string sessionId)
     {
         var result = await _quizSessions.DeleteOneAsync(
             session => session.Id == sessionId
@@ -122,8 +122,8 @@ public class QuizSessionRepository
 
     // hämtar de senaste avslutade quizsessionerna för en specifik användare
     public async Task<List<QuizSession>> GetLatestCompletedByUserAsync(
-    string userId,
-    int count)
+        string userId,
+        int count)
     {
         return await _quizSessions
             .Find(session =>
@@ -134,32 +134,44 @@ public class QuizSessionRepository
             .ToListAsync();
     }
     public async Task CreateIndexesAsync()
-{
-    var indexKeys = Builders<QuizSession>
-        .IndexKeys
-        .Ascending(session => session.StartedAt);
-
-    var options = new CreateIndexOptions<QuizSession>
     {
-        Name = "unfinished_quiz_session_ttl",
-        ExpireAfter = TimeSpan.FromHours(2),
+        var indexKeys = Builders<QuizSession>
+            .IndexKeys
+            .Ascending(session => session.StartedAt);
 
-        PartialFilterExpression =
-            Builders<QuizSession>.Filter.Eq(
-                session => session.IsCompleted,
-                false
-            )
-    };
+        var options = new CreateIndexOptions<QuizSession>
+        {
+            Name = "unfinished_quiz_session_ttl",
+            ExpireAfter = TimeSpan.FromHours(2),
 
-    var indexModel =
-        new CreateIndexModel<QuizSession>(
-            indexKeys,
-            options
+            PartialFilterExpression =
+                Builders<QuizSession>.Filter.Eq(
+                    session => session.IsCompleted,
+                    false
+                )
+        };
+
+        var indexModel =
+            new CreateIndexModel<QuizSession>(
+                indexKeys,
+                options
+            );
+
+        await _quizSessions.Indexes.CreateOneAsync(
+            indexModel
         );
+    }
 
-    await _quizSessions.Indexes.CreateOneAsync(
-        indexModel
-    );
-}
-
+    public async Task<QuizSession?> GetActiveSessionAsync(
+        string userId,
+        string categoryId)
+    {
+        return await _quizSessions
+            .Find(session =>
+                session.UserId == userId &&
+                session.CategoryId == categoryId &&
+                !session.IsCompleted)
+            .SortByDescending(session => session.StartedAt)
+            .FirstOrDefaultAsync();
+    }
 }
