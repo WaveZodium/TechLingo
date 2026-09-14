@@ -1,7 +1,9 @@
+import type { UserRole } from "../enums/userRole";
+
 export type AdminUser = {
   id: string;
   username: string;
-  role: number;
+  role: UserRole;
 };
 
 export type AdminQuestion = {

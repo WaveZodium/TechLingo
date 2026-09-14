@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { getAdminUsers } from "../../api/adminApi";
+import { getToken, getTokenUserId } from "../../api/authApi";
 import type { AdminUser } from "../../types/admin";
+
+import { userRoleToText } from "../../enums/userRole";
 
 import "../../styles/AdminPage.css";
 import "../../styles/AdminTables.css";
@@ -10,6 +13,8 @@ function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const token = getToken();
+  const userId = token ? getTokenUserId(token) : null;
 
   useEffect(() => {
     async function loadUsers() {
@@ -66,29 +71,42 @@ function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td className="admin-table__primary">{user.username}</td>
-                    <td>
-                      <span className="admin-table__status admin-table__status--active">
-                        {user.role === 1 ? "Admin" : "User"}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="admin-table__actions">
-                        <button className="admin-table__action" type="button">
-                          Edit
-                        </button>
-                        <button
-                          className="admin-table__action admin-table__action--delete"
-                          type="button"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {users.map((user) => {
+                  const isCurrentUser = user.id === userId;
+
+                  return (
+                    <tr key={user.id}>
+                      <td className="admin-table__primary">{user.username}</td>
+                      <td>
+                        <span className="admin-table__status admin-table__status--active">
+                          {userRoleToText(user.role)}
+                        </span>
+                      </td>
+                      <td>
+                        {isCurrentUser ? (
+                          <span className="admin-table__secondary">
+                            Current user
+                          </span>
+                        ) : (
+                          <div className="admin-table__actions">
+                            <button
+                              className="admin-table__action"
+                              type="button"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="admin-table__action admin-table__action--delete"
+                              type="button"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
