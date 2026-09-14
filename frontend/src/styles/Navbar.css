@@ -395,6 +395,33 @@
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
 }
 
+/* Profile */
+
+.navbar__profile-link {
+  width: 44px;
+  height: 44px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #4ade80;
+
+  text-decoration: none;
+
+  transition:
+    color 0.2s ease,
+    filter 0.2s ease;
+}
+
+.navbar__profile-link:hover {
+  color: #86efac;
+
+  filter: drop-shadow(0 0 6px rgba(74, 222, 128, 0.45));
+}
+
 /* Login / Logout */
 
 .navbar__login {
@@ -443,9 +470,17 @@
     inset 0 0 7px rgba(255, 255, 255, 0.08);
 }
 
+/* Mobile guest login - dold på desktop */
+
+.navbar__mobile-guest-login {
+  display: none;
+}
+
+/* Profile icon */
+
 .navbar__login-icon {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
 
   fill: none;
 
@@ -570,14 +605,22 @@
 /* Hamburger-layout */
 
 @media (max-width: 1280px) {
-  /* Desktop navigation göms */
+  /* Desktop navigation + desktop actions göms */
 
   .navbar__links,
   .navbar__actions {
     display: none;
   }
 
-  /* Hamburger visas */
+  /* Login visas direkt i navbaren för utloggad användare */
+
+  .navbar__mobile-guest-login {
+    margin-left: auto;
+
+    display: inline-flex;
+  }
+
+  /* Hamburger visas endast om JSX renderar den */
 
   .navbar__menu-button {
     display: flex;
@@ -795,6 +838,12 @@
   .navbar__mobile-menu {
     width: calc(100% - 32px);
   }
+
+  .navbar__mobile-guest-login {
+    height: 40px;
+
+    padding: 0 16px;
+  }
 }
 
 /* Små mobiler */
@@ -829,5 +878,11 @@
 
   .navbar__mobile-login {
     width: 100%;
+  }
+
+  .navbar__mobile-guest-login {
+    height: 38px;
+
+    padding: 0 14px;
   }
 }
