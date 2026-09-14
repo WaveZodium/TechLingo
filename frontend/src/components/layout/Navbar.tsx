@@ -250,39 +250,64 @@ function Navbar({ onLoginClick }: NavbarProps) {
             )}
 
             {isAuth ? (
+              <>
+                <NavLink
+                  to="/profile"
+                  onClick={(event) => handleNavigation(event, "/profile")}
+                  className={({ isActive }) =>
+                    `navbar__mobile-link ${
+                      isActive ? "navbar__mobile-link--active" : ""
+                    }`
+                  }
+                >
+                  <svg
+                    className="navbar__login-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    >
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                  </svg>
+                </NavLink>
+
               <button
                 onClick={handleLogout}
                 className="navbar__login"
                 type="button"
-              >
-                <svg
-                  className="navbar__login-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
                 >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-                </svg>
 
                 <span>Logout</span>
               </button>
+                  </>
             ) : (
-              <button
-                onClick={onLoginClick}
-                className="navbar__login"
-                type="button"
-              >
+              <>
+                <NavLink
+                to="/profile"
+                onClick={(event) => handleNavigation(event, "/profile")}
+                className={({ isActive }) =>
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
+                }
+                >
                 <svg
                   className="navbar__login-icon"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
-                >
+                  >
                   <circle cx="12" cy="8" r="4" />
                   <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
                 </svg>
+                </NavLink>
+                <button
+                  onClick={onLoginClick}
+                  className="navbar__login"
+                  type="button"
+                >
 
-                <span>Login</span>
-              </button>
+                  <span>Login</span>
+                </button>
+              </>
             )}
           </div>
 
@@ -400,10 +425,16 @@ function Navbar({ onLoginClick }: NavbarProps) {
             )}
 
             {isAuth ? (
-              <button
-                type="button"
-                className="navbar__login navbar__mobile-login"
-                onClick={handleLogout}
+              <>
+
+              <NavLink
+                to="/profile"
+                onClick={(event) => handleNavigation(event, "/profile")}
+                className={({ isActive }) =>
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
+                }
               >
                 <svg
                   className="navbar__login-icon"
@@ -413,10 +444,37 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   <circle cx="12" cy="8" r="4" />
                   <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
                 </svg>
+              </NavLink>
 
-                <span>Logout</span>
-              </button>
+                <button
+                  type="button"
+                  className="navbar__login navbar__mobile-login"
+                  onClick={handleLogout}
+                  >
+
+                  <span>Logout</span>
+                </button>
+              </>
             ) : (
+              <>
+              <NavLink
+                to="/profile"
+                onClick={(event) => handleNavigation(event, "/profile")}
+                className={({ isActive }) =>
+                  `navbar__mobile-link ${
+                    isActive ? "navbar__mobile-link--active" : ""
+                  }`
+                }
+              >
+                <svg
+                  className="navbar__login-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                </svg>
+              </NavLink>
               <button
                 type="button"
                 className="navbar__login navbar__mobile-login"
@@ -424,18 +482,11 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   setIsMenuOpen(false);
                   onLoginClick();
                 }}
-              >
-                <svg
-                  className="navbar__login-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
                 >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-                </svg>
 
                 <span>Login</span>
               </button>
+                </>
             )}
           </div>
         </nav>
