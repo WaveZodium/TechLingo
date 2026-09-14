@@ -7,9 +7,14 @@ import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CategoriesPage from "./pages/CategoriesPage";
 import QuizPage from "./pages/QuizPage";
-import AdminPage from "./pages/AdminPage";
 import ProfilePage from "./pages/ProfilePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
+
+// Admin pages
+import AdminPage from "./pages/AdminPage";
+import AdminCategoriesPage from "./pages/admin/AdminCategoriesPage";
+import AdminQuestionsPage from "./pages/admin/AdminQuestionsPage";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
 
 function App() {
   return (
@@ -36,6 +41,9 @@ function App() {
           {/* Endast admin */}
           <Route element={<ProtectedRoute requiredRole="Admin" />}>
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/categories" element={<AdminCategoriesPage />} />
+            <Route path="/admin/questions" element={<AdminQuestionsPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
 
           {/* Visas om användaren går till en route som inte finns. */}
