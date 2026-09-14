@@ -27,35 +27,71 @@ public class QuizService
         string userId,
         string categoryId)
     {
-        var questions =
-            await _questionService.GetByCategoryAsync(categoryId);
+        var activeSession =
+        await _quizSessionRepository.GetActiveSessionAsync(
+            userId,
+            categoryId
+        );
 
-        if (questions.Count != 10)
-            return null;
+    if (activeSession is not null)
+    {
+        var existingQuestions = new List<QuestionDto>();
 
-        foreach (var question in questions)
+        foreach (var questionId in activeSession.QuestionIds)
         {
-            question.Options = question.Options
-                .OrderBy(_ => Guid.NewGuid())
-                .ToList();
+            var question =
+                await _questionService.GetByIdAsync(questionId);
+
+            if (question is null)
+                return null;
+
+            existingQuestions.Add(question);
         }
-
-        var quizSession = new QuizSession
-        {
-            UserId = userId,
-            CategoryId = categoryId,
-            QuestionIds = questions
-                .Select(question => question.Id)
-                .ToList()
-        };
-
-        await _quizSessionRepository.CreateAsync(quizSession);
 
         return new StartQuizResultDto
         {
-            SessionId = quizSession.Id,
-            Questions = questions
+            SessionId = activeSession.Id,
+            Questions = existingQuestions,
+            AnsweredQuestionIds = activeSession.Answers
+                .Select(answer => answer.QuestionId)
+                .ToList(),
+            CurrentScore = activeSession.Score,
+            IsResumed = true
         };
+    }
+
+    var questions =
+        await _questionService.GetByCategoryAsync(categoryId);
+
+    if (questions.Count != 10)
+        return null;
+
+    foreach (var question in questions)
+    {
+        question.Options = question.Options
+            .OrderBy(_ => Guid.NewGuid())
+            .ToList();
+    }
+
+    var quizSession = new QuizSession
+    {
+        UserId = userId,
+        CategoryId = categoryId,
+        QuestionIds = questions
+            .Select(question => question.Id)
+            .ToList()
+    };
+
+    await _quizSessionRepository.CreateAsync(quizSession);
+
+    return new StartQuizResultDto
+    {
+        SessionId = quizSession.Id,
+        Questions = questions,
+        AnsweredQuestionIds = [],
+        CurrentScore = 0,
+        IsResumed = false
+    };
     }
 
     // skickar ett svar på en fråga inom en pågående quizsession

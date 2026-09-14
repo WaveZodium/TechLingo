@@ -103,11 +103,23 @@ function QuizPage() {
           startSession(quiz.sessionId);
 
           setQuestions(quiz.questions);
+          setScore(quiz.currentScore);
 
-          const firstQuestion = quiz.questions[0];
+          const nextQuestionIndex = quiz.questions.findIndex(
+            (question) => !quiz.answeredQuestionIds.includes(question.id),
+          );
 
-          if (firstQuestion) {
-            setChatMessages(createQuestionMessages(firstQuestion));
+          const resumeIndex =
+            nextQuestionIndex === -1
+              ? quiz.questions.length - 1
+              : nextQuestionIndex;
+
+          setCurrentQuestionIndex(resumeIndex);
+
+          const currentQuestion = quiz.questions[resumeIndex];
+
+          if (currentQuestion) {
+            setChatMessages(createQuestionMessages(currentQuestion));
           }
         }
 

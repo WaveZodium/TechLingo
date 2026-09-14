@@ -26,6 +26,9 @@ export interface SubmitAnswerRequest {
 export interface StartQuizResult {
   sessionId: string;
   questions: Question[];
+  answeredQuestionIds: string[];
+  currentScore: number;
+  isResumed: boolean;
 }
 
 export interface QuizResult {
