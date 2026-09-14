@@ -1,3 +1,5 @@
+import { useAuth } from "../../context/AuthContext";
+
 type ProfileAccountSettingsProps = {
   onDeleteAccount: () => void;
 };
@@ -5,6 +7,9 @@ type ProfileAccountSettingsProps = {
 function ProfileAccountSettings({
   onDeleteAccount,
 }: ProfileAccountSettingsProps) {
+  const { role } = useAuth();
+  const isAdmin = role === "Admin";
+
   return (
     <section className="profile-section profile-account profile-section--danger">
       <div>
@@ -15,13 +20,15 @@ function ProfileAccountSettings({
         <p>Permanently delete your TechLingo account and all associated data.</p>
       </div>
 
-      <button
-        onClick={onDeleteAccount}
-        className="profile__delete-button"
-        type="button"
-      >
-        Delete account
-      </button>
+      {!isAdmin ? (
+        <button
+          onClick={onDeleteAccount}
+          className="profile__delete-button"
+          type="button"
+        >
+          Delete account
+        </button>
+      ) : <span>Admin accounts cannot be deleted.</span>}
     </section>
   );
 }
