@@ -7,6 +7,7 @@ namespace TechLingo.Core.Services;
 
 public class QuizService
 {
+    private const int MaxTotalScore = 99999;
     private readonly QuestionService _questionService;
     private readonly IUserRepository _userRepository;
     private readonly QuizSessionRepository _quizSessionRepository;
@@ -153,9 +154,10 @@ public class QuizService
 
         var quizScore = completedSession.Score;
         // beräknar den nya totala poängen för användaren efter quizet
-        var newTotalScore = Math.Max(
+        var newTotalScore = Math.Clamp(
+            user.TotalScore + quizScore,
             0,
-            user.TotalScore + quizScore
+            MaxTotalScore
         );
 
         var scoreChange =
