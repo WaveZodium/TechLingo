@@ -169,15 +169,17 @@ function Navbar({ onLoginClick }: NavbarProps) {
           {/* Desktop navigation */}
 
           <nav className="navbar__links">
-            <NavLink
-              to="/"
-              onClick={(event) => handleNavigation(event, "/")}
-              className={({ isActive }) =>
-                `navbar__link ${isActive ? "navbar__link--active" : ""}`
-              }
-            >
-              Home
-            </NavLink>
+            {isAuth && (
+              <NavLink
+                to="/"
+                onClick={(event) => handleNavigation(event, "/")}
+                className={({ isActive }) =>
+                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
+                }
+              >
+                Home
+              </NavLink>
+            )}
 
             {isAuth && (
               <NavLink
@@ -203,18 +205,6 @@ function Navbar({ onLoginClick }: NavbarProps) {
               </NavLink>
             )}
 
-            {isAuth && (
-              <NavLink
-                to="/profile"
-                onClick={(event) => handleNavigation(event, "/profile")}
-                className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
-                }
-              >
-                Profile
-              </NavLink>
-            )}
-
             {isAuth && role === "Admin" && (
               <NavLink
                 to="/admin"
@@ -223,7 +213,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   `navbar__link ${isActive ? "navbar__link--active" : ""}`
                 }
               >
-                Admin panel
+                Admin
               </NavLink>
             )}
           </nav>
@@ -254,84 +244,73 @@ function Navbar({ onLoginClick }: NavbarProps) {
                 <NavLink
                   to="/profile"
                   onClick={(event) => handleNavigation(event, "/profile")}
-                  className={({ isActive }) =>
-                    `navbar__mobile-link ${
-                      isActive ? "navbar__mobile-link--active" : ""
-                    }`
-                  }
+                  className="navbar__profile-link"
+                  aria-label="Profile"
                 >
                   <svg
                     className="navbar__login-icon"
                     viewBox="0 0 24 24"
                     aria-hidden="true"
-                    >
+                  >
                     <circle cx="12" cy="8" r="4" />
                     <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
                   </svg>
                 </NavLink>
 
-              <button
-                onClick={handleLogout}
-                className="navbar__login"
-                type="button"
-                >
-
-                <span>Logout</span>
-              </button>
-                  </>
-            ) : (
-              <>
-                <NavLink
-                to="/profile"
-                onClick={(event) => handleNavigation(event, "/profile")}
-                className={({ isActive }) =>
-                  `navbar__mobile-link ${
-                    isActive ? "navbar__mobile-link--active" : ""
-                  }`
-                }
-                >
-                <svg
-                  className="navbar__login-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-                </svg>
-                </NavLink>
                 <button
-                  onClick={onLoginClick}
+                  onClick={handleLogout}
                   className="navbar__login"
                   type="button"
                 >
-
-                  <span>Login</span>
+                  <span>Logout</span>
                 </button>
               </>
+            ) : (
+              <button
+                onClick={onLoginClick}
+                className="navbar__login"
+                type="button"
+              >
+                <span>Login</span>
+              </button>
             )}
           </div>
 
-          {/* Hamburger button */}
+          {/* Mobile guest login */}
 
-          <button
-            className={`navbar__menu-button ${
-              isMenuOpen ? "navbar__menu-button--open" : ""
-            }`}
-            type="button"
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen((current) => !current)}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
+          {!isAuth && (
+            <button
+              onClick={onLoginClick}
+              className="navbar__login navbar__mobile-guest-login"
+              type="button"
+            >
+              <span>Login</span>
+            </button>
+          )}
+
+          {/* Hamburger button - only when logged in */}
+
+          {isAuth && (
+            <button
+              className={`navbar__menu-button ${
+                isMenuOpen ? "navbar__menu-button--open" : ""
+              }`}
+              type="button"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+              onClick={() => setIsMenuOpen((current) => !current)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          )}
         </div>
       </header>
 
       {/* Mobile menu */}
 
-      {isMenuOpen && (
+      {isAuth && isMenuOpen && (
         <nav className="navbar__mobile-menu">
           <div className="navbar__mobile-links">
             <NavLink
@@ -346,49 +325,43 @@ function Navbar({ onLoginClick }: NavbarProps) {
               Home
             </NavLink>
 
-            {isAuth && (
-              <NavLink
-                to="/categories"
-                onClick={(event) => handleNavigation(event, "/categories")}
-                className={({ isActive }) =>
-                  `navbar__mobile-link ${
-                    isActive ? "navbar__mobile-link--active" : ""
-                  }`
-                }
-              >
-                Categories
-              </NavLink>
-            )}
+            <NavLink
+              to="/categories"
+              onClick={(event) => handleNavigation(event, "/categories")}
+              className={({ isActive }) =>
+                `navbar__mobile-link ${
+                  isActive ? "navbar__mobile-link--active" : ""
+                }`
+              }
+            >
+              Categories
+            </NavLink>
 
-            {isAuth && (
-              <NavLink
-                to="/leaderboard"
-                onClick={(event) => handleNavigation(event, "/leaderboard")}
-                className={({ isActive }) =>
-                  `navbar__mobile-link ${
-                    isActive ? "navbar__mobile-link--active" : ""
-                  }`
-                }
-              >
-                Leaderboard
-              </NavLink>
-            )}
+            <NavLink
+              to="/leaderboard"
+              onClick={(event) => handleNavigation(event, "/leaderboard")}
+              className={({ isActive }) =>
+                `navbar__mobile-link ${
+                  isActive ? "navbar__mobile-link--active" : ""
+                }`
+              }
+            >
+              Leaderboard
+            </NavLink>
 
-            {isAuth && (
-              <NavLink
-                to="/profile"
-                onClick={(event) => handleNavigation(event, "/profile")}
-                className={({ isActive }) =>
-                  `navbar__mobile-link ${
-                    isActive ? "navbar__mobile-link--active" : ""
-                  }`
-                }
-              >
-                Profile
-              </NavLink>
-            )}
+            <NavLink
+              to="/profile"
+              onClick={(event) => handleNavigation(event, "/profile")}
+              className={({ isActive }) =>
+                `navbar__mobile-link ${
+                  isActive ? "navbar__mobile-link--active" : ""
+                }`
+              }
+            >
+              Profile
+            </NavLink>
 
-            {isAuth && role === "Admin" && (
+            {role === "Admin" && (
               <NavLink
                 to="/admin"
                 onClick={(event) => handleNavigation(event, "/admin")}
@@ -398,13 +371,13 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   }`
                 }
               >
-                Admin panel
+                Admin
               </NavLink>
             )}
           </div>
 
           <div className="navbar__mobile-actions">
-            {isAuth && profile && (
+            {profile && (
               <div
                 className={`navbar__score navbar__score--mobile ${scoreRankClass}`}
               >
@@ -424,70 +397,13 @@ function Navbar({ onLoginClick }: NavbarProps) {
               </div>
             )}
 
-            {isAuth ? (
-              <>
-
-              <NavLink
-                to="/profile"
-                onClick={(event) => handleNavigation(event, "/profile")}
-                className={({ isActive }) =>
-                  `navbar__mobile-link ${
-                    isActive ? "navbar__mobile-link--active" : ""
-                  }`
-                }
-              >
-                <svg
-                  className="navbar__login-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-                </svg>
-              </NavLink>
-
-                <button
-                  type="button"
-                  className="navbar__login navbar__mobile-login"
-                  onClick={handleLogout}
-                  >
-
-                  <span>Logout</span>
-                </button>
-              </>
-            ) : (
-              <>
-              <NavLink
-                to="/profile"
-                onClick={(event) => handleNavigation(event, "/profile")}
-                className={({ isActive }) =>
-                  `navbar__mobile-link ${
-                    isActive ? "navbar__mobile-link--active" : ""
-                  }`
-                }
-              >
-                <svg
-                  className="navbar__login-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
-                </svg>
-              </NavLink>
-              <button
-                type="button"
-                className="navbar__login navbar__mobile-login"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  onLoginClick();
-                }}
-                >
-
-                <span>Login</span>
-              </button>
-                </>
-            )}
+            <button
+              type="button"
+              className="navbar__login navbar__mobile-login"
+              onClick={handleLogout}
+            >
+              <span>Logout</span>
+            </button>
           </div>
         </nav>
       )}
