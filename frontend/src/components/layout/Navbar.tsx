@@ -246,6 +246,7 @@ function Navbar({ onLoginClick }: NavbarProps) {
                   onClick={(event) => handleNavigation(event, "/profile")}
                   className="navbar__profile-link"
                   aria-label="Profile"
+                  title="Profile"
                 >
                   <svg
                     className="navbar__login-icon"
