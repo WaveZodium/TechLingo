@@ -32,8 +32,9 @@ function HomePage() {
           </h1>
 
           <p className="home__description">
-            TechLingo helps you understand internet culture, slang, and IT
-            abbreviations in a simple and fun way.
+            TechLingo makes tech language easier to understand — from internet culture and IT abbreviations to cybersecurity basics and programming languages.
+            {/* TechLingo helps you understand internet culture, slang, and IT
+            abbreviations in a simple and fun way. */}
           </p>
 
           <button
