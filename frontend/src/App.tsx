@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
+import ScrollToTop from "./components/layout/ScrollToTop";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 import HomePage from "./pages/HomePage";
@@ -20,6 +21,8 @@ import AdminUsersPage from "./pages/admin/AdminUsersPage";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
+
       {/* Definierar vilka komponenter som ska visas för respektive URL. */}
       <Routes>
         {/* Layout används som gemensam struktur runt sidornas innehåll. */}
