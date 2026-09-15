@@ -9,6 +9,7 @@ import CategoriesPage from "./pages/CategoriesPage";
 import QuizPage from "./pages/QuizPage";
 import ProfilePage from "./pages/ProfilePage";
 import LeaderboardPage from "./pages/LeaderboardPage";
+import AboutPage from "./pages/AboutPage";
 
 // Admin pages
 import AdminPage from "./pages/AdminPage";
@@ -24,6 +25,7 @@ function App() {
         {/* Layout används som gemensam struktur runt sidornas innehåll. */}
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
 
           {/* endast för användare */}
           {/* Dessa routes kräver att användaren är autentiserad. */}
