@@ -38,7 +38,10 @@ function AdminQuestionsPage() {
   }, []);
 
   function getCategoryName(categoryId: string) {
-    return categories.find((category) => category.id === categoryId)?.name ?? "Unknown";
+    return (
+      categories.find((category) => category.id === categoryId)?.name ??
+      "Unknown"
+    );
   }
 
   return (
@@ -54,15 +57,21 @@ function AdminQuestionsPage() {
 
         <div className="admin-table__toolbar">
           <p className="admin-table__count">
-            {questions.length} {questions.length === 1 ? "question" : "questions"}
+            {questions.length}{" "}
+            {questions.length === 1 ? "question" : "questions"}
           </p>
 
-          <button className="admin-table__create-button" type="button">
+          <button
+            className="button-primary admin-table__create-button"
+            type="button"
+          >
             Create question
           </button>
         </div>
 
-        {isLoading && <p className="admin-table__message">Loading questions...</p>}
+        {isLoading && (
+          <p className="admin-table__message">Loading questions...</p>
+        )}
 
         {error && <p className="admin-table__message">{error}</p>}
 

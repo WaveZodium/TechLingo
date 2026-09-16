@@ -3,6 +3,10 @@
 :root {
   --content-max-width: 1680px;
   --page-gutter: clamp(32px, 5vw, 96px);
+  --page-content-width: min(
+    calc(100% - (var(--page-gutter) * 2)),
+    var(--content-max-width)
+  );
 
   --color-background: #011637;
   --color-navbar: #0a2252;
@@ -10,9 +14,38 @@
   --color-navbar-rgba: 10, 34, 82, 0.5;
 
   --color-lightblue: #0056fb;
+  --color-accent: #69dfff;
+  --color-accent-blue: #1675ff;
+  --color-gradient-start: #0759ea;
+  --color-gradient-end: #167cff;
+  --color-gradient-hover-start: #1268f5;
+  --color-gradient-hover-end: #288cff;
   --color-warm-ivory: #f5f1e8;
   --color-secondary-lightblue: #023e7d;
   --color-white: #ffffff;
+
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-gradient-start),
+    var(--color-gradient-end)
+  );
+  --gradient-primary-hover: linear-gradient(
+    135deg,
+    var(--color-gradient-hover-start),
+    var(--color-gradient-hover-end)
+  );
+  --color-panel-border: rgba(45, 105, 255, 0.28);
+  --color-table-divider: rgba(105, 223, 255, 0.12);
+  --color-row-hover: rgba(22, 117, 255, 0.08);
+  --color-muted: #b8bbc4;
+  --button-height: 44px;
+  --button-radius: 10px;
+  --button-padding-inline: 18px;
+  --button-border: 1px solid rgba(110, 180, 255, 0.85);
+  --button-shadow:
+    0 0 12px rgba(0, 100, 255, 0.2), inset 0 0 6px rgba(255, 255, 255, 0.06);
+  --button-hover-shadow:
+    0 0 22px rgba(0, 115, 255, 0.45), inset 0 0 8px rgba(255, 255, 255, 0.1);
 
   --font-inter: "Inter", sans-serif;
   --font-roboto: "Roboto", sans-serif;
@@ -54,6 +87,46 @@ img {
 /* Knappar ärver font från sin parent */
 button {
   font-family: inherit;
+}
+
+.button-primary {
+  min-width: 156px;
+  height: var(--button-height);
+
+  padding: 0 var(--button-padding-inline);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--gradient-primary);
+  color: var(--color-white);
+
+  border: var(--button-border);
+  border-radius: var(--button-radius);
+
+  font-family: var(--font-roboto);
+  font-size: 0.95rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  box-shadow: var(--button-shadow);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.button-primary:hover {
+  transform: translateY(-2px);
+  background: var(--gradient-primary-hover);
+  box-shadow: var(--button-hover-shadow);
+}
+
+.button-primary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }
 
 /* Scrollbar - Chromium */

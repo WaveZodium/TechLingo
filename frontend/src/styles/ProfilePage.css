@@ -11,7 +11,7 @@
 }
 
 .profile-page {
-  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+  width: var(--page-content-width);
 
   min-height: calc(100vh - 92px);
 
@@ -67,9 +67,9 @@
     from var(--profile-angle),
     transparent 0deg,
     transparent 245deg,
-    #075fff 275deg,
-    #69dfff 305deg,
-    #1675ff 335deg,
+    var(--color-lightblue) 275deg,
+    var(--color-accent) 305deg,
+    var(--color-accent-blue) 335deg,
     transparent 360deg
   );
 
@@ -191,7 +191,7 @@
 .profile-score strong {
   margin-top: 5px;
 
-  color: #69dfff;
+  color: var(--color-accent);
 
   font-family: var(--font-inter);
   font-size: clamp(2rem, 4vw, 3rem);

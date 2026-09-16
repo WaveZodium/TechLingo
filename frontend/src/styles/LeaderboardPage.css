@@ -5,7 +5,7 @@
 }
 
 .leaderboard-page {
-  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+  width: var(--page-content-width);
 
   min-height: calc(100vh - 92px);
 
@@ -60,7 +60,7 @@
 
   background: rgba(10, 34, 82, 0.48);
 
-  border: 1px solid rgba(45, 105, 255, 0.28);
+  border: 1px solid var(--color-panel-border);
   border-radius: 20px;
 
   backdrop-filter: blur(14px);
@@ -87,9 +87,9 @@
     from var(--leaderboard-angle),
     transparent 0deg,
     transparent 245deg,
-    #075fff 275deg,
-    #69dfff 305deg,
-    #1675ff 335deg,
+    var(--color-lightblue) 275deg,
+    var(--color-accent) 305deg,
+    var(--color-accent-blue) 335deg,
     transparent 360deg
   );
 
@@ -192,7 +192,7 @@
 }
 
 .leaderboard-score strong {
-  color: #69dfff;
+  color: var(--color-accent);
 
   font-family: var(--font-inter);
   font-size: 1.35rem;

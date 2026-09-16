@@ -51,7 +51,10 @@ function AdminUsersPage() {
             {users.length} {users.length === 1 ? "user" : "users"}
           </p>
 
-          <button className="admin-table__create-button" type="button">
+          <button
+            className="button-primary admin-table__create-button"
+            type="button"
+          >
             Create user
           </button>
         </div>

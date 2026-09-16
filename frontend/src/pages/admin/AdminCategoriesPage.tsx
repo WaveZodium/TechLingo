@@ -44,10 +44,14 @@ function AdminCategoriesPage() {
 
         <div className="admin-categories__toolbar">
           <p className="admin-categories__count">
-            {categories.length} {categories.length === 1 ? "category" : "categories"}
+            {categories.length}{" "}
+            {categories.length === 1 ? "category" : "categories"}
           </p>
 
-          <button className="admin-categories__create-button" type="button">
+          <button
+            className="button-primary admin-categories__create-button"
+            type="button"
+          >
             Create category
           </button>
         </div>
@@ -85,7 +89,10 @@ function AdminCategoriesPage() {
                     <td>{new Date(category.createdAt).toLocaleDateString()}</td>
                     <td>
                       <div className="admin-categories__actions">
-                        <button className="admin-categories__action" type="button">
+                        <button
+                          className="admin-categories__action"
+                          type="button"
+                        >
                           Edit
                         </button>
                         <button

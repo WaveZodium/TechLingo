@@ -1,5 +1,5 @@
 .footer {
-  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+  width: var(--page-content-width);
 
   min-height: 56px;
   margin: 24px auto 20px;
@@ -106,7 +106,7 @@
 
 @media (max-width: 600px) {
   .footer {
-    width: min(100% - 32px, 1100px);
+    width: var(--page-content-width);
   }
 
   .footer__content {

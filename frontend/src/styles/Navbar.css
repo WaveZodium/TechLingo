@@ -21,7 +21,7 @@
 .navbar {
   position: relative;
 
-  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+  width: var(--page-content-width);
 
   height: 72px;
 
@@ -59,7 +59,7 @@
     transparent 0deg,
     transparent 310deg,
     #126cff 330deg,
-    #69dfff 342deg,
+    var(--color-accent) 342deg,
     #126cff 352deg,
     transparent 360deg
   );
@@ -185,7 +185,7 @@
 
   transform: translateX(-50%);
 
-  background: #1675ff;
+  background: var(--color-accent-blue);
 
   border-radius: 999px;
 
@@ -435,7 +435,7 @@
 
   gap: 7px;
 
-  background: linear-gradient(135deg, #0759ea, #167cff);
+  background: var(--gradient-primary);
 
   color: var(--color-white);
 
@@ -463,7 +463,7 @@
 .navbar__login:hover {
   transform: translateY(-2px);
 
-  background: linear-gradient(135deg, #1268f5, #288cff);
+  background: var(--gradient-primary-hover);
 
   box-shadow:
     0 0 16px rgba(0, 115, 255, 0.35),
@@ -631,7 +631,7 @@
   .navbar__mobile-menu {
     position: relative;
 
-    width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+    width: var(--page-content-width);
 
     margin: 10px auto 0;
     padding: 18px;
@@ -677,7 +677,7 @@
       transparent 0deg,
       transparent 310deg,
       #126cff 330deg,
-      #69dfff 342deg,
+      var(--color-accent) 342deg,
       #126cff 352deg,
       transparent 360deg
     );
@@ -740,7 +740,7 @@
   }
 
   .navbar__mobile-link--active {
-    color: #69dfff;
+    color: var(--color-accent);
 
     text-shadow: 0 0 10px rgba(105, 223, 255, 0.25);
   }
@@ -758,7 +758,7 @@
 
     transform: translateY(-50%);
 
-    background: #1675ff;
+    background: var(--color-accent-blue);
 
     border-radius: 999px;
 
