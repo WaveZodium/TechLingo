@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 
-import { getCategories } from "../../api/categoryApi";
+import {
+  getAdminCategories,
+  createAdminCategory,
+  updateAdminCategory,
+} from "../../api/adminApi";
+
+import AdminCategoryForm, {
+  type CategoryFormData,
+} from "../../components/admin/AdminCategoryForm";
+
 import type { Category } from "../../types/category";
 
 import "../../styles/AdminPage.css";
@@ -8,16 +17,21 @@ import "../../styles/AdminCategoriesPage.css";
 
 function AdminCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // State för formuläret
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+
+  // Hämta kategorier
   useEffect(() => {
     async function loadCategories() {
       try {
         setIsLoading(true);
         setError(null);
 
-        const data = await getCategories();
+        const data = await getAdminCategories();
 
         setCategories(data);
       } catch (error) {
@@ -31,6 +45,43 @@ function AdminCategoriesPage() {
     loadCategories();
   }, []);
 
+  // Öppna formuläret för att skapa en kategori
+  function handleCreate() {
+    setEditingCategory(null);
+    setIsFormOpen(true);
+  }
+
+  // Öppna formuläret för att redigera en kategori
+  function handleEdit(category: Category) {
+    setEditingCategory(category);
+    setIsFormOpen(true);
+  }
+
+  // Stäng formuläret
+  function handleCancel() {
+    setIsFormOpen(false);
+    setEditingCategory(null);
+  }
+
+  // Spara en ny eller befintlig kategori
+  async function handleSave(data: CategoryFormData) {
+    if (editingCategory) {
+      const updated = await updateAdminCategory(editingCategory.id, data);
+
+      setCategories((previous) =>
+        previous.map((category) =>
+          category.id === updated.id ? updated : category,
+        ),
+      );
+    } else {
+      const created = await createAdminCategory(data);
+
+      setCategories((previous) => [...previous, created]);
+    }
+
+    handleCancel();
+  }
+
   return (
     <section className="admin">
       <div className="admin__content">
@@ -42,6 +93,16 @@ function AdminCategoriesPage() {
           </p>
         </header>
 
+        {/* Formulär för Create och Edit */}
+        {isFormOpen && (
+          <AdminCategoryForm
+            key={editingCategory?.id ?? "create"}
+            category={editingCategory}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )}
+
         <div className="admin-categories__toolbar">
           <p className="admin-categories__count">
             {categories.length}{" "}
@@ -51,6 +112,7 @@ function AdminCategoriesPage() {
           <button
             className="button-primary admin-categories__create-button"
             type="button"
+            onClick={handleCreate}
           >
             Create category
           </button>
@@ -74,30 +136,41 @@ function AdminCategoriesPage() {
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
+
               <tbody>
                 {categories.map((category) => (
                   <tr key={category.id}>
                     <td className="admin-categories__name">{category.name}</td>
+
                     <td className="admin-categories__slug">{category.slug}</td>
+
                     <td>
                       <span
-                        className={`admin-categories__status admin-categories__status--${category.isActive ? "active" : "inactive"}`}
+                        className={`admin-categories__status admin-categories__status--${
+                          category.isActive ? "active" : "inactive"
+                        }`}
                       >
                         {category.isActive ? "Active" : "Inactive"}
                       </span>
                     </td>
+
                     <td>{new Date(category.createdAt).toLocaleDateString()}</td>
+
                     <td>
                       <div className="admin-categories__actions">
                         <button
                           className="admin-categories__action"
                           type="button"
+                          onClick={() => handleEdit(category)}
                         >
                           Edit
                         </button>
+
                         <button
                           className="admin-categories__action admin-categories__action--delete"
                           type="button"
+                          disabled
+                          title="Delete is not implemented yet"
                         >
                           Delete
                         </button>
