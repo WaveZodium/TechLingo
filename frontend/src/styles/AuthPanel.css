@@ -1,6 +1,4 @@
-/* ========================================================
-   AUTH PANEL
-   ======================================================== */
+/* AUTH PANEL */
 
 .auth-panel {
   position: fixed;
@@ -37,9 +35,7 @@
   transform: translateX(0);
 }
 
-/* ========================================================
-   OVERLAY
-   ======================================================== */
+/* OVERLAY */
 
 .auth-panel__overlay {
   position: fixed;
@@ -64,9 +60,7 @@
   }
 }
 
-/* ========================================================
-   CLOSE BUTTON
-   ======================================================== */
+/* CLOSE BUTTON */
 
 .auth-panel__close {
   position: absolute;
@@ -99,9 +93,7 @@
     0 0 12px rgba(22, 117, 255, 0.85);
 }
 
-/* ========================================================
-   SWITCH MELLAN LOGIN OCH REGISTER
-   ======================================================== */
+/* SWITCH MELLAN LOGIN OCH REGISTER */
 
 .auth-panel__form-fade {
   width: 100%;
@@ -120,9 +112,7 @@
   }
 }
 
-/* ========================================================
-   GEMENSAM FORM-STYLING
-   ======================================================== */
+/* GEMENSAM FORM-STYLING */
 
 .auth-form {
   width: 100%;
@@ -136,9 +126,7 @@
   margin-top: 2rem;
 }
 
-/* ========================================================
-   AUTH HEADER
-   ======================================================== */
+/* AUTH HEADER */
 
 .auth-form__heading {
   display: flex;
@@ -164,7 +152,7 @@
   flex-shrink: 0;
 
   fill: none;
-  stroke: #167cff;
+  stroke: var(--color-gradient-end);
   stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -181,9 +169,7 @@
   line-height: 1.5;
 }
 
-/* ========================================================
-   FORM FIELD
-   ======================================================== */
+/* FORM FIELD */
 
 .auth-form__field {
   display: flex;
@@ -200,9 +186,7 @@
   font-weight: 500;
 }
 
-/* ========================================================
-   INPUTS
-   ======================================================== */
+/* INPUTS */
 
 .auth-panel input {
   width: 100%;
@@ -240,9 +224,7 @@
   box-shadow: 0 0 12px rgba(22, 117, 255, 0.4);
 }
 
-/* ========================================================
-   PASSWORD FIELD
-   ======================================================== */
+/* PASSWORD FIELD */
 
 .auth-form__password {
   position: relative;
@@ -301,9 +283,7 @@
   display: none;
 }
 
-/* ========================================================
-   ERROR MESSAGE
-   ======================================================== */
+/* ERROR MESSAGE */
 
 .auth-form__message {
   height: 1.25rem;
@@ -327,9 +307,7 @@
   visibility: visible;
 }
 
-/* ========================================================
-   SUBMIT BUTTON
-   ======================================================== */
+/* SUBMIT BUTTON */
 
 .auth-panel button[type="submit"] {
   width: 100%;
@@ -341,7 +319,7 @@
   align-items: center;
   justify-content: center;
 
-  background: linear-gradient(135deg, #0759ea, #167cff);
+  background: var(--gradient-primary);
 
   color: var(--color-white, #fff);
 
@@ -367,17 +345,15 @@
 .auth-panel button[type="submit"]:hover {
   transform: translateY(-2px);
 
-  background: linear-gradient(135deg, #1268f5, #288cff);
+  background: var(--gradient-primary-hover);
 
   box-shadow:
     0 0 16px rgba(0, 115, 255, 0.35),
     inset 0 0 7px rgba(255, 255, 255, 0.08);
 }
 
-/* ========================================================
-   LOGIN / REGISTER SWITCH
-   Ligger längst ner i panelen
-   ======================================================== */
+/* LOGIN / REGISTER SWITCH
+     Ligger längst ner i panelen */
 
 .auth-panel__switch {
   margin-top: auto;
@@ -413,9 +389,7 @@
     0 0 22px rgba(22, 117, 255, 0.6);
 }
 
-/* ========================================================
-   CONFIRM PASSWORD ANIMATION
-   ======================================================== */
+/* CONFIRM PASSWORD ANIMATION */
 
 .auth-form__confirm {
   max-height: 0;
@@ -481,13 +455,10 @@
     opacity: 1;
   }
 }
-/* ========================================================
-   REDUCED MOTION
-   ======================================================== */
+/* REDUCED MOTION */
 
 @media (prefers-reduced-motion: reduce) {
-  .auth-panel
-
+  .auth-panel,
   .auth-panel__overlay {
     animation: none;
   }

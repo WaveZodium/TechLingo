@@ -12,7 +12,7 @@
 }
 
 .admin__content {
-  width: min(calc(100% - (var(--page-gutter) * 2)), var(--content-max-width));
+  width: var(--page-content-width);
 
   margin: 0 auto;
 
@@ -73,7 +73,7 @@
 
   background: rgba(var(--color-navbar-rgba));
 
-  border: 1px solid rgba(45, 105, 255, 0.28);
+  border: 1px solid var(--color-panel-border);
   border-radius: 24px;
 
   backdrop-filter: blur(14px);
@@ -104,9 +104,9 @@
     from var(--admin-angle),
     transparent 0deg,
     transparent 245deg,
-    #075fff 275deg,
-    #69dfff 305deg,
-    #1675ff 335deg,
+    var(--color-lightblue) 275deg,
+    var(--color-accent) 305deg,
+    var(--color-accent-blue) 335deg,
     transparent 360deg
   );
 
@@ -210,48 +210,10 @@
 
   padding: 0 22px;
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
   gap: 10px;
-
-  background: linear-gradient(135deg, #0759ea, #167cff);
-
-  color: var(--color-white);
-
-  border: 1px solid rgba(110, 180, 255, 0.85);
   border-radius: 12px;
-
-  font-family: var(--font-roboto);
   font-size: 1rem;
-  font-weight: 500;
-
   text-decoration: none;
-
-  box-shadow:
-    0 0 12px rgba(0, 100, 255, 0.2),
-    inset 0 0 6px rgba(255, 255, 255, 0.06);
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.admin__button:hover {
-  transform: translateY(-2px);
-
-  background: linear-gradient(135deg, #1268f5, #288cff);
-
-  box-shadow:
-    0 0 22px rgba(0, 115, 255, 0.45),
-    inset 0 0 8px rgba(255, 255, 255, 0.1);
-}
-
-.admin__button:focus-visible {
-  outline: 2px solid #69dfff;
-  outline-offset: 4px;
 }
 
 @media (max-width: 900px) {
@@ -276,7 +238,7 @@
 
 @media (max-width: 600px) {
   .admin__content {
-    width: min(100% - 32px, 1100px);
+    width: var(--page-content-width);
 
     padding-top: 40px;
     padding-bottom: 50px;

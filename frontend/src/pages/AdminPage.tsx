@@ -24,7 +24,10 @@ function AdminPage() {
                 players.
               </p>
 
-              <Link to="/admin/categories" className="admin__button">
+              <Link
+                to="/admin/categories"
+                className="button-primary admin__button"
+              >
                 <span>Categories</span>
                 <span aria-hidden="true">&rarr;</span>
               </Link>
@@ -39,7 +42,10 @@ function AdminPage() {
                 Add and maintain questions and answer options for every quiz.
               </p>
 
-              <Link to="/admin/questions" className="admin__button">
+              <Link
+                to="/admin/questions"
+                className="button-primary admin__button"
+              >
                 <span>Questions</span>
                 <span aria-hidden="true">&rarr;</span>
               </Link>
@@ -54,7 +60,7 @@ function AdminPage() {
                 View users, update their roles and keep accounts up to date.
               </p>
 
-              <Link to="/admin/users" className="admin__button">
+              <Link to="/admin/users" className="button-primary admin__button">
                 <span>Users</span>
                 <span aria-hidden="true">&rarr;</span>
               </Link>
