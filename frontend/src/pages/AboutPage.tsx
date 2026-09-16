@@ -4,7 +4,7 @@ function AboutPage() {
   return (
     <main className="about-page">
       <section className="about-card">
-        <span className="about-card__label">ABOUT</span>
+        <span className="about-card__label"></span>
 
         <h1>About TechLingo</h1>
 
