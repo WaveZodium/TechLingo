@@ -11,6 +11,7 @@ import {
 import AdminCategoryForm, {
   type CategoryFormData,
 } from "../../components/admin/AdminCategoryForm";
+import AdminBreadcrumb from "../../components/admin/AdminBreadcrumb";
 
 import type { Category } from "../../types/category";
 
@@ -156,6 +157,8 @@ function AdminCategoriesPage() {
   return (
     <section className="admin">
       <div className="admin__content">
+        <AdminBreadcrumb currentPage="Manage categories" />
+
         <header className="admin__header">
           <h1 className="admin__title">Manage categories</h1>
 
