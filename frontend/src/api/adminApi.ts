@@ -10,10 +10,6 @@ import type {
 } from "../types/admin";
 
 // Users
-
-import type { AdminQuestion, AdminUser } from "../types/admin";
-import type { Category } from "../types/category";
-
 export async function getAdminUsers() {
   const response = await api.get<AdminUser[]>("/admin/users");
 
