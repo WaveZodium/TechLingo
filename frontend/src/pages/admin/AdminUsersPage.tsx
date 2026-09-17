@@ -10,6 +10,7 @@ import {
 import { getToken, getTokenUserId } from "../../api/authApi";
 
 import AdminUserForm from "../../components/admin/AdminUserForm";
+import AdminBreadcrumb from "../../components/admin/AdminBreadcrumb";
 
 import "../../styles/AdminPage.css";
 import "../../styles/AdminTables.css";
@@ -150,6 +151,8 @@ function AdminUsersPage() {
   return (
     <section className="admin">
       <div className="admin__content">
+        <AdminBreadcrumb currentPage="Manage users" />
+
         <header className="admin__header">
           <h1 className="admin__title">Manage users</h1>
 

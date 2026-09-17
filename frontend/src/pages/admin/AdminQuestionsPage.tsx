@@ -8,6 +8,7 @@ import {
 } from "../../api/adminApi";
 
 import { getCategories } from "../../api/categoryApi";
+import AdminBreadcrumb from "../../components/admin/AdminBreadcrumb";
 
 import AdminQuestionForm from "../../components/admin/AdminQuestionForm";
 
@@ -145,6 +146,8 @@ function AdminQuestionsPage() {
   return (
     <section className="admin">
       <div className="admin__content">
+        <AdminBreadcrumb currentPage="Manage questions" />
+
         <header className="admin__header">
           <h1 className="admin__title">Manage questions</h1>
 

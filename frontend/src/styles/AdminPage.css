@@ -20,6 +20,39 @@
   padding-bottom: 80px;
 }
 
+.admin-breadcrumb {
+  margin-bottom: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  color: var(--color-warm-ivory);
+
+  font-family: var(--font-roboto-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.admin-breadcrumb__link {
+  color: var(--color-accent);
+
+  text-decoration: none;
+}
+
+.admin-breadcrumb__link:hover {
+  color: var(--color-white);
+}
+
+.admin-breadcrumb__separator {
+  color: var(--color-panel-border);
+}
+
+.admin-breadcrumb__current {
+  color: var(--color-warm-ivory);
+}
+
 .admin__header {
   max-width: 600px;
 
@@ -242,6 +275,12 @@
 
     padding-top: 40px;
     padding-bottom: 50px;
+  }
+
+  .admin-breadcrumb {
+    margin-bottom: 22px;
+
+    font-size: 0.7rem;
   }
 
   .admin__title {
