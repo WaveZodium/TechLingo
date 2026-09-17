@@ -11,15 +11,18 @@ public class QuizService
     private readonly QuestionService _questionService;
     private readonly IUserRepository _userRepository;
     private readonly QuizSessionRepository _quizSessionRepository;
+    private readonly CategoryService _categoryService;
 
     public QuizService(
         QuestionService questionService,
         IUserRepository userRepository,
-        QuizSessionRepository quizSessionRepository)
+        QuizSessionRepository quizSessionRepository,
+        CategoryService categoryService)
     {
         _questionService = questionService;
         _userRepository = userRepository;
         _quizSessionRepository = quizSessionRepository;
+        _categoryService = categoryService;
     }
 
     // startar ett nytt quiz för en användare inom en viss kategori
@@ -60,7 +63,13 @@ public class QuizService
         };
     }
 
-    var questions =
+        var category =
+            await _categoryService.GetActiveByIdAsync(categoryId);
+
+        if (category is null || !category.IsActive)
+            return null;
+
+        var questions =
         await _questionService.GetByCategoryAsync(categoryId);
 
     if (questions.Count != 10)

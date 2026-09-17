@@ -23,6 +23,14 @@ public class CategoryRepository
             .ToListAsync();
     }
 
+    //hämtar alla aktiva kategorier från databasen
+    public async Task<List<Category>> GetActiveAsync()
+    {
+        return await _categories
+            .Find(category => category.IsActive)
+            .ToListAsync();
+    }
+
     //hämtar en kategori baserat på dess id
     public async Task<Category?> GetByIdAsync(string id)
     {

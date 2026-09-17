@@ -63,6 +63,20 @@ function AdminCategoriesPage() {
     setIsFormOpen(true);
   }
 
+  // Växla status för en kategori
+  async function handleToggleStatus(category: Category) {
+    const updated = await updateAdminCategory(category.id, {
+      name: category.name,
+      slug: category.slug,
+      description: category.description,
+      isActive: !category.isActive,
+    });
+
+    setCategories((previous) =>
+      previous.map((item) => (item.id === updated.id ? updated : item)),
+    );
+  }
+
   // Stäng formuläret
   function handleCancel() {
     setIsFormOpen(false);
@@ -213,13 +227,20 @@ function AdminCategoriesPage() {
                     <td className="admin-categories__slug">{category.slug}</td>
 
                     <td>
-                      <span
+                      <button
                         className={`admin-categories__status admin-categories__status--${
                           category.isActive ? "active" : "inactive"
                         }`}
+                        type="button"
+                        onClick={() => handleToggleStatus(category)}
+                        title={
+                          category.isActive
+                            ? "Click to deactivate category"
+                            : "Click to activate category"
+                        }
                       >
                         {category.isActive ? "Active" : "Inactive"}
-                      </span>
+                      </button>
                     </td>
 
                     <td>{new Date(category.createdAt).toLocaleDateString()}</td>
