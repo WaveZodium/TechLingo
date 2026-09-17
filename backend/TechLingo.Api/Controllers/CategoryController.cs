@@ -10,19 +10,19 @@ namespace TechLingo.Api.Controllers;
 [Route("api/[controller]")]
 public class CategoriesController : ControllerBase
 {
-    private readonly CategoryRepository _repository;
+    private readonly CategoryService _categoryService;
     private readonly QuestionService _questionService;
 
-    public CategoriesController(CategoryRepository repository, QuestionService questionService)
+    public CategoriesController(CategoryService categoryService, QuestionService questionService)
     {
-        _repository = repository;
+        _categoryService = categoryService;
         _questionService = questionService;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<Category>>> GetAll()
     {
-        var categories = await _repository.GetAllAsync();
+        var categories = await _categoryService.GetActiveAsync();
 
         return Ok(categories);
     }
@@ -30,7 +30,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Category>> GetById(string id)
     {
-        var category = await _repository.GetByIdAsync(id);
+        var category = await _categoryService.GetActiveByIdAsync(id);
 
         if (category is null)
             return NotFound();
@@ -42,6 +42,14 @@ public class CategoriesController : ControllerBase
     public async Task<ActionResult<List<QuestionDto>>> GetByCategory(
         string categoryId)
     {
+        var category =
+            await _categoryService.GetActiveByIdAsync(categoryId);
+
+        if (category is null)
+        {
+            return NotFound();
+        }
+
         var questions =
             await _questionService.GetByCategoryAsync(categoryId);
 

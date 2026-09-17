@@ -10,7 +10,6 @@ import type {
 } from "../types/admin";
 
 // Users
-
 export async function getAdminUsers() {
   const response = await api.get<AdminUser[]>("/admin/users");
 
@@ -42,6 +41,10 @@ export async function getAdminQuestions() {
 }
 
 // Categories
+
+export async function deleteAdminQuestion(id: string) {
+  await api.delete(`/admin/questions/${id}`);
+}
 
 export type CategoryFormData = Pick<
   Category,

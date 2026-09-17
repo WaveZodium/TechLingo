@@ -69,6 +69,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<CategoryService>();
 
 // Konfigurera JWT-autentisering
 builder.Services.Configure<JwtSettings>(
