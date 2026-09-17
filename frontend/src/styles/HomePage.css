@@ -249,18 +249,16 @@
 
 @media (max-width: 600px) {
   .home__content {
-    width: var(--page-content-width);
-
-    padding-top: 50px;
-    padding-bottom: 50px;
+    width: 100%;
+    padding: 50px var(--page-gutter);
   }
 
   .home__title {
-    /* max-width: 760px;
-    font-size: 3.6rem; */
     width: 100%;
     max-width: 100%;
-    font-size: clamp(2.5rem, 13vw, 3.6rem);
+    font-size: 3rem;
+    text-align: center;
+    overflow-wrap: break-word;
   }
 
   .home__description {
