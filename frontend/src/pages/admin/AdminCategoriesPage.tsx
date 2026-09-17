@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import {
   getAdminCategories,
   createAdminCategory,
   updateAdminCategory,
+  deleteAdminCategory,
 } from "../../api/adminApi";
 
 import AdminCategoryForm, {
@@ -23,6 +25,10 @@ function AdminCategoriesPage() {
   // State för formuläret
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+
+  // State för borttagning
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Hämta kategorier
   useEffect(() => {
@@ -82,6 +88,57 @@ function AdminCategoriesPage() {
     handleCancel();
   }
 
+  // Radera en kategori
+  async function handleDelete(category: Category) {
+    if (deletingId !== null) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${category.name}"?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingId(category.id);
+      setDeleteError(null);
+
+      await deleteAdminCategory(category.id);
+
+      // Uppdatera tabellen först när borttagningen lyckats
+      setCategories((previous) =>
+        previous.filter((item) => item.id !== category.id),
+      );
+
+      // Stäng formuläret om den borttagna kategorin redigerades
+      if (editingCategory?.id === category.id) {
+        handleCancel();
+      }
+    } catch (error) {
+      console.error("Failed to delete category:", error);
+
+      if (axios.isAxiosError(error) && error.response?.status === 409) {
+        setDeleteError(
+          `Could not delete "${category.name}". ` +
+            "The category contains questions. Remove those questions first.",
+        );
+      } else if (axios.isAxiosError(error) && error.response?.status === 404) {
+        setDeleteError(
+          `Could not delete "${category.name}". The category no longer exists.`,
+        );
+      } else {
+        setDeleteError(
+          `Could not delete "${category.name}". Please try again.`,
+        );
+      }
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <section className="admin">
       <div className="admin__content">
@@ -122,7 +179,18 @@ function AdminCategoriesPage() {
           <p className="admin-categories__message">Loading categories...</p>
         )}
 
-        {error && <p className="admin-categories__message">{error}</p>}
+        {error && (
+          <p className="admin-categories__message" role="alert">
+            {error}
+          </p>
+        )}
+
+        {/* Fel vid borttagning ska inte dölja tabellen */}
+        {deleteError && (
+          <p className="admin-categories__delete-error" role="alert">
+            {deleteError}
+          </p>
+        )}
 
         {!isLoading && !error && (
           <div className="admin-categories__table-wrapper">
@@ -169,10 +237,12 @@ function AdminCategoriesPage() {
                         <button
                           className="admin-categories__action admin-categories__action--delete"
                           type="button"
-                          disabled
-                          title="Delete is not implemented yet"
+                          onClick={() => handleDelete(category)}
+                          disabled={deletingId !== null}
                         >
-                          Delete
+                          {deletingId === category.id
+                            ? "Deleting..."
+                            : "Delete"}
                         </button>
                       </div>
                     </td>
