@@ -1,6 +1,7 @@
 import api from "./api";
-import type { Category } from "../types/category";
+
 import type { AdminQuestion, AdminUser } from "../types/admin";
+import type { Category } from "../types/category";
 
 export async function getAdminUsers() {
   const response = await api.get<AdminUser[]>("/admin/users");
@@ -14,6 +15,10 @@ export async function getAdminQuestions() {
   return response.data;
 }
 
+export async function deleteAdminQuestion(id: string) {
+  await api.delete(`/admin/questions/${id}`);
+}
+
 export type CategoryFormData = Pick<
   Category,
   "name" | "slug" | "description" | "isActive"
@@ -21,11 +26,13 @@ export type CategoryFormData = Pick<
 
 export async function getAdminCategories() {
   const response = await api.get<Category[]>("/admin/categories");
+
   return response.data;
 }
 
 export async function createAdminCategory(data: CategoryFormData) {
   const response = await api.post<Category>("/admin/categories", data);
+
   return response.data;
 }
 
