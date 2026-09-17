@@ -1,17 +1,49 @@
 import api from "./api";
-import type { Category } from "../types/category";
-import type { AdminQuestion, AdminUser } from "../types/admin";
 
+import type { Category } from "../types/category";
+
+import type {
+  AdminQuestion,
+  AdminUser,
+  CreateAdminUserData,
+  UpdateAdminUserData,
+} from "../types/admin";
+
+// Users
 export async function getAdminUsers() {
   const response = await api.get<AdminUser[]>("/admin/users");
 
   return response.data;
 }
 
+export async function createAdminUser(data: CreateAdminUserData) {
+  const response = await api.post<AdminUser>("/admin/users", data);
+
+  return response.data;
+}
+
+export async function updateAdminUser(id: string, data: UpdateAdminUserData) {
+  const response = await api.put<AdminUser>(`/admin/users/${id}`, data);
+
+  return response.data;
+}
+
+export async function deleteAdminUser(id: string) {
+  await api.delete(`/admin/users/${id}`);
+}
+
+// Questions
+
 export async function getAdminQuestions() {
   const response = await api.get<AdminQuestion[]>("/admin/questions");
 
   return response.data;
+}
+
+// Categories
+
+export async function deleteAdminQuestion(id: string) {
+  await api.delete(`/admin/questions/${id}`);
 }
 
 export type CategoryFormData = Pick<
@@ -21,11 +53,13 @@ export type CategoryFormData = Pick<
 
 export async function getAdminCategories() {
   const response = await api.get<Category[]>("/admin/categories");
+
   return response.data;
 }
 
 export async function createAdminCategory(data: CategoryFormData) {
   const response = await api.post<Category>("/admin/categories", data);
+
   return response.data;
 }
 

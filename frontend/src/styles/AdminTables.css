@@ -2,7 +2,7 @@
   margin-top: 48px;
 
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
 }
@@ -23,8 +23,97 @@
   font-family: var(--font-roboto);
 }
 
+.admin-table__toolbar-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.admin-table__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-table__filter-label {
+  color: var(--color-warm-ivory);
+
+  font-family: var(--font-roboto-mono);
+  font-size: 0.75rem;
+}
+
+.admin-table__select-wrapper {
+  position: relative;
+}
+
+.admin-table__filter-select {
+  min-width: 190px;
+  height: 44px;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  padding: 0 48px 0 14px;
+
+  background: rgba(var(--color-navbar-rgba));
+  color: var(--color-white);
+
+  border: 1px solid var(--color-panel-border);
+  border-radius: 8px;
+
+  font-family: var(--font-roboto);
+  font-size: 0.9rem;
+
+  cursor: pointer;
+}
+
+.admin-table__select-wrapper::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  right: 18px;
+
+  width: 8px;
+  height: 8px;
+
+  border-right: 2px solid var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+
+  transform: translateY(-70%) rotate(45deg);
+
+  pointer-events: none;
+}
+
+.admin-table__filter-select:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: var(--color-navbar);
+}
+
+.admin-table__filter-select:focus-visible {
+  outline: none;
+
+  border-color: var(--color-accent);
+
+  box-shadow: 0 0 14px rgba(105, 223, 255, 0.12);
+}
+
+.admin-table__filter-select option {
+  background: var(--color-navbar);
+  color: var(--color-white);
+}
+
 .admin-table__create-button {
   white-space: nowrap;
+}
+
+.admin-table__delete-error {
+  margin: 24px 0 0;
+
+  color: #ff9b9b;
+
+  font-family: var(--font-roboto);
+  font-size: 0.9rem;
 }
 
 .admin-table__table-wrapper {
@@ -92,30 +181,6 @@
   font-size: 0.8rem;
 }
 
-.admin-table__status {
-  display: inline-flex;
-  align-items: center;
-
-  padding: 5px 9px;
-
-  border: 1px solid currentColor;
-  border-radius: 999px;
-
-  font-family: var(--font-roboto-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.admin-table__status--active {
-  color: var(--color-accent);
-  background: rgba(105, 223, 255, 0.08);
-}
-
-.admin-table__status--inactive {
-  color: #b8bbc4;
-  background: rgba(184, 187, 196, 0.08);
-}
-
 .admin-table__actions {
   display: flex;
   gap: 16px;
@@ -139,17 +204,39 @@
   color: var(--color-white);
 }
 
+.admin-table__action:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
 .admin-table__action--delete {
   color: #ff9b9b;
 }
 
-@media (max-width: 600px) {
+.admin-table__empty {
+  color: var(--color-warm-ivory);
+
+  font-family: var(--font-roboto-mono);
+  text-align: center;
+}
+
+@media (max-width: 700px) {
   .admin-table__toolbar {
     margin-top: 36px;
 
-    align-items: flex-start;
+    align-items: stretch;
     flex-direction: column;
     gap: 16px;
+  }
+
+  .admin-table__toolbar-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-table__filter-select {
+    width: 100%;
   }
 
   .admin-table__create-button {
