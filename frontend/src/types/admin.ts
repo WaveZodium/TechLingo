@@ -14,3 +14,14 @@ export type AdminQuestion = {
   isActive: boolean;
   createdAt: string;
 };
+
+export type CreateAdminUserData = {
+  username: string;
+  password: string;
+  role: UserRole;
+};
+
+export type UpdateAdminUserData = {
+  username: string;
+  role: UserRole;
+};
