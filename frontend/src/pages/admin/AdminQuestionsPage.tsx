@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 
-import { deleteAdminQuestion, getAdminQuestions } from "../../api/adminApi";
+import {
+  createAdminQuestion,
+  deleteAdminQuestion,
+  getAdminQuestions,
+  updateAdminQuestion,
+} from "../../api/adminApi";
+
 import { getCategories } from "../../api/categoryApi";
 import AdminBreadcrumb from "../../components/admin/AdminBreadcrumb";
 
-import type { AdminQuestion } from "../../types/admin";
+import AdminQuestionForm from "../../components/admin/AdminQuestionForm";
+
+import type { AdminQuestion, QuestionFormData } from "../../types/admin";
 import type { Category } from "../../types/category";
 
 import "../../styles/AdminPage.css";
@@ -19,7 +27,13 @@ function AdminQuestionsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<AdminQuestion | null>(
+    null,
+  );
+
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,6 +50,7 @@ function AdminQuestionsPage() {
         setCategories(categoryData);
       } catch (error) {
         console.error("Failed to load questions:", error);
+
         setError("Could not load questions.");
       } finally {
         setIsLoading(false);
@@ -55,6 +70,41 @@ function AdminQuestionsPage() {
   const filteredQuestions = selectedCategoryId
     ? questions.filter((question) => question.categoryId === selectedCategoryId)
     : questions;
+
+  function handleCreate() {
+    setEditingQuestion(null);
+    setIsFormOpen(true);
+    setDeleteError(null);
+  }
+
+  function handleEdit(question: AdminQuestion) {
+    setEditingQuestion(question);
+    setIsFormOpen(true);
+    setDeleteError(null);
+  }
+
+  function handleCancel() {
+    setIsFormOpen(false);
+    setEditingQuestion(null);
+  }
+
+  async function handleSave(data: QuestionFormData) {
+    if (editingQuestion) {
+      const updated = await updateAdminQuestion(editingQuestion.id, data);
+
+      setQuestions((previous) =>
+        previous.map((question) =>
+          question.id === updated.id ? updated : question,
+        ),
+      );
+    } else {
+      const created = await createAdminQuestion(data);
+
+      setQuestions((previous) => [...previous, created]);
+    }
+
+    handleCancel();
+  }
 
   async function handleDelete(question: AdminQuestion) {
     if (deletingId !== null) {
@@ -78,6 +128,10 @@ function AdminQuestionsPage() {
       setQuestions((previous) =>
         previous.filter((item) => item.id !== question.id),
       );
+
+      if (editingQuestion?.id === question.id) {
+        handleCancel();
+      }
     } catch (error) {
       console.error("Failed to delete question:", error);
 
@@ -101,6 +155,16 @@ function AdminQuestionsPage() {
             Create and maintain questions and answer options for each quiz.
           </p>
         </header>
+
+        {isFormOpen && (
+          <AdminQuestionForm
+            key={editingQuestion?.id ?? "create"}
+            question={editingQuestion}
+            categories={categories}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        )}
 
         <div className="admin-table__toolbar">
           <p className="admin-table__count">
@@ -134,6 +198,7 @@ function AdminQuestionsPage() {
             <button
               className="button-primary admin-table__create-button"
               type="button"
+              onClick={handleCreate}
             >
               Create question
             </button>
@@ -181,7 +246,11 @@ function AdminQuestionsPage() {
 
                     <td>
                       <div className="admin-table__actions">
-                        <button className="admin-table__action" type="button">
+                        <button
+                          className="admin-table__action"
+                          type="button"
+                          onClick={() => handleEdit(question)}
+                        >
                           Edit
                         </button>
 

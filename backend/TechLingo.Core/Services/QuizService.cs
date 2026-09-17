@@ -7,7 +7,9 @@ namespace TechLingo.Core.Services;
 
 public class QuizService
 {
+    private const int MaxQuestionsPerQuiz = 10;
     private const int MaxTotalScore = 99999;
+
     private readonly QuestionService _questionService;
     private readonly IUserRepository _userRepository;
     private readonly QuizSessionRepository _quizSessionRepository;
@@ -25,85 +27,102 @@ public class QuizService
         _categoryService = categoryService;
     }
 
-    // startar ett nytt quiz för en användare inom en viss kategori
+    // Startar ett nytt quiz för en användare inom en viss kategori
     public async Task<StartQuizResultDto?> StartQuizAsync(
         string userId,
         string categoryId)
     {
         var activeSession =
-        await _quizSessionRepository.GetActiveSessionAsync(
-            userId,
-            categoryId
-        );
+            await _quizSessionRepository.GetActiveSessionAsync(
+                userId,
+                categoryId
+            );
 
-    if (activeSession is not null)
-    {
-        var existingQuestions = new List<QuestionDto>();
-
-        foreach (var questionId in activeSession.QuestionIds)
+        // Om användaren redan har en aktiv session för kategorin
+        // återupptas den i stället för att skapa en ny.
+        if (activeSession is not null)
         {
-            var question =
-                await _questionService.GetByIdAsync(questionId);
+            var existingQuestions = new List<QuestionDto>();
 
-            if (question is null)
-                return null;
+            foreach (var questionId in activeSession.QuestionIds)
+            {
+                var question =
+                    await _questionService.GetByIdAsync(questionId);
 
-            existingQuestions.Add(question);
+                if (question is null)
+                {
+                    return null;
+                }
+
+                existingQuestions.Add(question);
+            }
+
+            return new StartQuizResultDto
+            {
+                SessionId = activeSession.Id,
+                Questions = existingQuestions,
+                AnsweredQuestionIds = activeSession.Answers
+                    .Select(answer => answer.QuestionId)
+                    .ToList(),
+                CurrentScore = activeSession.Score,
+                IsResumed = true
+            };
         }
-
-        return new StartQuizResultDto
-        {
-            SessionId = activeSession.Id,
-            Questions = existingQuestions,
-            AnsweredQuestionIds = activeSession.Answers
-                .Select(answer => answer.QuestionId)
-                .ToList(),
-            CurrentScore = activeSession.Score,
-            IsResumed = true
-        };
-    }
 
         var category =
             await _categoryService.GetActiveByIdAsync(categoryId);
 
         if (category is null || !category.IsActive)
+        {
             return null;
+        }
 
         var questions =
-        await _questionService.GetByCategoryAsync(categoryId);
+            await _questionService.GetByCategoryAsync(categoryId);
 
-    if (questions.Count != 10)
-        return null;
+        // Ett quiz måste innehålla minst en fråga.
+        if (questions.Count == 0)
+        {
+            return null;
+        }
 
-    foreach (var question in questions)
-    {
-        question.Options = question.Options
+        // Slumpa frågorna och använd maximalt 10.
+        // Om kategorin innehåller färre än 10 används alla.
+        questions = questions
             .OrderBy(_ => Guid.NewGuid())
+            .Take(MaxQuestionsPerQuiz)
             .ToList();
+
+        // Slumpa även svarsalternativen för varje fråga.
+        foreach (var question in questions)
+        {
+            question.Options = question.Options
+                .OrderBy(_ => Guid.NewGuid())
+                .ToList();
+        }
+
+        var quizSession = new QuizSession
+        {
+            UserId = userId,
+            CategoryId = categoryId,
+            QuestionIds = questions
+                .Select(question => question.Id)
+                .ToList()
+        };
+
+        await _quizSessionRepository.CreateAsync(quizSession);
+
+        return new StartQuizResultDto
+        {
+            SessionId = quizSession.Id,
+            Questions = questions,
+            AnsweredQuestionIds = [],
+            CurrentScore = 0,
+            IsResumed = false
+        };
     }
 
-    var quizSession = new QuizSession
-    {
-        UserId = userId,
-        CategoryId = categoryId,
-        QuestionIds = questions
-            .Select(question => question.Id)
-            .ToList()
-    };
-
-    await _quizSessionRepository.CreateAsync(quizSession);
-
-    return new StartQuizResultDto
-    {
-        SessionId = quizSession.Id,
-        Questions = questions,
-        AnsweredQuestionIds = [],
-        CurrentScore = 0,
-        IsResumed = false
-    };
-    }
-
-    // skickar ett svar på en fråga inom en pågående quizsession
+    // Skickar ett svar på en fråga inom en pågående quizsession
     public async Task<AnswerResultDto?> SubmitAnswerAsync(
         string sessionId,
         string userId,
@@ -113,13 +132,19 @@ public class QuizService
             await _quizSessionRepository.GetByIdAsync(sessionId);
 
         if (session is null)
+        {
             return null;
+        }
 
         if (session.UserId != userId)
+        {
             return null;
+        }
 
         if (session.IsCompleted)
+        {
             return null;
+        }
 
         if (!session.QuestionIds.Contains(
                 submitAnswerDto.questionId))
@@ -141,7 +166,9 @@ public class QuizService
             );
 
         if (result is null)
+        {
             return null;
+        }
 
         var sessionAnswer = new QuizSessionAnswer
         {
@@ -158,12 +185,14 @@ public class QuizService
             );
 
         if (!answerSaved)
+        {
             return null;
+        }
 
         return result;
     }
 
-    // avslutar ett pågående quiz och beräknar resultatet
+    // Avslutar ett pågående quiz och beräknar resultatet
     public async Task<QuizResultDto?> CompleteQuizAsync(
         string sessionId,
         string userId)
@@ -172,33 +201,53 @@ public class QuizService
             await _quizSessionRepository.GetByIdAsync(sessionId);
 
         if (session is null)
+        {
             return null;
+        }
 
+        // Säkerställer att endast användaren som startade
+        // quizet kan avsluta det.
         if (session.UserId != userId)
-            return null; // säkerställer att endast användaren som startade quizet kan avsluta det
+        {
+            return null;
+        }
 
         if (session.IsCompleted)
+        {
             return null;
+        }
 
-        if (session.Answers.Count != 10) // säkerställer att alla frågor har besvarats innan quiz avslutas
+        // Alla frågor som hör till sessionen måste vara
+        // besvarade innan quizet kan avslutas.
+        if (session.Answers.Count != session.QuestionIds.Count)
+        {
             return null;
+        }
 
         var user =
-            await _userRepository.GetByIdAsync(userId); // hämtar användaren som genomför quizet
+            await _userRepository.GetByIdAsync(userId);
 
         if (user is null)
+        {
             return null;
-        // markerar quizsessionen som avslutad och beräknar poängen
+        }
+
+        // Markerar quizsessionen som avslutad
+        // och beräknar poängen.
         var completedSession =
             await _quizSessionRepository.CompleteAsync(
                 sessionId
             );
 
         if (completedSession is null)
+        {
             return null;
+        }
 
         var quizScore = completedSession.Score;
-        // beräknar den nya totala poängen för användaren efter quizet
+
+        // Beräknar användarens nya totalpoäng
+        // men tillåter aldrig mer än maxpoängen.
         var newTotalScore = Math.Clamp(
             user.TotalScore + quizScore,
             0,
@@ -207,7 +256,7 @@ public class QuizService
 
         var scoreChange =
             newTotalScore - user.TotalScore;
-        // uppdaterar användarens totala poäng med förändringen
+
         var totalScore =
             await _userRepository.AddPointsAsync(
                 userId,
@@ -215,8 +264,10 @@ public class QuizService
             );
 
         if (totalScore is null)
+        {
             return null;
-        // returnerar resultatet av quizet inklusive poängen användaren fick och den nya totala poängen
+        }
+
         return new QuizResultDto
         {
             QuizScore = quizScore,
@@ -225,12 +276,15 @@ public class QuizService
     }
 
     public async Task<List<QuizHistoryDto>> GetQuizHistoryAsync(
-    string userId,
-    int count = 5)
+        string userId,
+        int count = 5)
     {
         var sessions =
             await _quizSessionRepository
-                .GetLatestCompletedByUserAsync(userId, count);
+                .GetLatestCompletedByUserAsync(
+                    userId,
+                    count
+                );
 
         return sessions
             .Select(session => new QuizHistoryDto
@@ -255,15 +309,22 @@ public class QuizService
             await _quizSessionRepository.GetByIdAsync(sessionId);
 
         if (session is null)
+        {
             return false;
+        }
 
-        // Endast användaren som äger sessionen får radera den.
+        // Endast användaren som äger sessionen
+        // får radera den.
         if (session.UserId != userId)
+        {
             return false;
+        }
 
         // Färdiga quiz ska inte kunna raderas via Quit.
         if (session.IsCompleted)
+        {
             return false;
+        }
 
         return await _quizSessionRepository.DeleteAsync(sessionId);
     }

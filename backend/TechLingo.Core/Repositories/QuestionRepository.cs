@@ -5,16 +5,18 @@ namespace TechLingo.Core.Repositories;
 
 public class QuestionRepository
 {
-    //injicerar MongoDB-kollektionen för frågor
+    // Injicerar MongoDB-kollektionen för frågor
     private readonly IMongoCollection<Question> _questions;
 
-    //konstruktorn tar emot en MongoDB-databas och hämtar kollektionen för frågor
+    // Konstruktorn tar emot en MongoDB-databas
+    // och hämtar kollektionen för frågor
     public QuestionRepository(IMongoDatabase database)
     {
-        _questions = database.GetCollection<Question>("questions");
+        _questions =
+            database.GetCollection<Question>("questions");
     }
 
-    //hämtar alla frågor från databasen
+    // Hämtar alla frågor från databasen
     public async Task<List<Question>> GetAllAsync()
     {
         return await _questions
@@ -22,7 +24,7 @@ public class QuestionRepository
             .ToListAsync();
     }
 
-    //hämtar en fråga baserat på dess id
+    // Hämtar en fråga baserat på dess id
     public async Task<Question?> GetByIdAsync(string id)
     {
         return await _questions
@@ -30,15 +32,17 @@ public class QuestionRepository
             .FirstOrDefaultAsync();
     }
 
-    //hämtar alla frågor som tillhör en viss kategori
-    public async Task<List<Question>> GetByCategoryAsync(string categoryId)
+    // Hämtar alla frågor som tillhör en viss kategori
+    public async Task<List<Question>> GetByCategoryAsync(
+        string categoryId)
     {
         return await _questions
             .Find(q => q.CategoryId == categoryId)
             .ToListAsync();
     }
 
-    //hämtar ett slumpmässigt urval av frågor från en viss kategori
+    // Hämtar ett slumpmässigt urval av frågor
+    // från en viss kategori
     public async Task<List<Question>> GetRandomByCategoryAsync(
         string categoryId,
         int count)
@@ -53,13 +57,13 @@ public class QuestionRepository
             .ToList();
     }
 
-    //skapar en ny fråga i databasen
+    // Skapar en ny fråga i databasen
     public async Task CreateAsync(Question question)
     {
         await _questions.InsertOneAsync(question);
     }
 
-    //uppdaterar en befintlig fråga i databasen
+    // Uppdaterar en befintlig fråga i databasen
     public async Task UpdateAsync(Question question)
     {
         await _questions.ReplaceOneAsync(
@@ -68,9 +72,21 @@ public class QuestionRepository
         );
     }
 
-    //tar bort en fråga från databasen baserat på dess id
+    // Tar bort en fråga från databasen baserat på dess id
     public async Task DeleteAsync(string id)
     {
-        await _questions.DeleteOneAsync(q => q.Id == id);
+        await _questions.DeleteOneAsync(
+            q => q.Id == id
+        );
+    }
+
+    // Tar bort alla frågor som tillhör en viss kategori
+    public async Task DeleteByCategoryAsync(
+        string categoryId)
+    {
+        await _questions.DeleteManyAsync(
+            question =>
+                question.CategoryId == categoryId
+        );
     }
 }

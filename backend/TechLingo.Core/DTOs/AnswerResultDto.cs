@@ -11,5 +11,6 @@ namespace TechLingo.Core.DTOs
         public string? CorrectAnswer { get; set; }
         public string? CorrectAnswerId { get; set; }
         public string? ErrorMessage { get; set; }
+        public string? Explanation { get; set; }
     }
 }

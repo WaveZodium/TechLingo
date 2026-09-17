@@ -29,6 +29,7 @@ function AdminCategoriesPage() {
 
   // State för borttagning
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Hämta kategorier
@@ -43,6 +44,7 @@ function AdminCategoriesPage() {
         setCategories(data);
       } catch (error) {
         console.error("Failed to load categories:", error);
+
         setError("Could not load categories.");
       } finally {
         setIsLoading(false);
@@ -103,14 +105,15 @@ function AdminCategoriesPage() {
     handleCancel();
   }
 
-  // Radera en kategori
+  // Radera en kategori och alla frågor i kategorin
   async function handleDelete(category: Category) {
     if (deletingId !== null) {
       return;
     }
 
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${category.name}"?`,
+      `Are you sure you want to delete "${category.name}"? ` +
+        "All questions in this category will also be permanently deleted.",
     );
 
     if (!confirmed) {
@@ -128,25 +131,22 @@ function AdminCategoriesPage() {
         previous.filter((item) => item.id !== category.id),
       );
 
-      // Stäng formuläret om den borttagna kategorin redigerades
+      // Stäng formuläret om den borttagna
+      // kategorin redigerades
       if (editingCategory?.id === category.id) {
         handleCancel();
       }
     } catch (error) {
       console.error("Failed to delete category:", error);
 
-      if (axios.isAxiosError(error) && error.response?.status === 409) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
         setDeleteError(
           `Could not delete "${category.name}". ` +
-            "The category contains questions. Remove those questions first.",
-        );
-      } else if (axios.isAxiosError(error) && error.response?.status === 404) {
-        setDeleteError(
-          `Could not delete "${category.name}". The category no longer exists.`,
+            "The category no longer exists.",
         );
       } else {
         setDeleteError(
-          `Could not delete "${category.name}". Please try again.`,
+          `Could not delete "${category.name}". ` + "Please try again.",
         );
       }
     } finally {
@@ -202,7 +202,6 @@ function AdminCategoriesPage() {
           </p>
         )}
 
-        {/* Fel vid borttagning ska inte dölja tabellen */}
         {deleteError && (
           <p className="admin-categories__delete-error" role="alert">
             {deleteError}
@@ -215,9 +214,13 @@ function AdminCategoriesPage() {
               <thead>
                 <tr>
                   <th scope="col">Name</th>
+
                   <th scope="col">Slug</th>
+
                   <th scope="col">Status</th>
+
                   <th scope="col">Created</th>
+
                   <th scope="col">Actions</th>
                 </tr>
               </thead>

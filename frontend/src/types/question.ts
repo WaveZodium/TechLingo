@@ -17,12 +17,14 @@ export interface AnswerResult {
   correctAnswer: string | null;
   correctAnswerId: string | null;
   errorMessage: string | null;
+  explanation: string | null;
 }
 
 export interface SubmitAnswerRequest {
   questionId: string;
   answerId: string;
 }
+
 export interface StartQuizResult {
   sessionId: string;
   questions: Question[];
