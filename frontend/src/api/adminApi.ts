@@ -6,10 +6,12 @@ import type {
   AdminQuestion,
   AdminUser,
   CreateAdminUserData,
+  QuestionFormData,
   UpdateAdminUserData,
 } from "../types/admin";
 
 // Users
+
 export async function getAdminUsers() {
   const response = await api.get<AdminUser[]>("/admin/users");
 
@@ -40,11 +42,23 @@ export async function getAdminQuestions() {
   return response.data;
 }
 
-// Categories
+export async function createAdminQuestion(data: QuestionFormData) {
+  const response = await api.post<AdminQuestion>("/admin/questions", data);
+
+  return response.data;
+}
+
+export async function updateAdminQuestion(id: string, data: QuestionFormData) {
+  const response = await api.put<AdminQuestion>(`/admin/questions/${id}`, data);
+
+  return response.data;
+}
 
 export async function deleteAdminQuestion(id: string) {
   await api.delete(`/admin/questions/${id}`);
 }
+
+// Categories
 
 export type CategoryFormData = Pick<
   Category,

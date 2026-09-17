@@ -80,10 +80,6 @@ public class QuizSessionRepository
             Builders<QuizSession>.Filter.Eq(
                 session => session.IsCompleted,
                 false
-            ),
-            Builders<QuizSession>.Filter.Size(
-                session => session.Answers,
-                10
             )
         );
 

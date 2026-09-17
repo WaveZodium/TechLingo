@@ -56,6 +56,12 @@ const QuizConversation = forwardRef<HTMLDivElement, QuizConversationProps>(
                           {message.result.points}
                         </span>{" "}
                         points.
+                        {message.result.explanation && (
+                          <>
+                            <br />
+                            {message.result.explanation}
+                          </>
+                        )}
                       </>
                     ))}
 

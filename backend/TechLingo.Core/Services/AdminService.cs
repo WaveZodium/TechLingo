@@ -23,10 +23,12 @@ namespace TechLingo.Core.Services
 
 
         // Users
+
         // Här hämtas alla användare
         public async Task<List<UserDto>> GetAllUsersAsync()
         {
-            var users = await _userRepository.GetAllAsync();
+            var users =
+                await _userRepository.GetAllAsync();
 
             return users.Select(u => new UserDto
             {
@@ -37,9 +39,11 @@ namespace TechLingo.Core.Services
         }
 
         // Här hämtas en användare baserat på ID
-        public async Task<UserDto?> GetUserByIdAsync(string id)
+        public async Task<UserDto?> GetUserByIdAsync(
+            string id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user =
+                await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -55,22 +59,33 @@ namespace TechLingo.Core.Services
         }
 
         // Här skapas en ny användare
-        public async Task<UserDto> CreateUserAsync(CreateUserDto createUserDto)
+        public async Task<UserDto> CreateUserAsync(
+            CreateUserDto createUserDto)
         {
             var existingUser =
-                await _userRepository.GetByUsernameAsync(createUserDto.Username);
+                await _userRepository.GetByUsernameAsync(
+                    createUserDto.Username
+                );
 
             if (existingUser != null)
             {
-                throw new InvalidOperationException("Användarnamnet upptaget.");
+                throw new InvalidOperationException(
+                    "Användarnamnet upptaget."
+                );
             }
 
             var user = new User
             {
-                Username = createUserDto.Username,
+                Username =
+                    createUserDto.Username,
+
                 PasswordHash =
-                    BCrypt.Net.BCrypt.HashPassword(createUserDto.Password),
-                Role = createUserDto.Role
+                    BCrypt.Net.BCrypt.HashPassword(
+                        createUserDto.Password
+                    ),
+
+                Role =
+                    createUserDto.Role
             };
 
             await _userRepository.CreateAsync(user);
@@ -88,15 +103,19 @@ namespace TechLingo.Core.Services
             string id,
             UpdateUserDto updateUserDto)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user =
+                await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
                 return null;
             }
 
-            user.Username = updateUserDto.Username;
-            user.Role = updateUserDto.Role;
+            user.Username =
+                updateUserDto.Username;
+
+            user.Role =
+                updateUserDto.Role;
 
             await _userRepository.UpdateAsync(user);
 
@@ -109,9 +128,11 @@ namespace TechLingo.Core.Services
         }
 
         // Här tas en användare bort
-        public async Task<bool> DeleteUserAsync(string id)
+        public async Task<bool> DeleteUserAsync(
+            string id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user =
+                await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -128,7 +149,8 @@ namespace TechLingo.Core.Services
             string id,
             ChangePasswordDto changePasswordDto)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user =
+                await _userRepository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -136,7 +158,9 @@ namespace TechLingo.Core.Services
             }
 
             user.PasswordHash =
-                BCrypt.Net.BCrypt.HashPassword(changePasswordDto.NewPassword);
+                BCrypt.Net.BCrypt.HashPassword(
+                    changePasswordDto.NewPassword
+                );
 
             await _userRepository.UpdateAsync(user);
 
@@ -145,18 +169,26 @@ namespace TechLingo.Core.Services
 
 
         // Categories
-        // Här hämtas alla kategorier
-        public async Task<List<AdminCategoryDto>> GetAllCategoriesAsync()
-        {
-            var categories = await _categoryRepository.GetAllAsync();
 
-            return categories.Select(c => MapCategoryToDto(c)).ToList();
+        // Här hämtas alla kategorier
+        public async Task<List<AdminCategoryDto>>
+            GetAllCategoriesAsync()
+        {
+            var categories =
+                await _categoryRepository.GetAllAsync();
+
+            return categories
+                .Select(c => MapCategoryToDto(c))
+                .ToList();
         }
 
         // Här hämtas en kategori baserat på ID
-        public async Task<AdminCategoryDto?> GetCategoryByIdAsync(string id)
+        public async Task<AdminCategoryDto?>
+            GetCategoryByIdAsync(
+                string id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
+            var category =
+                await _categoryRepository.GetByIdAsync(id);
 
             if (category == null)
             {
@@ -166,83 +198,109 @@ namespace TechLingo.Core.Services
             return MapCategoryToDto(category);
         }
 
-        // Här skapas en ny kategori baserat på DTO:n (CreateCategoryDto)
-        public async Task<AdminCategoryDto> CreateCategoryAsync(
-            CreateCategoryDto createCategoryDto)
+        // Här skapas en ny kategori baserat på DTO:n
+        public async Task<AdminCategoryDto>
+            CreateCategoryAsync(
+                CreateCategoryDto createCategoryDto)
         {
             var category = new Category
             {
-                Name = createCategoryDto.Name,
-                Slug = createCategoryDto.Slug,
-                Description = createCategoryDto.Description,
-                IsActive = createCategoryDto.IsActive
+                Name =
+                    createCategoryDto.Name,
+
+                Slug =
+                    createCategoryDto.Slug,
+
+                Description =
+                    createCategoryDto.Description,
+
+                IsActive =
+                    createCategoryDto.IsActive
             };
 
-            await _categoryRepository.CreateAsync(category);
+            await _categoryRepository
+                .CreateAsync(category);
 
             return MapCategoryToDto(category);
         }
 
-        // Här uppdateras kategorin baserat på DTO:n (UpdateCategoryDto)
-        public async Task<AdminCategoryDto?> UpdateCategoryAsync(
-            string id,
-            UpdateCategoryDto updateCategoryDto)
+        // Här uppdateras kategorin baserat på DTO:n
+        public async Task<AdminCategoryDto?>
+            UpdateCategoryAsync(
+                string id,
+                UpdateCategoryDto updateCategoryDto)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
+            var category =
+                await _categoryRepository.GetByIdAsync(id);
 
             if (category == null)
             {
                 return null;
             }
 
-            category.Name = updateCategoryDto.Name;
-            category.Slug = updateCategoryDto.Slug;
-            category.Description = updateCategoryDto.Description;
-            category.IsActive = updateCategoryDto.IsActive;
+            category.Name =
+                updateCategoryDto.Name;
 
-            await _categoryRepository.UpdateAsync(category);
+            category.Slug =
+                updateCategoryDto.Slug;
+
+            category.Description =
+                updateCategoryDto.Description;
+
+            category.IsActive =
+                updateCategoryDto.IsActive;
+
+            await _categoryRepository
+                .UpdateAsync(category);
 
             return MapCategoryToDto(category);
         }
 
-        // Här tas en kategori bort baserat på ID
-        public async Task<bool> DeleteCategoryAsync(string id)
+        // Här tas en kategori och alla dess frågor bort
+        public async Task<bool> DeleteCategoryAsync(
+            string id)
         {
-            var category = await _categoryRepository.GetByIdAsync(id);
+            var category =
+                await _categoryRepository.GetByIdAsync(id);
 
             if (category == null)
             {
                 return false;
             }
 
-            var questions =
-                await _questionRepository.GetByCategoryAsync(id);
+            // Ta först bort alla frågor som tillhör kategorin
+            await _questionRepository
+                .DeleteByCategoryAsync(id);
 
-            if (questions.Count > 0)
-            {
-                throw new InvalidOperationException(
-                    "Kategorin kan inte tas bort eftersom den innehåller frågor.");
-            }
-
-            await _categoryRepository.DeleteAsync(id);
+            // Ta därefter bort själva kategorin
+            await _categoryRepository
+                .DeleteAsync(id);
 
             return true;
         }
 
 
         // Questions
-        // Här hämtas alla frågor
-        public async Task<List<AdminQuestionDto>> GetAllQuestionsAsync()
-        {
-            var questions = await _questionRepository.GetAllAsync();
 
-            return questions.Select(q => MapQuestionToDto(q)).ToList();
+        // Här hämtas alla frågor
+        public async Task<List<AdminQuestionDto>>
+            GetAllQuestionsAsync()
+        {
+            var questions =
+                await _questionRepository.GetAllAsync();
+
+            return questions
+                .Select(q => MapQuestionToDto(q))
+                .ToList();
         }
 
         // Här hämtas en fråga baserat på ID
-        public async Task<AdminQuestionDto?> GetQuestionByIdAsync(string id)
+        public async Task<AdminQuestionDto?>
+            GetQuestionByIdAsync(
+                string id)
         {
-            var question = await _questionRepository.GetByIdAsync(id);
+            var question =
+                await _questionRepository.GetByIdAsync(id);
 
             if (question == null)
             {
@@ -252,79 +310,110 @@ namespace TechLingo.Core.Services
             return MapQuestionToDto(question);
         }
 
-        // Här skapas en ny fråga baserat på DTO:n (CreateQuestionDto)
-        public async Task<AdminQuestionDto> CreateQuestionAsync(
-            CreateQuestionDto createQuestionDto)
+        // Här skapas en ny fråga baserat på DTO:n
+        public async Task<AdminQuestionDto>
+            CreateQuestionAsync(
+                CreateQuestionDto createQuestionDto)
         {
             var category =
                 await _categoryRepository.GetByIdAsync(
-                    createQuestionDto.CategoryId);
+                    createQuestionDto.CategoryId
+                );
 
             if (category == null)
             {
                 throw new InvalidOperationException(
-                    "Kategorin finns inte.");
+                    "Kategorin finns inte."
+                );
             }
 
-            // här skapas en ny fråga baserat på DTO:n
             var question = new Question
             {
-                CategoryId = createQuestionDto.CategoryId,
-                Message = createQuestionDto.Message,
-                Prompt = createQuestionDto.Prompt,
-                Options = createQuestionDto.Options
-                    .Select(MapAnswerOptionFromDto)
-                    .ToList(),
-                Explanation = createQuestionDto.Explanation,
-                IsActive = createQuestionDto.IsActive
+                CategoryId =
+                    createQuestionDto.CategoryId,
+
+                Message =
+                    createQuestionDto.Message,
+
+                Prompt =
+                    createQuestionDto.Prompt,
+
+                Options =
+                    createQuestionDto.Options
+                        .Select(MapAnswerOptionFromDto)
+                        .ToList(),
+
+                Explanation =
+                    createQuestionDto.Explanation,
+
+                IsActive =
+                    createQuestionDto.IsActive
             };
 
-            await _questionRepository.CreateAsync(question);
+            await _questionRepository
+                .CreateAsync(question);
 
             return MapQuestionToDto(question);
         }
 
-        // Här uppdateras en fråga baserat på DTO:n (UpdateQuestionDto)
-        public async Task<AdminQuestionDto?> UpdateQuestionAsync(
-            string id,
-            UpdateQuestionDto updateQuestionDto)
+        // Här uppdateras en fråga baserat på DTO:n
+        public async Task<AdminQuestionDto?>
+            UpdateQuestionAsync(
+                string id,
+                UpdateQuestionDto updateQuestionDto)
         {
-            var question = await _questionRepository.GetByIdAsync(id);
+            var question =
+                await _questionRepository.GetByIdAsync(id);
 
             if (question == null)
             {
                 return null;
             }
 
-            // här uppdateras frågan baserat på DTO:n
             var category =
                 await _categoryRepository.GetByIdAsync(
-                    updateQuestionDto.CategoryId);
+                    updateQuestionDto.CategoryId
+                );
 
             if (category == null)
             {
                 throw new InvalidOperationException(
-                    "Kategorin finns inte.");
+                    "Kategorin finns inte."
+                );
             }
 
-            question.CategoryId = updateQuestionDto.CategoryId;
-            question.Message = updateQuestionDto.Message;
-            question.Prompt = updateQuestionDto.Prompt;
-            question.Options = updateQuestionDto.Options
-                .Select(MapAnswerOptionFromDto)
-                .ToList();
-            question.Explanation = updateQuestionDto.Explanation;
-            question.IsActive = updateQuestionDto.IsActive;
+            question.CategoryId =
+                updateQuestionDto.CategoryId;
 
-            await _questionRepository.UpdateAsync(question);
+            question.Message =
+                updateQuestionDto.Message;
+
+            question.Prompt =
+                updateQuestionDto.Prompt;
+
+            question.Options =
+                updateQuestionDto.Options
+                    .Select(MapAnswerOptionFromDto)
+                    .ToList();
+
+            question.Explanation =
+                updateQuestionDto.Explanation;
+
+            question.IsActive =
+                updateQuestionDto.IsActive;
+
+            await _questionRepository
+                .UpdateAsync(question);
 
             return MapQuestionToDto(question);
         }
 
         // Här tas en fråga bort baserat på ID
-        public async Task<bool> DeleteQuestionAsync(string id)
+        public async Task<bool> DeleteQuestionAsync(
+            string id)
         {
-            var question = await _questionRepository.GetByIdAsync(id);
+            var question =
+                await _questionRepository.GetByIdAsync(id);
 
             if (question == null)
             {
@@ -338,8 +427,10 @@ namespace TechLingo.Core.Services
 
 
         // Mapping
-        // Här mappas kategorier och frågor till deras respektive DTO:er
-        private static AdminCategoryDto MapCategoryToDto(Category category)
+
+        // Här mappas kategorier till DTO
+        private static AdminCategoryDto MapCategoryToDto(
+            Category category)
         {
             return new AdminCategoryDto
             {
@@ -352,41 +443,59 @@ namespace TechLingo.Core.Services
             };
         }
 
-        // Här mappas svarsalternativ från DTO till entitet
-        private static AdminQuestionDto MapQuestionToDto(Question question)
+        // Här mappas frågor till DTO
+        private static AdminQuestionDto MapQuestionToDto(
+            Question question)
         {
             return new AdminQuestionDto
             {
                 Id = question.Id,
                 CategoryId = question.CategoryId,
                 Message = question.Message,
-                Prompt = question.Prompt,
-                Options = question.Options.Select(o =>
-                    new AdminAnswerOptionDto
-                    {
-                        Id = o.Id,
-                        Text = o.Text,
-                        IsCorrect = o.IsCorrect
-                    }).ToList(),
-                Explanation = question.Explanation,
-                IsActive = question.IsActive,
-                CreatedAt = question.CreatedAt
+
+                Prompt =
+                    question.Prompt,
+
+                Options =
+                    question.Options.Select(o =>
+                        new AdminAnswerOptionDto
+                        {
+                            Id = o.Id,
+                            Text = o.Text,
+                            IsCorrect = o.IsCorrect
+                        })
+                        .ToList(),
+
+                Explanation =
+                    question.Explanation,
+
+                IsActive =
+                    question.IsActive,
+
+                CreatedAt =
+                    question.CreatedAt
             };
         }
 
         // Här mappas svarsalternativ från DTO till entitet
-        private static AnswerOption MapAnswerOptionFromDto(
-            AdminAnswerOptionDto answerOptionDto)
+        private static AnswerOption
+            MapAnswerOptionFromDto(
+                AdminAnswerOptionDto answerOptionDto)
         {
             var answerOption = new AnswerOption
             {
-                Text = answerOptionDto.Text,
-                IsCorrect = answerOptionDto.IsCorrect
+                Text =
+                    answerOptionDto.Text,
+
+                IsCorrect =
+                    answerOptionDto.IsCorrect
             };
 
-            if (!string.IsNullOrWhiteSpace(answerOptionDto.Id))
+            if (!string.IsNullOrWhiteSpace(
+                    answerOptionDto.Id))
             {
-                answerOption.Id = answerOptionDto.Id;
+                answerOption.Id =
+                    answerOptionDto.Id;
             }
 
             return answerOption;
