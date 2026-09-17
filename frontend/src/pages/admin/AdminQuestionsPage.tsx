@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { deleteAdminQuestion, getAdminQuestions } from "../../api/adminApi";
 import { getCategories } from "../../api/categoryApi";
+import AdminBreadcrumb from "../../components/admin/AdminBreadcrumb";
 
 import type { AdminQuestion } from "../../types/admin";
 import type { Category } from "../../types/category";
@@ -91,6 +92,8 @@ function AdminQuestionsPage() {
   return (
     <section className="admin">
       <div className="admin__content">
+        <AdminBreadcrumb currentPage="Manage questions" />
+
         <header className="admin__header">
           <h1 className="admin__title">Manage questions</h1>
 
