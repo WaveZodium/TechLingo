@@ -145,6 +145,7 @@ export default function AuthForm({
         />
 
         <PasswordField
+          key={isRegisterMode ? "register-password" : "login-password"}
           id="password"
           label="Password"
           value={password}

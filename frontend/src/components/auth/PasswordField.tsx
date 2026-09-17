@@ -6,6 +6,7 @@ interface PasswordFieldProps {
   value: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  showPasswordToggle?: boolean;
 }
 
 export default function PasswordField({
