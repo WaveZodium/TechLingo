@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import heroImage from "../assets/productutanBox.png";
 import "../styles/HomePage.css";
 import { useAuth } from "../context/AuthContext";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRightIcon } from "@phosphor-icons/react";
 
 type OutletContextType = {
   openAuthPanel: () => void;
@@ -46,7 +46,7 @@ function HomePage() {
             onClick={handleGetStarted}
           >
             <span>Get started</span>
-            <ArrowRight size={20} weight="bold" aria-hidden="true" />
+            <ArrowRightIcon size={18} weight="bold" aria-hidden="true" />
           </button>
         </div>
 

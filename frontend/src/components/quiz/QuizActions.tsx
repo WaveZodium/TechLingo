@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/icons/ArrowRight";
 import type { AnswerResult, QuizResult } from "../../types/question";
 
 type QuizActionsProps = {
@@ -33,7 +34,7 @@ function QuizActions({
             onClick={onQuit}
             disabled={isQuittingQuiz || isCompletingQuiz || isSubmittingAnswer}
           >
-            {isQuittingQuiz ? "Quitting..." : "← Quit quiz"}
+            {isQuittingQuiz ? "Quitting..." : "Quit quiz"}
           </button>
 
           <button
@@ -46,7 +47,10 @@ function QuizActions({
               ? "Finishing..."
               : isLastQuestion
                 ? "Finish quiz"
-                : "Next question →"}
+                : "Next question"}
+            <span aria-hidden="true">
+              <ArrowRightIcon size={18} weight="bold" />
+            </span>
           </button>
         </>
       ) : (
@@ -58,7 +62,10 @@ function QuizActions({
             type="button"
             onClick={onBackToCategories}
           >
-            Back to categories →
+            Back to categories{" "}
+            <span>
+              <ArrowRightIcon size={18} weight="bold" aria-hidden="true" />
+            </span>
           </button>
         </>
       )}
