@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import heroImage from "../assets/productutanBox.png";
 import "../styles/HomePage.css";
 import { useAuth } from "../context/AuthContext";
+import { ArrowRight } from "@phosphor-icons/react";
 
 type OutletContextType = {
   openAuthPanel: () => void;
@@ -32,7 +33,9 @@ function HomePage() {
           </h1>
 
           <p className="home__description">
-            TechLingo makes tech language easier to understand — from internet culture and IT abbreviations to cybersecurity basics and programming languages.
+            TechLingo makes tech language easier to understand — from internet
+            culture and IT abbreviations to cybersecurity basics and programming
+            languages.
             {/* TechLingo helps you understand internet culture, slang, and IT
             abbreviations in a simple and fun way. */}
           </p>
@@ -43,7 +46,7 @@ function HomePage() {
             onClick={handleGetStarted}
           >
             <span>Get started</span>
-            <span aria-hidden="true">→</span>
+            <ArrowRight size={20} weight="bold" aria-hidden="true" />
           </button>
         </div>
 

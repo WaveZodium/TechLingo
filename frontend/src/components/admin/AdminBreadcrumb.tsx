@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import "../../styles/AdminBreadcrumb.css";
+import { CaretRight } from "@phosphor-icons/react";
 
 interface AdminBreadcrumbProps {
   currentPage: string;
@@ -11,9 +13,12 @@ function AdminBreadcrumb({ currentPage }: AdminBreadcrumbProps) {
         Admin panel
       </Link>
 
-      <span className="admin-breadcrumb__separator" aria-hidden="true">
-        /
-      </span>
+      <CaretRight
+        className="admin-breadcrumb__separator"
+        size={18}
+        weight="bold"
+        aria-hidden="true"
+      />
 
       <span className="admin-breadcrumb__current" aria-current="page">
         {currentPage}
