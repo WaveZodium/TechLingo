@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRightIcon } from "@phosphor-icons/react";
 
 import "../styles/AdminPage.css";
 
@@ -30,7 +30,7 @@ function AdminPage() {
                 className="button-primary admin__button"
               >
                 <span>Categories</span>
-                <ArrowRight size={20} weight="bold" aria-hidden="true" />
+                <ArrowRightIcon size={18} weight="bold" aria-hidden="true" />
               </Link>
             </div>
           </article>
@@ -48,7 +48,7 @@ function AdminPage() {
                 className="button-primary admin__button"
               >
                 <span>Questions</span>
-                <ArrowRight size={20} weight="bold" aria-hidden="true" />
+                <ArrowRightIcon size={18} weight="bold" aria-hidden="true" />
               </Link>
             </div>
           </article>
@@ -63,7 +63,7 @@ function AdminPage() {
 
               <Link to="/admin/users" className="button-primary admin__button">
                 <span>Users</span>
-                <ArrowRight size={20} weight="bold" aria-hidden="true" />
+                <ArrowRightIcon size={18} weight="bold" aria-hidden="true" />
               </Link>
             </div>
           </article>

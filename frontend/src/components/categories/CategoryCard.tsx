@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import type { Category } from "../../types/category";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRightIcon } from "@phosphor-icons/react";
 
 type CategoryCardProps = {
   category: Category;
@@ -23,7 +23,7 @@ function CategoryCard({ category, index }: CategoryCardProps) {
 
         <Link to={`/quiz/${category.id}`} className="category__button">
           <span>Start quiz</span>
-          <ArrowRight size={18} weight="bold" aria-hidden="true" />
+          <ArrowRightIcon size={18} weight="bold" aria-hidden="true" />
         </Link>
       </div>
     </article>
