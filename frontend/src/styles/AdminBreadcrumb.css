@@ -1,0 +1,22 @@
+.admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  font-family: var(--font-roboto-mono);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.admin-breadcrumb__section {
+  color: var(--color-cyan);
+}
+
+.admin-breadcrumb__separator {
+  color: rgba(245, 241, 232, 0.5);
+  flex-shrink: 0;
+}
+
+.admin-breadcrumb__current {
+  color: var(--color-white);
+}
