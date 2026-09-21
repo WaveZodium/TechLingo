@@ -178,7 +178,7 @@ app.MapGet("/health/mongodb", async (IConfiguration configuration) => {
             new BsonDocument("ping", 1));
 
         return Results.Ok(new {
-            status = "All is A-OK",
+            status = "ok",
             database = databaseName
         });
     }
